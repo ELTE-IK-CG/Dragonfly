@@ -2,8 +2,6 @@
 #include "Program.h"
 #include <eltecg/define.h>
 
-
-
 // ========================= Program Base Classes ==============================
 
 class ProgramLowLevelBase

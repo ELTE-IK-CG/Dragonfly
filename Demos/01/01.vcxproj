@@ -71,16 +71,16 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>T:\GLFrameworkPack\includes;$(SolutionDir)..\include;$(IncludePath)</IncludePath>
-    <LibraryPath>T:\GLFrameworkPack\LibBin;$(SolutionDir)..\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>T:\GLFrameworkPack\includes;$(ProjectDir)..\..\include;$(IncludePath)</IncludePath>
+    <LibraryPath>T:\GLFrameworkPack\LibBin;$(ProjectDir)..\..\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
-    <IncludePath>T:\GLFrameworkPack\includes;$(SolutionDir)..\include;$(IncludePath)</IncludePath>
-    <LibraryPath>T:\GLFrameworkPack\LibBin;$(SolutionDir)..\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>T:\GLFrameworkPack\includes;$(ProjectDir)..\..\include;$(IncludePath)</IncludePath>
+    <LibraryPath>T:\GLFrameworkPack\LibBin;$(ProjectDir)..\..\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>T:\GLFrameworkPack\includes;$(SolutionDir)..\include;$(IncludePath)</IncludePath>
-    <LibraryPath>T:\GLFrameworkPack\LibBin;$(SolutionDir)..\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>T:\GLFrameworkPack\includes;$(ProjectDir)..\..\include;$(IncludePath)</IncludePath>
+    <LibraryPath>T:\GLFrameworkPack\LibBin;$(ProjectDir)..\..\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
