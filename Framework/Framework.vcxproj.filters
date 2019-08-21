@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ElteCG">
+      <UniqueIdentifier>{96203505-1392-412b-8dae-e0770f69b4f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ElteCG\Utils">
+      <UniqueIdentifier>{7e6a7b4f-a3e3-429f-8b73-329ae227dc36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ElteCG\ogl">
+      <UniqueIdentifier>{f88982b2-0498-41cd-97ff-a78efa2d89f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui-Addons">
+      <UniqueIdentifier>{4d9fd8f2-b7ba-428e-92fd-aa8b8c468f51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui-Addons\Implementation">
+      <UniqueIdentifier>{00a964e5-5ccd-4fde-9712-aae6ab74b256}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui %28in pack%29">
+      <UniqueIdentifier>{a7f276cb-b77c-4e1e-a2cc-d2b6bbc4a7f6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\include\ElteCG\utils\Camera.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\Program.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\Shader.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\ShaderEditor.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\UniformEditor.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\Uniforms.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\UniformTypes.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ElteCG\ogl\texture_helper.cpp">
+      <Filter>ElteCG\ogl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ElteCG\debug.cpp">
+      <Filter>ElteCG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp">
+      <Filter>ImGui-Addons\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_sdl.cpp">
+      <Filter>ImGui-Addons\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_demo.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_draw.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_widgets.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\ElteCG\utils\Camera.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\Program.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\Shader.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\ShaderEditor.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\UniformEditor.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\Uniforms.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\UniformTypes.hpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\buffer.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\object.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\program.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\sampler.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\shader.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\static_helper.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\texture.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\texture_helper.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\texture2D.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\ogl\vao.h">
+      <Filter>ElteCG\ogl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\config.h">
+      <Filter>ElteCG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\debug.h">
+      <Filter>ElteCG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\define.h">
+      <Filter>ElteCG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
+      <Filter>ImGui-Addons\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_sdl.h">
+      <Filter>ImGui-Addons\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imconfig.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imgui.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imgui_internal.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_rectpack.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_textedit.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_truetype.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\include\ElteCG\utils\Program.inl">
+      <Filter>ElteCG\Utils</Filter>
+    </None>
+    <None Include="..\include\ElteCG\utils\Shader.inl">
+      <Filter>ElteCG\Utils</Filter>
+    </None>
+    <None Include="..\include\ElteCG\utils\Uniforms.inl">
+      <Filter>ElteCG\Utils</Filter>
+    </None>
+  </ItemGroup>
+</Project>
