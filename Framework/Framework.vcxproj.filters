@@ -19,6 +19,18 @@
     <Filter Include="ImGui %28in pack%29">
       <UniqueIdentifier>{a7f276cb-b77c-4e1e-a2cc-d2b6bbc4a7f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImGui-Addons\Text Editor">
+      <UniqueIdentifier>{157649db-d50a-4fb0-8c7f-e9ce63fc0219}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui-Addons\Node Editor">
+      <UniqueIdentifier>{d63e9a55-9225-4866-a7bb-a8c6f3de944f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui-Addons\Auto">
+      <UniqueIdentifier>{b4fcf574-4f46-4da0-849a-4f4c942df54e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui-Addons\STD lib">
+      <UniqueIdentifier>{02f67e13-3812-4fbb-8c8b-434e935da085}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\ElteCG\utils\Camera.cpp">
@@ -65,6 +77,27 @@
     </ClCompile>
     <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_widgets.cpp">
       <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.cpp">
+      <Filter>ImGui-Addons\Text Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.cpp">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_canvas.cpp">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor.cpp">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_api.cpp">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\auto\auto.cpp">
+      <Filter>ImGui-Addons\Auto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp">
+      <Filter>ImGui-Addons\STD lib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +185,42 @@
     <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_truetype.h">
       <Filter>ImGui %28in pack%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.h">
+      <Filter>ImGui-Addons\Text Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_canvas.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\auto\auto.h">
+      <Filter>ImGui-Addons\Auto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\auto\core.h">
+      <Filter>ImGui-Addons\Auto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\auto\impl_base.h">
+      <Filter>ImGui-Addons\Auto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\auto\impl_glm.h">
+      <Filter>ImGui-Addons\Auto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\cpp\imgui_stdlib.h">
+      <Filter>ImGui-Addons\STD lib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\ElteCG\utils\Program.inl">
@@ -162,6 +231,15 @@
     </None>
     <None Include="..\include\ElteCG\utils\Uniforms.inl">
       <Filter>ElteCG\Utils</Filter>
+    </None>
+    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </None>
+    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.inl">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </None>
+    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl">
+      <Filter>ImGui-Addons\Node Editor</Filter>
     </None>
   </ItemGroup>
 </Project>

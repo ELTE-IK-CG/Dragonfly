@@ -28,6 +28,13 @@
     <ClCompile Include="..\include\ElteCG\utils\UniformEditor.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Uniforms.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\UniformTypes.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\auto\auto.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_canvas.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_api.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.cpp" />
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_sdl.cpp" />
     <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui.cpp" />
@@ -56,6 +63,18 @@
     <ClInclude Include="..\include\ElteCG\utils\UniformEditor.h" />
     <ClInclude Include="..\include\ElteCG\utils\Uniforms.h" />
     <ClInclude Include="..\include\ElteCG\utils\UniformTypes.hpp" />
+    <ClInclude Include="..\include\ImGui-addons\auto\auto.h" />
+    <ClInclude Include="..\include\ImGui-addons\auto\core.h" />
+    <ClInclude Include="..\include\ImGui-addons\auto\impl_base.h" />
+    <ClInclude Include="..\include\ImGui-addons\auto\impl_glm.h" />
+    <ClInclude Include="..\include\ImGui-addons\cpp\imgui_stdlib.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_canvas.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.h" />
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h" />
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_sdl.h" />
     <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imconfig.h" />
@@ -69,6 +88,9 @@
     <None Include="..\include\ElteCG\utils\Program.inl" />
     <None Include="..\include\ElteCG\utils\Shader.inl" />
     <None Include="..\include\ElteCG\utils\Uniforms.inl" />
+    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />
+    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.inl" />
+    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
