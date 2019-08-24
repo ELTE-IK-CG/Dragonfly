@@ -8,9 +8,9 @@
 #include <SDL/SDL_opengl.h>
 
 // GLWrapper
-#include "GLW/VertexArray.h"
+#include "glw/VertexArray.h"
 #include "glw/ShaderProgram.h"
-#include "GLW/Texture.h"
+#include "glw/Texture.h"
 #include "glw/FrameBuffer.h"
 
 //Dragonfly Runtime

@@ -15,7 +15,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Dragonfly-master\Runtime\Utils\RenderSettings.cpp" />
     <ClCompile Include="..\include\ElteCG\debug.cpp" />
     <ClCompile Include="..\include\ElteCG\ogl\texture_helper.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -44,7 +43,6 @@
     <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Dragonfly-master\Runtime\Utils\RenderSettings.h" />
     <ClInclude Include="..\include\ElteCG\config.h" />
     <ClInclude Include="..\include\ElteCG\debug.h" />
     <ClInclude Include="..\include\ElteCG\define.h" />
