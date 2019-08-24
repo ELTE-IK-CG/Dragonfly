@@ -13,8 +13,9 @@
 #include <ImGui-addons/impl/imgui_impl_sdl.h>
 #include <ImGui-addons/impl/imgui_impl_opengl3.h>
 
+
 // App
-//#include "app.h"
+#include "app.h"
 
 
 void program_exit() {
@@ -107,7 +108,7 @@ int main(int argc, char* args[]) {
 	}
 
 	{
-		//App app;
+		App app;
 		bool quit = false;
 		SDL_Event ev;
 
@@ -115,11 +116,11 @@ int main(int argc, char* args[]) {
 		int canvas_width, canvas_height;
 		SDL_GL_GetDrawableSize(win, &canvas_width, &canvas_height);
 
-		/*if (!app.Init(canvas_width, canvas_height))
+		if (!app.Init(canvas_width, canvas_height))
 		{
 			SDL_Log("Error during app initialization!");
 			quit = true;
-		}*/
+		}
 
 		int window_size[2];
 		SDL_GetWindowSize(win, window_size, window_size + 1);
@@ -137,7 +138,7 @@ int main(int argc, char* args[]) {
 				{
 				case SDL_WINDOWEVENT:
 					if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED && window_id == ev.window.windowID) {
-						//app.Resize(window_size[0] = ev.window.data1, window_size[1] = ev.window.data2);
+						app.Resize(window_size[0] = ev.window.data1, window_size[1] = ev.window.data2);
 						glViewport(0,0, window_size[0], window_size[1]);
 					}
 					else if (ev.window.event == SDL_WINDOWEVENT_CLOSE) {
@@ -148,14 +149,14 @@ int main(int argc, char* args[]) {
 					break;
 				case SDL_KEYDOWN:
 					if (!is_keyboard_captured && ev.key.keysym.sym == SDLK_ESCAPE)	quit = true;
-					//if(!is_keyboard_captured) app.KeyboardDown(ev.key);
+					if(!is_keyboard_captured) app.KeyboardDown(ev.key);
 					break;
-				/*case SDL_KEYUP:
+				case SDL_KEYUP:
 					if(!is_keyboard_captured) app.KeyboardUp(ev.key);	break;
 				case SDL_MOUSEBUTTONDOWN:	if(!is_mouse_captured) app.MouseDown(ev.button);	break;
 				case SDL_MOUSEBUTTONUP:		if(!is_mouse_captured) app.MouseUp(ev.button);		break;
 				case SDL_MOUSEWHEEL:		if(!is_mouse_captured) app.MouseWheel(ev.wheel);	break;
-				case SDL_MOUSEMOTION:		if(!is_mouse_captured) app.MouseMove(ev.motion);	break;*/
+				case SDL_MOUSEMOTION:		if(!is_mouse_captured) app.MouseMove(ev.motion);	break;
 				case SDL_QUIT:				quit = true;										break;
 				}
 			}
@@ -164,11 +165,11 @@ int main(int argc, char* args[]) {
 			ImGui_ImplSDL2_NewFrame(win);
 			ImGui::NewFrame();
 
-			ImGui::ShowDemoWindow();
+			//ImGui::ShowDemoWindow();
 			//ImGui::ShowAutoTestWindow();
 
-			//app.Update();
-			//app.Render();
+			app.Update();
+			app.Render();
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
