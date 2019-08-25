@@ -152,39 +152,18 @@ void ShaderEditor<File_t>::Render(){
 				tab = 1;
 				ImGui::EndTabItem();
 			}
-			if (ImGui::BeginTabItem("Error list")){
-				tab = 2;
-				ImGui::EndTabItem();
-			}
 			ImGui::EndTabBar();
 		}
 
 		switch (tab){
 		case 0:
 			this->renderFileSelector();		//Shader File selector
-			this->renderShaderFiles();		//Templates are specialized
+			this->renderErrorWindow();
+			//this->renderShaderFiles();		//Templates are specialized
 			break;
 		case 1:
 			error_handling.generated.Render("Gencode");
 			break;
-		case 2:{
-			for (const auto& e : error_handling.parsed_errors){
-				float pos = ImGui::GetCursorPosX();
-				ImGui::Selectable("##Error",false);
-				ImGui::SameLine(pos);
-				switch (e.type) {
-				case ErrorLine::Type::ERROR: ImGui::PushStyleColor(ImGuiCol_Text,{ 1,0.4f,0.4f,1.f }); ImGui::TextUnformatted("ERROR"); break;
-				case ErrorLine::Type::WARNING: ImGui::PushStyleColor(ImGuiCol_Text,{ 1,1,0,0.6f });ImGui::TextUnformatted("WARNING"); break;
-				case ErrorLine::Type::UNKNOWN: ImGui::PushStyleColor(ImGuiCol_Text,{ 1,1,1,0.6f });ImGui::TextUnformatted("UNKNOWN"); break;
-				default:ImGui::PushStyleColor(ImGuiCol_Text,{ 1,1,1,1 });	break;
-				}
-				ImGui::SameLine(pos+45.f);		ImGui::Text("line %i", e.line);
-				ImGui::SameLine(pos+115.f);		ImGui::TextUnformatted(e.path.c_str(),e.path.c_str()+e.path.length());
-				ImGui::SameLine(pos+330.f);		ImGui::TextUnformatted(e.message.c_str(),e.message.c_str()+e.message.length());
-				ImGui::PopStyleColor();
-			}
-			break;
-		}
 		default:break;
 
 		}
@@ -309,6 +288,34 @@ void ShaderEditor<File_t>::renderFileSelector()
 	}
 }
 
+template<typename File_t>
+void ShaderEditor<File_t>::renderErrorWindow() {
+
+	ImVec2 region = ImGui::GetContentRegionAvail();
+	if (ImGui::CollapsingHeader("Error List", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		float height = selector.height;
+		if (ImGui::BeginChild("Error Window", { region.x , height + 10.f }, true, ImGuiWindowFlags_NoNav))
+		{
+			for (const auto& e : error_handling.parsed_errors) {
+				float pos = ImGui::GetCursorPosX();
+				ImGui::Selectable("##Error", false);
+				ImGui::SameLine(pos);
+				switch (e.type) {
+				case ErrorLine::Type::ERROR: ImGui::PushStyleColor(ImGuiCol_Text, { 1,0.4f,0.4f,1.f }); ImGui::TextUnformatted("ERROR"); break;
+				case ErrorLine::Type::WARNING: ImGui::PushStyleColor(ImGuiCol_Text, { 1,1,0,0.6f }); ImGui::TextUnformatted("WARNING"); break;
+				case ErrorLine::Type::UNKNOWN: ImGui::PushStyleColor(ImGuiCol_Text, { 1,1,1,0.6f }); ImGui::TextUnformatted("UNKNOWN"); break;
+				default:ImGui::PushStyleColor(ImGuiCol_Text, { 1,1,1,1 });	break;
+				}
+				ImGui::SameLine(pos + 45.f);		ImGui::Text("line %i", e.line);
+				ImGui::SameLine(pos + 115.f);		ImGui::TextUnformatted(e.path.c_str(), e.path.c_str() + e.path.length());
+				ImGui::SameLine(pos + 330.f);		ImGui::TextUnformatted(e.message.c_str(), e.message.c_str() + e.message.length());
+				ImGui::PopStyleColor();
+			}
+		}	ImGui::EndChild();
+	} 
+}
+
 template <typename File_t>
 void setMarkersImpl(File_t& sfile, const TextEditor::ErrorMarkers &markers) {}//do nothing
 template<> void setMarkersImpl<SFileEditor>(SFileEditor& sfile, const TextEditor::ErrorMarkers &markers) {
@@ -416,7 +423,7 @@ void ShaderEditor<File_t>::hoverPath(const std::string & path) {
 
 	if (hover.frames >= 12) hoverFileImp(*hover.file);
 }
-
+//
 template<> void ShaderEditor<SFile>::renderShaderFiles(){
 	if (this->shaders.empty()) return;
 	if (ImGui::BeginChild("ReadOnlyText"))	{
@@ -427,6 +434,7 @@ template<> void ShaderEditor<SFile>::renderShaderFiles(){
 		ImGui::TextUnformatted(code.c_str(),code.c_str() + code.length());
 	}	ImGui::EndChild();
 }
+
 template<> void ShaderEditor<SFileEditor>::renderShaderFiles() {
 	ImGuiID dockspace_id = ImGui::GetID("DockSpace");
 	ImGui::DockSpace(dockspace_id, {0,0});
@@ -435,6 +443,8 @@ template<> void ShaderEditor<SFileEditor>::renderShaderFiles() {
 		sh.Render();
 	}
 }
+
+
 
 template class Shader<SFileEditor>;
 template class ShaderEditor<SFile>;

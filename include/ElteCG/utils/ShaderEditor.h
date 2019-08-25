@@ -54,6 +54,7 @@ class ShaderEditor : public Shader<File_t>{
 	using Base = Shader<File_t>;
 private:
 	void renderFileSelector();
+	void renderErrorWindow();
 	void onCompile();
 	void hoverPath(const std::string& path);
 	void renderShaderFiles(); // Need to specialize this
