@@ -44,7 +44,16 @@ void App::Resize(int width, int height) {
 }
 
 void App::InitShaders() {
-	program	<< "Shaders/main.frag.glsl"_fs;
+	program << "Shaders/types.glsl"_fs
+		<< "Shaders/Primitives/common.glsl"_fs
+		<< "Shaders/sdf.glsl"_fs
+		<< "Shaders/SphereTrace/step.glsl"_fs
+		<< "Shaders/SphereTrace/trace.glsl"_fs
+		<< "Shaders/Shadow/softshadow.glsl"_fs
+		<< "Shaders/AmbientOcclusion/basic.glsl"_fs
+		<< "Shaders/Shade/brdf.glsl"_fs
+		<< "Shaders/Shade/basic.glsl"_fs
+		<< "Shaders/main.frag.glsl"_fs;
 	program	<< "Shaders/quad.vert.glsl"_vs << LinkProgram;
 
 	std::cout << program.GetErrors();

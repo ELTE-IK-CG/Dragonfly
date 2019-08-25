@@ -32,13 +32,8 @@ void SFileEditor::SetErrorMarkers(const TextEditor::ErrorMarkers & errm) {
 
 void SFileEditor::Render()
 {
-	if (!is_open) return;
-	ImGui::SetWindowSize({ 800,700 }, ImGuiCond_Once);
 	std::string winname = "File Editor [" + path + ']';
-	if(do_focus) ImGui::SetNextWindowFocus();
-	do_focus = false;
-	if (ImGui::Begin(winname.c_str(), &is_open, dirty ? ImGuiWindowFlags_UnsavedDocument : 0))
-	{
+	if (ImGui::CollapsingHeader(winname.c_str(), ImGuiTreeNodeFlags_CollapsingHeader)) {
 		CreateEditor();//only if needed!
 		ImVec2 region = ImGui::GetContentRegionAvail();
 		if (ImGui::BeginChild("Buttons", { 0, (error_msg.empty() ? 20.f : 40.f) + region.y*0.05f }))
@@ -59,8 +54,9 @@ void SFileEditor::Render()
 			code = editor->GetText();
 			dirty = true;
 		}
-	}	ImGui::End();
+	}
 }
+
 inline void SFileEditor::ViewFile() const {
 	CreateEditor();
 	ImGui::BeginTooltip();
@@ -152,6 +148,10 @@ void ShaderEditor<File_t>::Render(){
 				tab = 1;
 				ImGui::EndTabItem();
 			}
+			if (ImGui::BeginTabItem("Code Editor")){
+				tab = 2;
+				ImGui::EndTabItem();
+			}
 			ImGui::EndTabBar();
 		}
 
@@ -159,11 +159,12 @@ void ShaderEditor<File_t>::Render(){
 		case 0:
 			this->renderFileSelector();		//Shader File selector
 			this->renderErrorWindow();
-			//this->renderShaderFiles();		//Templates are specialized
 			break;
 		case 1:
 			error_handling.generated.Render("Gencode");
 			break;
+		case 2:
+			this->renderShaderFiles();		//Templates are specialized
 		default:break;
 
 		}
@@ -295,7 +296,7 @@ void ShaderEditor<File_t>::renderErrorWindow() {
 	if (ImGui::CollapsingHeader("Error List", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		float height = selector.height;
-		if (ImGui::BeginChild("Error Window", { region.x , height + 10.f }, true, ImGuiWindowFlags_NoNav))
+		if (ImGui::BeginChild("Error Window", { region.x , height + 10.f }, true, ImGuiWindowFlags_HorizontalScrollbar))
 		{
 			for (const auto& e : error_handling.parsed_errors) {
 				float pos = ImGui::GetCursorPosX();
@@ -423,7 +424,7 @@ void ShaderEditor<File_t>::hoverPath(const std::string & path) {
 
 	if (hover.frames >= 12) hoverFileImp(*hover.file);
 }
-//
+
 template<> void ShaderEditor<SFile>::renderShaderFiles(){
 	if (this->shaders.empty()) return;
 	if (ImGui::BeginChild("ReadOnlyText"))	{
@@ -435,11 +436,10 @@ template<> void ShaderEditor<SFile>::renderShaderFiles(){
 	}	ImGui::EndChild();
 }
 
+
+//dont dock next to each other, but rather below
 template<> void ShaderEditor<SFileEditor>::renderShaderFiles() {
-	ImGuiID dockspace_id = ImGui::GetID("DockSpace");
-	ImGui::DockSpace(dockspace_id, {0,0});
-	for (auto &sh : shaders) {
-		ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_Once);
+	for (auto& sh : shaders) {
 		sh.Render();
 	}
 }
