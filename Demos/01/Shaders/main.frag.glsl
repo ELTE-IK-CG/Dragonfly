@@ -15,9 +15,11 @@ out vec4 fs_out_col;
 
 void main()
 {
-    fs_out_col = vs_out_col
+    fs_out_col = vs_out_col;
 
 }
+
+
 
 
 

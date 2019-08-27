@@ -82,6 +82,7 @@ protected:
 	std::vector<DirEntry> folders;
 	std::string directory, name;
 	ShaderEditor() = delete;
+	bool first_time_load = true;
 public:
 	// You can also specify a directory view and a name so the shader retains its state via a config file
 	ShaderEditor(GLenum type, const std::string &directory_ = "", const std::string &name = "");

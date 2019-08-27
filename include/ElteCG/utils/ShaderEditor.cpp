@@ -51,7 +51,7 @@ void SFileEditor::Render()
 			}
 		}		ImGui::EndChild();
 		editor->SetReadOnly(false); editor->SetHandleKeyboardInputs(true); editor->SetHandleMouseInputs(true);
-		editor->Render(winname.c_str(), {0,550}, false);
+		editor->Render(winname.c_str(), {0,450}, false);
 		if (editor->IsTextChanged()) {
 			code = editor->GetText();
 			dirty = true;
@@ -100,22 +100,35 @@ ShaderEditor<File_t>::ShaderEditor(GLenum type, const std::string &directory_, c
 
 template<typename File_t>
 void ShaderEditor<File_t>::Load(){
-	std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
-	if (std::ifstream in(path); in.is_open()) {
-		while (std::getline(in, path)) {
-			selector.active_paths.emplace(path, this->shaders.size());
-			this->operator<<(path);
+
+	if (!first_time_load) {
+		this->shaders.clear();
+		std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
+		if (std::ifstream in(path); in.is_open()) {
+			while (std::getline(in, path)) {
+				this->operator<<(path);
+			}
+			in.close();
 		}
-		in.close();
 	}
+	first_time_load = false;
+
 }
 
 template<typename File_t>
 void ShaderEditor<File_t>::Save() {
 	std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
+	std::vector<std::string> path_names;
+
 	if (std::ofstream out(path, std::ofstream::trunc); out.is_open()){
-		for (const auto & sh : this->shaders)
-			out << sh.GetPath() << std::endl;
+		for (const auto& sh : this->shaders) {
+			if(std::find(path_names.begin(), path_names.end(), sh.GetPath()) == path_names.end() )
+				path_names.push_back(sh.GetPath());
+		}
+
+		for (std::string sh : path_names) {
+			out << sh << std::endl;
+		}
 		out.close();
 	}
 	else ASSERT(false,"Saving failed");
