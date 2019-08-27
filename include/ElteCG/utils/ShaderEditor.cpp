@@ -32,11 +32,13 @@ void SFileEditor::SetErrorMarkers(const TextEditor::ErrorMarkers & errm) {
 
 void SFileEditor::Render()
 {
+	
 	std::string winname = "File Editor [" + path + ']';
-	if (ImGui::CollapsingHeader(winname.c_str(), ImGuiTreeNodeFlags_CollapsingHeader)) {
+	ImGui::PushID(winname.c_str());
+	if (ImGui::CollapsingHeader(winname.c_str(), ImGuiTreeNodeFlags_None)) {
 		CreateEditor();//only if needed!
-		ImVec2 region = ImGui::GetContentRegionAvail();
-		if (ImGui::BeginChild("Buttons", { 0, (error_msg.empty() ? 20.f : 40.f) + region.y*0.05f }))
+		//ImVec2 region = ImGui::GetContentRegionMax();
+		if (ImGui::BeginChild("Buttons", { 0, (error_msg.empty() ? 20.f : 40.f) + 15 }))
 		{
 			ImVec2 region = ImGui::GetContentRegionAvail();
 			if (ImGui::Button("Save", { region.x*0.49f, 16.f + region.y*0.05f })) Save();
@@ -49,12 +51,14 @@ void SFileEditor::Render()
 			}
 		}		ImGui::EndChild();
 		editor->SetReadOnly(false); editor->SetHandleKeyboardInputs(true); editor->SetHandleMouseInputs(true);
-		editor->Render(winname.c_str(), { 0,0 }, false);
+		editor->Render(winname.c_str(), {0,550}, false);
 		if (editor->IsTextChanged()) {
 			code = editor->GetText();
 			dirty = true;
 		}
 	}
+	ImGui::PopID();
+
 }
 
 inline void SFileEditor::ViewFile() const {
@@ -439,9 +443,9 @@ template<> void ShaderEditor<SFile>::renderShaderFiles(){
 
 //dont dock next to each other, but rather below
 template<> void ShaderEditor<SFileEditor>::renderShaderFiles() {
-	for (auto& sh : shaders) {
-		sh.Render();
-	}
+		for (auto& sh : shaders) {
+			sh.Render();
+		}
 }
 
 
