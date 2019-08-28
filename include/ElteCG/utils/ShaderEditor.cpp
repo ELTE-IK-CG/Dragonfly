@@ -49,6 +49,7 @@ void SFileEditor::Render()
 				ImGui::TextUnformatted(error_msg.c_str(), error_msg.c_str() + error_msg.length());
 				ImGui::PopStyleColor();
 			}
+
 		}		ImGui::EndChild();
 		editor->SetReadOnly(false); editor->SetHandleKeyboardInputs(true); editor->SetHandleMouseInputs(true);
 		editor->Render(winname.c_str(), {0,450}, false);
@@ -284,22 +285,28 @@ void ShaderEditor<File_t>::renderFileSelector()
 			selector.height = std::max(ImGui::GetCursorPosY(),selector.height);
 		}	ImGui::EndChild();
 	}
+	float wid = 0.1945f;
 	// Buttons
-	if (ImGui::Button("Load config", { region.x*0.24f, 12.f + region.y*0.05f })) Load();
+	if (ImGui::Button("Load config", { region.x* wid, 12.f + region.y*0.05f })) Load();
 	if (ImGui::IsItemHovered()) ImGui::SetTooltip("Load shader file list from %s.", path.c_str());
 	if (!this->shaders.empty())	{
 		ImGui::SameLine();
-		if (ImGui::Button("Save config", { region.x*0.24f, 12.f + region.y*0.05f }))
+		if (ImGui::Button("Save config", { region.x* wid, 12.f + region.y*0.05f }))
 			Save();
 		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Save shader file list to %s.", path.c_str());
 		ImGui::SameLine();
-		if (ImGui::Button("Pop Shader", { region.x*0.24f, 12.f + region.y*0.05f })) {
+		if (ImGui::Button("Clear", { region.x * wid, 12.f + region.y * 0.05f })) {
+			this->shaders.clear();
+		}
+		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Clear the current shader setup.");
+		ImGui::SameLine();
+		if (ImGui::Button("Pop Shader", { region.x* wid, 12.f + region.y*0.05f })) {
 			selector.active_paths.erase(this->shaders.back().GetPath());
 			this->PopShader();
 		}
 		else if (ImGui::IsItemHovered()) ImGui::SetTooltip("Remove shader from compile list: %s.", this->shaders.back().GetPath());
 		ImGui::SameLine();
-		if (ImGui::Button("Compile", { region.x*0.24f, 12.f + region.y*0.05f }))	{
+		if (ImGui::Button("Compile", { region.x* wid, 12.f + region.y*0.05f }))	{
 			Compile();
 		}
 		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Compile %i shader files.", this->shaders.size());
