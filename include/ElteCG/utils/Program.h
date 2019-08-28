@@ -1,6 +1,7 @@
 #pragma once
 #include <GL/glew.h>
 #include <string>
+#include <deque>
 
 struct _CompShader { const char* path; };
 struct _FragShader { const char* path; };

@@ -43,7 +43,7 @@ private:
 
 	int canvas_width=720;
 	int canvas_height=480;
-	float col_intensity = 0.1f;
+	float col_intensity = 0.2f;
 
 	Program<UniformEditor, ShaderEditor<SFileEditor>,	Shader<SFile>	> program;
 

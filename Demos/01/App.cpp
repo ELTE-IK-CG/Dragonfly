@@ -43,7 +43,7 @@ void App::Resize(int width, int height) {
 }
 
 void App::InitShaders() {
-	program << "Shaders/main.frag.glsl"_fs;
+	program << "Shaders/types.glsl"_fs <<  "Shaders/sdf.glsl"_fs << "Shaders/main.frag.glsl"_fs;
 	program	<< "Shaders/quad.vert.glsl"_vs << LinkProgram;
 
 	std::cout << program.GetErrors();
