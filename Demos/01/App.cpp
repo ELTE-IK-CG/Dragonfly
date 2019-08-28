@@ -23,6 +23,18 @@ bool App::Init(int width, int height) {
 void App::InitGL() {
 	//glEnable              ( GL_DEBUG_OUTPUT );
 	//glDebugMessageCallback( MessageCallback, 0 );
+	
+	glm::vec2 Vert[] = {
+		glm::vec2(-1, -1),
+		glm::vec2(1, -1),
+		glm::vec2(0, 1)
+	};
+
+	VaoID.bindVertexArray();
+	VboID.bindBuffer();
+	VboID.assignMutable(&Vert);
+	VaoID.addVBO(VboID);
+
 
 	// Set clear color to blue
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
@@ -43,7 +55,7 @@ void App::Resize(int width, int height) {
 }
 
 void App::InitShaders() {
-	program << "Shaders/main.frag.glsl"_fs;
+	program << "Shaders/types.glsl"_fs <<  "Shaders/sdf.glsl"_fs << "Shaders/main.frag.glsl"_fs;
 	program	<< "Shaders/quad.vert.glsl"_vs << LinkProgram;
 
 	std::cout << program.GetErrors();

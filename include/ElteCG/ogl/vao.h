@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <typeinfo>
-#include "..//..//..//Runtime/Utils/UniformEditor.h" //Only need the type cpp/glm -> ogl type conversion ... TODO refactor
+#include "ElteCG/Utils/UniformEditor.h" //Only need the type cpp/glm -> ogl type conversion ... TODO refactor
 
 //namespace for opengl classes
 namespace eltecg { namespace ogl {

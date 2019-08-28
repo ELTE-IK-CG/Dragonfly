@@ -152,37 +152,68 @@ public:
 private:
 	LoadState(Prog&that) : that(that) {}
 	Prog& that;
+	std::deque<const char*> shader_list;
 };
 
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _CompShader & s){
 	static_assert(std::is_same_v<V, NoShader>, "Cannot add a compute shader when a vertex shader type is present.");
-	that.fragcomp << s.path;		return *this;
+	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
+		shader_list.push_back(s.path); that.fragcomp << s.path;
+	}
+	else
+		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
+	return *this;
 }
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _FragShader & s){
+inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _FragShader& s) {
 	static_assert(!std::is_same_v<V, NoShader>, "Cannot add a fragment shader when a vertex shader type is not set.");
-	that.fragcomp << s.path;		return *this;
+	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
+		shader_list.push_back(s.path); that.fragcomp << s.path;
+	}
+	else 
+		 WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
+	return *this;
 }
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _VertShader & s){
 	static_assert(!std::is_same_v<V, NoShader>, "Invalid vertex shader type to add.");
-	that.vert << s.path;		return *this;
+	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
+		shader_list.push_back(s.path); that.vert << s.path;
+	}
+	else
+		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
+	return *this;
 }
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _GeomShader & s){
 	static_assert(!std::is_same_v<G, NoShader>, "Invalid geometry shader type to add.");
-	that.geom << s.path;		return *this;
+	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
+		shader_list.push_back(s.path); that.geom << s.path;
+	}
+	else
+		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
+	return *this;
 }
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _TescShader & s){
 	static_assert(!std::is_same_v<TC, NoShader>, "Invalid tessellation control shader type to add.");
-	that.tesc << s.path;		return *this;
+	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
+		shader_list.push_back(s.path); that.tesc << s.path;
+	}
+	else
+		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
+	return *this;
 }
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _TeseShader & s){
 	static_assert(!std::is_same_v<TE, NoShader>, "Invalid tessellation evaluation shader type to add.");
-	that.tese << s.path;		return *this;
+	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
+		shader_list.push_back(s.path); that.tese << s.path;
+	}
+	else
+		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
+	return *this;
 }
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const typename ProgramLowLevelBase::LinkType andCompile) {

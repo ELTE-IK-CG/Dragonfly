@@ -8,7 +8,7 @@
 #include <SDL/SDL_opengl.h>
 
 // GLWrapper
-#include "glw/VertexArray.h"
+#include "glw/VertexBuffer.h"
 #include "glw/ShaderProgram.h"
 #include "glw/Texture.h"
 #include "glw/FrameBuffer.h"
@@ -19,6 +19,7 @@
 #include "ElteCG/utils/Shader.h"
 #include "ElteCG/utils/Program.h"
 #include "ElteCG/utils/UniformEditor.h"
+#include "ElteCG/ogl/vao.h"
 
 class App {
 
@@ -43,12 +44,15 @@ private:
 
 	int canvas_width=720;
 	int canvas_height=480;
-	float col_intensity = 0.1f;
+	float col_intensity = 0.2f;
 
 	Program<UniformEditor, ShaderEditor<SFileEditor>,	Shader<SFile>	> program;
 
 	Camera cam;
-
+	
+	eltecg::ogl::VertexArray VaoID;
+	eltecg::ogl::ArrayBuffer VboID;
+	
 	void InitShaders();
 
 	void InitGL();
