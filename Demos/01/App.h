@@ -43,6 +43,7 @@ private:
 
 	int canvas_width=720;
 	int canvas_height=480;
+	float col_intensity = 0.1f;
 
 	Program<UniformEditor, ShaderEditor<SFileEditor>,	Shader<SFile>	> program;
 
@@ -52,5 +53,4 @@ private:
 
 	void InitGL();
 
-	void ResizeFBO();
 };

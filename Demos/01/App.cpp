@@ -38,22 +38,12 @@ void App::Resize(int width, int height) {
 	canvas_height = height;
 	cam.Resize(width, height);
 
-	//ResizeFBO();
 	glViewport(0, 0, canvas_width, canvas_height);
 	GL_CHECK;
 }
 
 void App::InitShaders() {
-	program << "Shaders/types.glsl"_fs
-		<< "Shaders/Primitives/common.glsl"_fs
-		<< "Shaders/sdf.glsl"_fs
-		<< "Shaders/SphereTrace/step.glsl"_fs
-		<< "Shaders/SphereTrace/trace.glsl"_fs
-		<< "Shaders/Shadow/softshadow.glsl"_fs
-		<< "Shaders/AmbientOcclusion/basic.glsl"_fs
-		<< "Shaders/Shade/brdf.glsl"_fs
-		<< "Shaders/Shade/basic.glsl"_fs
-		<< "Shaders/main.frag.glsl"_fs;
+	program << "Shaders/main.frag.glsl"_fs;
 	program	<< "Shaders/quad.vert.glsl"_vs << LinkProgram;
 
 	std::cout << program.GetErrors();
@@ -68,18 +58,17 @@ void App::Render() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	program << "gInverseViewProj" << cam.GetInverseViewProj() << "gTanPixelAngle" << cam.GetTanPixelFow() << "gCameraPos" << cam.GetEye();
-	program << "gCameraDir" << cam.GetDir() << "gDepthcalcCoeffs" << cam.GetDepthcalcCoeffs() << "gNearFarClips" << cam.GetNearFarClips();
-
+	program << "gCameraPos" << cam.GetEye(); //<< "gInverseViewProj" << cam.GetInverseViewProj() << "gTanPixelAngle" << cam.GetTanPixelFow();
+	//program << "gCameraDir" << cam.GetDir() << "gDepthcalcCoeffs" << cam.GetDepthcalcCoeffs() << "gNearFarClips" << cam.GetNearFarClips();
+	program << "col_intensity" << col_intensity;
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
 	GL_CHECK;
 
-	//cam.RenderUI();
+	cam.RenderUI();
 	program.Render();
 }
 
-void App::ResizeFBO() {}
 
 void App::KeyboardDown(SDL_KeyboardEvent& key) {
 	cam.KeyboardDown(key);
