@@ -19,6 +19,8 @@
 #include "ElteCG/utils/Shader.h"
 #include "ElteCG/utils/Program.h"
 #include "ElteCG/utils/UniformEditor.h"
+#include "ElteCG/ogl/buffer.h"
+#include "ElteCG/ogl/vao.h"
 
 class App {
 
@@ -43,9 +45,12 @@ private:
 
 	int canvas_width=720;
 	int canvas_height=480;
-	float col_intensity = 0.2f;
+	float col_intensity = 0.15f;
 
 	Program<UniformEditor, ShaderEditor<SFileEditor>,	Shader<SFile>	> program;
+
+	eltecg::ogl::ArrayBuffer MyVBO;
+	eltecg::ogl::VertexArray MyVAO;
 
 	Camera cam;
 
