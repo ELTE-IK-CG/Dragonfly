@@ -96,7 +96,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{C90AA1F9-4336-4907-BE3C-A997E73D9BDC}</ProjectGuid>
     <RootNamespace>Framework</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
