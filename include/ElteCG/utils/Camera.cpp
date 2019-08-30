@@ -55,52 +55,54 @@ bool Camera::Update()
 
 bool Camera::RenderUI()
 {
-	if (ImGui::Begin("Camera",&isUiOpen_))
+	if (ImGui::Begin("Camera + Uniforms",&isUiOpen_))
 	{
-		float w = ImGui::GetContentRegionAvailWidth();
+		if (ImGui::BeginChild("Camera", { 0,150 }, true)) {
+			float w = ImGui::GetContentRegionAvailWidth();
 
-		ImGui::Text("Measured delta T: %f seconds", this->deltaTime_);
+			ImGui::Text("Measured delta T: %f seconds", this->deltaTime_);
 
-		ImGui::PushItemWidth(0.9f*w);
-		look_changed |= ImGui::DragFloat3("Eye", &eye_.x, 0.4f);
-		look_changed |= ImGui::DragFloat3("Up", &up_.x, 0.2f);
-		look_changed |= ImGui::DragFloat3("At", &at_.x, 0.4f);
-		ImGui::PopItemWidth();
-
-		ImGui::PushItemWidth(0.25f*w);
-		proj_changed |= ImGui::DragFloat("FoW", &fowDegs_, 1.f, 0.f, 180.f, "%.1f%°");	ImGui::SameLine();
-		proj_changed |= ImGui::DragFloat("Near", &nearDist_);						ImGui::SameLine();
-		proj_changed |= ImGui::DragFloat("Far", &farDist_);
-
-		ImGui::DragFloat("Speed", &moveSpeed_, 0.5f);			ImGui::SameLine();
-		ImGui::Checkbox("Slow", &shiftHeld_);					ImGui::SameLine();
-		static bool bdebug = false;
-		ImGui::Checkbox("Debug", &bdebug);
-		ImGui::PopItemWidth();
-
-		if(bdebug) {
-			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.5, 0, 0, 1));
-			ImGui::BeginChild("DangerZone", { 0, 110 }, true);
-			ImGui::PushItemWidth(0.6f*w);
-			view_changed |= ImGui::DragFloat3("Frwrd", &frwdDir_.x);	ImGui::SameLine();
-			ImGui::PopItemWidth();ImGui::PushItemWidth(0.2f*w);
-			view_changed |= ImGui::DragFloat("goFw", &goFrwd_);
-			ImGui::PopItemWidth();ImGui::PushItemWidth(0.6f*w);
-			view_changed |= ImGui::DragFloat3("Right", &rghtDir_.x);	ImGui::SameLine();
-			ImGui::PopItemWidth();ImGui::PushItemWidth(0.2f*w);
-			view_changed |= ImGui::DragFloat("goRg", &goRght_);
-			ImGui::PopItemWidth();ImGui::PushItemWidth(0.4f*w);
-			ImGui::DragFloat2("u and v   ", &u_); ImGui::SameLine();
-			ImGui::PopItemWidth();ImGui::PushItemWidth(0.2f*w);
-			ImGui::DragFloat("dist", &eyeAtDistance_);
-			ImGui::PopItemWidth();ImGui::PushItemWidth(0.4f*w);
-			proj_changed |= ImGui::DragFloat2("Resolution", &resolution_.x, 1.f, 0.f, 2000.f, "%0.1f"); ImGui::SameLine();
-			ImGui::PopItemWidth();ImGui::PushItemWidth(0.2f*w);
-			proj_changed |= ImGui::DragFloat("Pixel FoW", &tanPixelFow_);
+			ImGui::PushItemWidth(0.9f * w);
+			look_changed |= ImGui::DragFloat3("Eye", &eye_.x, 0.4f);
+			look_changed |= ImGui::DragFloat3("Up", &up_.x, 0.2f);
+			look_changed |= ImGui::DragFloat3("At", &at_.x, 0.4f);
 			ImGui::PopItemWidth();
-			ImGui::EndChild();
-			ImGui::PopStyleColor();
-		}
+
+			ImGui::PushItemWidth(0.25f * w);
+			proj_changed |= ImGui::DragFloat("FoW", &fowDegs_, 1.f, 0.f, 180.f, "%.1f%°");	ImGui::SameLine();
+			proj_changed |= ImGui::DragFloat("Near", &nearDist_);						ImGui::SameLine();
+			proj_changed |= ImGui::DragFloat("Far", &farDist_);
+
+			ImGui::DragFloat("Speed", &moveSpeed_, 0.5f);			ImGui::SameLine();
+			ImGui::Checkbox("Slow", &shiftHeld_);					ImGui::SameLine();
+			static bool bdebug = false;
+			ImGui::Checkbox("Debug", &bdebug);
+			ImGui::PopItemWidth();
+
+			if (bdebug) {
+				ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.5, 0, 0, 1));
+				ImGui::BeginChild("DangerZone", { 0, 110 }, true);
+				ImGui::PushItemWidth(0.6f * w);
+				view_changed |= ImGui::DragFloat3("Frwrd", &frwdDir_.x);	ImGui::SameLine();
+				ImGui::PopItemWidth(); ImGui::PushItemWidth(0.2f * w);
+				view_changed |= ImGui::DragFloat("goFw", &goFrwd_);
+				ImGui::PopItemWidth(); ImGui::PushItemWidth(0.6f * w);
+				view_changed |= ImGui::DragFloat3("Right", &rghtDir_.x);	ImGui::SameLine();
+				ImGui::PopItemWidth(); ImGui::PushItemWidth(0.2f * w);
+				view_changed |= ImGui::DragFloat("goRg", &goRght_);
+				ImGui::PopItemWidth(); ImGui::PushItemWidth(0.4f * w);
+				ImGui::DragFloat2("u and v   ", &u_); ImGui::SameLine();
+				ImGui::PopItemWidth(); ImGui::PushItemWidth(0.2f * w);
+				ImGui::DragFloat("dist", &eyeAtDistance_);
+				ImGui::PopItemWidth(); ImGui::PushItemWidth(0.4f * w);
+				proj_changed |= ImGui::DragFloat2("Resolution", &resolution_.x, 1.f, 0.f, 2000.f, "%0.1f"); ImGui::SameLine();
+				ImGui::PopItemWidth(); ImGui::PushItemWidth(0.2f * w);
+				proj_changed |= ImGui::DragFloat("Pixel FoW", &tanPixelFow_);
+				ImGui::PopItemWidth();
+				ImGui::EndChild();
+				ImGui::PopStyleColor();
+			}
+		}ImGui::EndChild();
 	}
 	ImGui::End();
 	return isUiOpen_;

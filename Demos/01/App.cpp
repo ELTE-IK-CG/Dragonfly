@@ -23,18 +23,6 @@ bool App::Init(int width, int height) {
 void App::InitGL() {
 	//glEnable              ( GL_DEBUG_OUTPUT );
 	//glDebugMessageCallback( MessageCallback, 0 );
-	
-	glm::vec2 Vert[] = {
-		glm::vec2(-1, -1),
-		glm::vec2(1, -1),
-		glm::vec2(0, 1)
-	};
-
-	VaoID.bindVertexArray();
-	VboID.bindBuffer();
-	VboID.assignMutable(&Vert);
-	VaoID.addVBO(VboID);
-
 
 	// Set clear color to blue
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
