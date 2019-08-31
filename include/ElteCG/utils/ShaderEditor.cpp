@@ -150,8 +150,9 @@ static int ID = 0;
 template<typename File_t>
 void ShaderEditor<File_t>::Render(){
 	ImGui::PushID(this->getID());
-	std::string winname = "Shader Editor [" + directory  + (name.empty() ? "] [" : "] [" + name + "] [") + this->getTypeStr() + ']';
-	ImGui::SetWindowSize({ 600,400 }, ImGuiCond_Once);
+	std::string winname = "Shader Editor [" + directory  + (name.empty() ? "] [" : "] [" + name + "] [") + this->getTypeStr() + "] ";
+	ImGui::SetWindowPos({ 800,100 }, ImGuiCond_Once);
+	ImGui::SetWindowSize({ 800,600 }, ImGuiCond_Once);
 	if (myID.empty())myID = std::to_string(++ID);
 	if (ImGui::Begin((winname + myID).c_str() ))
 	{
