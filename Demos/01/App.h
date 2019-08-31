@@ -48,11 +48,13 @@ private:
 	float col_intensity = 0.15f;
 
 	Program<UniformEditor, ShaderEditor<SFileEditor>,	Shader<SFile>	> program;
+	Program<UniformEditor, ShaderEditor<SFileEditor>, Shader<SFile>	> program2;
 
 	eltecg::ogl::ArrayBuffer MyVBO;
 	eltecg::ogl::VertexArray MyVAO;
 
 	Camera cam;
+	Camera cam2;
 
 	void InitShaders();
 

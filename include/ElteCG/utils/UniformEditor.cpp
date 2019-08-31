@@ -2,15 +2,19 @@
 #include <ImGui/imgui.h>
 #include <ImGui-addons/auto/auto.h>
 #include <algorithm>
+#include <iostream>
 
 IMGUI_AUTO_DEFINE_INLINE(template<>, UniformLowLevelBase::uni_hash_type, ImGui::Text("%s%u", (name.empty() ? "" : name + "=").c_str(), var.h);)
 
+int UniformEditor::ID = 0;
 void UniformEditor::Render(){
 	ImGui::SetNextWindowPos({ 100,100 }, ImGuiCond_Once);
 	ImGui::SetNextWindowSize({ 600,600 }, ImGuiCond_Once);
+
 	if( ImGui::Begin("Camera + Uniforms")) {
 		ImVec2 region1 = ImGui::GetContentRegionAvail();
-		if (ImGui::BeginChild("Uniforms", region1, true)) {
+		if (ImGui::CollapsingHeader(GetNextID(), ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::BeginChild(GetNextID(), {0,200}, true)) {
 			const ImVec2 region = ImGui::GetContentRegionAvail();
 			const float positions[] = { 30.f + region.x * 0.01f, 50.f + region.x * 0.04f, 120.f + region.x * 0.05f, 310.f + region.x * 0.05f };
 			ImGui::TextUnformatted("(?)");

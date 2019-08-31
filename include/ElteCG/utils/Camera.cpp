@@ -53,11 +53,13 @@ bool Camera::Update()
 	return anychange;
 }
 
+int Camera::ID = 0;
 bool Camera::RenderUI()
 {
 	if (ImGui::Begin("Camera + Uniforms",&isUiOpen_))
 	{
-		if (ImGui::BeginChild("Camera", { 0,150 }, true)) {
+		if(ImGui::CollapsingHeader(GetNextID(), ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::BeginChild(GetNextID(), { 0,150 }, true)) {
 			float w = ImGui::GetContentRegionAvailWidth();
 
 			ImGui::Text("Measured delta T: %f seconds", this->deltaTime_);

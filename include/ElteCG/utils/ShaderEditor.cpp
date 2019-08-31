@@ -146,12 +146,14 @@ bool ShaderEditor<File_t>::Compile()
 	bool b = Shader<File_t>::Compile(); onCompile(); return b;
 }
 
+static int ID = 0;
 template<typename File_t>
 void ShaderEditor<File_t>::Render(){
 	ImGui::PushID(this->getID());
 	std::string winname = "Shader Editor [" + directory  + (name.empty() ? "] [" : "] [" + name + "] [") + this->getTypeStr() + ']';
 	ImGui::SetWindowSize({ 600,400 }, ImGuiCond_Once);
-	if (ImGui::Begin(winname.c_str()))
+	if (myID.empty())myID = std::to_string(++ID);
+	if (ImGui::Begin((winname + myID).c_str() ))
 	{
 		ImVec2 region = ImGui::GetContentRegionAvail();
 		std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";

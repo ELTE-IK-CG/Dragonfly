@@ -17,6 +17,8 @@ private:
 	};
 	std::unordered_map<GLint, UniformData> loc2data;
 	std::vector<GLint> loc_order;
+	static int ID;
+	std::string myID;
 public:
 	UniformEditor(GLuint program_id) : Base(program_id) {}
 	void Render();
@@ -25,6 +27,7 @@ public:
 	inline void SetUniform(std::string&& str, ValType& val);
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, const ValType& val);
+	inline const char* GetNextID() { if (myID.empty()) myID = "Uniform " + std::to_string(++ID); return myID.c_str(); }
 };
 
 template<typename ValType>

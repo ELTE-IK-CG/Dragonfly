@@ -2,6 +2,7 @@
 
 #include <SDL/SDL.h>
 #include <glm/glm.hpp>
+#include <string>
 
 class Camera
 {
@@ -44,6 +45,8 @@ public:
 	// Returns pixel coordinates (could be optimized to be even faster, but who cares)
 	inline glm::vec2 GetProjection(const glm::vec3& pos) const { glm::vec4 v = viewProjMatrix_ * glm::vec4(pos, 1);  return (0.5f * glm::vec2(v.x, -v.y) / v.w + 0.5f) * resolution_; }
 
+	inline const char* GetNextID() { if (myID.empty()) myID = "Camera " + std::to_string(++ID); return myID.c_str(); }
+
 	bool KeyboardDown(SDL_KeyboardEvent& key);
 	bool KeyboardUp(SDL_KeyboardEvent& key);
 	bool MouseMove(SDL_MouseMotionEvent& mouse);
@@ -77,4 +80,7 @@ private:
 
 	bool isUiOpen_ = true;
 	float deltaTime_;
+	static int ID;
+	std::string myID = "";
 };
+	

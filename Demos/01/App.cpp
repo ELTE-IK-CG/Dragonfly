@@ -48,6 +48,7 @@ void App::Resize(int width, int height) {
 	canvas_width = width;
 	canvas_height = height;
 	cam.Resize(width, height);
+	cam2.Resize(width * 1.5f, height * 1.5f);
 
 	glViewport(0, 0, canvas_width, canvas_height);
 	GL_CHECK;
@@ -56,6 +57,8 @@ void App::Resize(int width, int height) {
 void App::InitShaders() {
 	program << "Shaders/types.glsl"_fs <<  "Shaders/sdf.glsl"_fs << "Shaders/main.frag.glsl"_fs;
 	program	<< "Shaders/quad.vert.glsl"_vs << LinkProgram;
+	program2 << "Shaders/types.glsl"_fs << "Shaders/sdf.glsl"_fs << "Shaders/main.frag.glsl"_fs;
+	program2 << "Shaders/quad.vert.glsl"_vs << LinkProgram;
 
 	std::cout << program.GetErrors();
 	GL_CHECK;
@@ -63,23 +66,24 @@ void App::InitShaders() {
 
 void App::Update() {
 	cam.Update();
+	cam2.Update();
 }
 
 void App::Render() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	program << "gCameraPos" << cam.GetEye(); //<< "gInverseViewProj" << cam.GetInverseViewProj() << "gTanPixelAngle" << cam.GetTanPixelFow();
-	//program << "gCameraDir" << cam.GetDir() << "gDepthcalcCoeffs" << cam.GetDepthcalcCoeffs() << "gNearFarClips" << cam.GetNearFarClips();
-	program << "col_intensity" << col_intensity;
-
+	program << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
+	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
 	MyVAO.bindVertexArray();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
 	GL_CHECK;
 
 	cam.RenderUI();
+	cam2.RenderUI();
 	program.Render();
+	program2.Render();
 }
 
 

@@ -24,6 +24,7 @@ private:
 	SFileEditor(const SFileEditor &) = delete;
 	SFileEditor& operator=(const SFileEditor&) = delete;
 	bool is_open = true, do_focus = true;
+	
 public:
 	SFileEditor(SFileEditor &&o) = default;
 	SFileEditor& operator=(SFileEditor&&) = default;
@@ -83,6 +84,7 @@ protected:
 	std::string directory, name;
 	ShaderEditor() = delete;
 	bool first_time_load = true;
+	std::string myID;
 public:
 	// You can also specify a directory view and a name so the shader retains its state via a config file
 	ShaderEditor(GLenum type, const std::string &directory_ = "", const std::string &name = "");
