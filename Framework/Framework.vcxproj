@@ -23,6 +23,7 @@
     </ClCompile>
     <ClCompile Include="..\include\ElteCG\utils\Camera.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Program.cpp" />
+    <ClCompile Include="..\include\ElteCG\utils\ProgramEditor.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Shader.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\ShaderEditor.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\UniformEditor.cpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="..\include\ElteCG\ogl\vao.h" />
     <ClInclude Include="..\include\ElteCG\utils\Camera.h" />
     <ClInclude Include="..\include\ElteCG\utils\Program.h" />
+    <ClInclude Include="..\include\ElteCG\utils\ProgramEditor.h" />
     <ClInclude Include="..\include\ElteCG\utils\Shader.h" />
     <ClInclude Include="..\include\ElteCG\utils\ShaderEditor.h" />
     <ClInclude Include="..\include\ElteCG\utils\UniformEditor.h" />

@@ -21,13 +21,13 @@ private:
 	std::string myID;
 public:
 	UniformEditor(GLuint program_id) : Base(program_id) {}
-	void Render();
+	void Render(std::string program_name = "");
 	bool Compile();
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, ValType& val);
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, const ValType& val);
-	inline const char* GetNextID() { if (myID.empty()) myID = "Uniform " + std::to_string(++ID); return myID.c_str(); }
+	inline std::string GetNextID() { if (myID.empty()) myID = "Uniform " + std::to_string(++ID); return myID; }
 };
 
 template<typename ValType>

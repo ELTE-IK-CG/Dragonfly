@@ -95,7 +95,7 @@ public:
 	void Save();
 
 	//Render Shader Editor
-	void Render();
+	void Render(std::string program_name = "");
 
 	//Optimizations need one update per frame
 	void Update();

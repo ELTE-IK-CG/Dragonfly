@@ -54,12 +54,13 @@ bool Camera::Update()
 }
 
 int Camera::ID = 0;
-bool Camera::RenderUI()
+bool Camera::RenderUI(std::string program_name)
 {
 	if (ImGui::Begin("Camera + Uniforms",&isUiOpen_))
 	{
-		if(ImGui::CollapsingHeader(GetNextID(), ImGuiTreeNodeFlags_DefaultOpen))
-		if (ImGui::BeginChild(GetNextID(), { 0,150 }, true)) {
+		std::string realID = GetNextID() + " " + program_name;
+		if(ImGui::CollapsingHeader(realID.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::BeginChild(realID.c_str(), { 0,150 }, true)) {
 			float w = ImGui::GetContentRegionAvailWidth();
 
 			ImGui::Text("Measured delta T: %f seconds", this->deltaTime_);

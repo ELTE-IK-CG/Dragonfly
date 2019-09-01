@@ -11,7 +11,7 @@ public:
 	~Camera() = default;
 
 	bool Update(); //
-	bool RenderUI();
+	bool RenderUI(std::string program_name);
 
 	//setters
 
@@ -45,7 +45,7 @@ public:
 	// Returns pixel coordinates (could be optimized to be even faster, but who cares)
 	inline glm::vec2 GetProjection(const glm::vec3& pos) const { glm::vec4 v = viewProjMatrix_ * glm::vec4(pos, 1);  return (0.5f * glm::vec2(v.x, -v.y) / v.w + 0.5f) * resolution_; }
 
-	inline const char* GetNextID() { if (myID.empty()) myID = "Camera " + std::to_string(++ID); return myID.c_str(); }
+	inline std::string GetNextID() { if (myID.empty()) myID = "Camera " + std::to_string(++ID); return myID; }
 
 	bool KeyboardDown(SDL_KeyboardEvent& key);
 	bool KeyboardUp(SDL_KeyboardEvent& key);

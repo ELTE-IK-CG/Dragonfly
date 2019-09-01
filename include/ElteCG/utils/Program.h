@@ -24,7 +24,7 @@ class Program :
 	class LoadState;	//fwd decl
 	LoadState load_state = LoadState(*this);
 public:
-	Program(); //glCreateProgram :)
+	Program(const char* name = ""); //glCreateProgram :)
 	~Program() = default;
 
 	bool Link();
@@ -46,6 +46,7 @@ public:
 	void Render();
 protected:
 	FragComp_t	fragcomp;	Vert_t vert;	Geom_t geom;	TesC_t tesc;	TesE_t tese;
+	std::string program_name;
 };
 
 #include "Program.inl"

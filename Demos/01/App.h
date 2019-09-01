@@ -19,6 +19,7 @@
 #include "ElteCG/utils/Shader.h"
 #include "ElteCG/utils/Program.h"
 #include "ElteCG/utils/UniformEditor.h"
+#include "ElteCG/utils/ProgramEditor.h"
 #include "ElteCG/ogl/buffer.h"
 #include "ElteCG/ogl/vao.h"
 
@@ -47,8 +48,10 @@ private:
 	int canvas_height=480;
 	float col_intensity = 0.15f;
 
-	Program<UniformEditor, ShaderEditor<SFileEditor>,	Shader<SFile>	> program;
-	Program<UniformEditor, ShaderEditor<SFileEditor>, Shader<SFile>	> program2;
+	Program<UniformEditor, ShaderEditor<SFileEditor>, Shader<SFile>	> program;
+	
+	ProgramEditor<UniformEditor, ShaderEditor<SFileEditor>, Shader<SFile>	> program2 =
+		ProgramEditor<UniformEditor, ShaderEditor<SFileEditor>, Shader<SFile>	>("Side-Prog");
 
 	eltecg::ogl::ArrayBuffer MyVBO;
 	eltecg::ogl::VertexArray MyVAO;

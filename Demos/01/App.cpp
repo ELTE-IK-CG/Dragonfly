@@ -74,14 +74,14 @@ void App::Render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	program << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
-	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
+	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam2.GetEye();
 	MyVAO.bindVertexArray();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
 	GL_CHECK;
 
-	cam.RenderUI();
-	cam2.RenderUI();
+	cam.RenderUI("Main Camera");
+	cam2.RenderUI("Left-Side Camera");
 	program.Render();
 	program2.Render();
 }

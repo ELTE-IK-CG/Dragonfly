@@ -7,14 +7,15 @@
 IMGUI_AUTO_DEFINE_INLINE(template<>, UniformLowLevelBase::uni_hash_type, ImGui::Text("%s%u", (name.empty() ? "" : name + "=").c_str(), var.h);)
 
 int UniformEditor::ID = 0;
-void UniformEditor::Render(){
+void UniformEditor::Render(std::string program_name){
 	ImGui::SetNextWindowPos({ 100,100 }, ImGuiCond_Once);
 	ImGui::SetNextWindowSize({ 600,600 }, ImGuiCond_Once);
 
 	if( ImGui::Begin("Camera + Uniforms")) {
 		ImVec2 region1 = ImGui::GetContentRegionAvail();
-		if (ImGui::CollapsingHeader(GetNextID(), ImGuiTreeNodeFlags_DefaultOpen))
-		if (ImGui::BeginChild(GetNextID(), {0,200}, true)) {
+		std::string realID = GetNextID() + " " +  program_name;
+		if (ImGui::CollapsingHeader(realID.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::BeginChild(realID.c_str(), {0,200}, true)) {
 			const ImVec2 region = ImGui::GetContentRegionAvail();
 			const float positions[] = { 30.f + region.x * 0.01f, 50.f + region.x * 0.04f, 120.f + region.x * 0.05f, 310.f + region.x * 0.05f };
 			ImGui::TextUnformatted("(?)");
