@@ -99,6 +99,9 @@
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp">
       <Filter>ImGui-Addons\STD lib</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\ProgramEditor.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ElteCG\utils\Camera.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="..\include\ImGui-addons\cpp\imgui_stdlib.h">
       <Filter>ImGui-Addons\STD lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\ProgramEditor.h">
+      <Filter>ElteCG\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
