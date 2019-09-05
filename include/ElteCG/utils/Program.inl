@@ -223,10 +223,9 @@ inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC
 // ========================= Program implementation ==============================
 
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-	Program<U,FC,V,G,TC,TE>::Program(const char* name)	: ProgramBase<U>::ProgramBase(),
+	Program<U,FC,V,G,TC,TE>::Program()	: ProgramBase<U>::ProgramBase(),
 		  fragcomp(std::is_same_v<V, NoShader>? GL_COMPUTE_SHADER: GL_FRAGMENT_SHADER),
-		  vert(GL_VERTEX_SHADER), geom(GL_GEOMETRY_SHADER), tesc(GL_TESS_CONTROL_SHADER), tese(GL_TESS_EVALUATION_SHADER),
-		  program_name(name)
+		  vert(GL_VERTEX_SHADER), geom(GL_GEOMETRY_SHADER), tesc(GL_TESS_CONTROL_SHADER), tese(GL_TESS_EVALUATION_SHADER)
 	{}
 
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
@@ -245,12 +244,10 @@ template<typename U, typename FC, typename V, typename G, typename TC, typename 
 
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline void Program<U,FC,V,G,TC,TE> ::Render() {
-	this->fragcomp.Render(program_name);	this->fragcomp.Update();
 	this->vert.Render();		this->vert.Update();
 	this->geom.Render();		this->geom.Update();
 	this->tesc.Render();		this->tesc.Update();
 	this->tese.Render();		this->tese.Update();
-	this->uniforms.Render(program_name);
 }
 
 

@@ -6,14 +6,13 @@
 
 IMGUI_AUTO_DEFINE_INLINE(template<>, UniformLowLevelBase::uni_hash_type, ImGui::Text("%s%u", (name.empty() ? "" : name + "=").c_str(), var.h);)
 
-int UniformEditor::ID = 0;
 void UniformEditor::Render(std::string program_name){
 	ImGui::SetNextWindowPos({ 100,100 }, ImGuiCond_Once);
 	ImGui::SetNextWindowSize({ 600,600 }, ImGuiCond_Once);
 
 	if( ImGui::Begin("Camera + Uniforms")) {
 		ImVec2 region1 = ImGui::GetContentRegionAvail();
-		std::string realID = GetNextID() + " " +  program_name;
+		std::string realID = "Uniforms - " +  program_name;
 		if (ImGui::CollapsingHeader(realID.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 		if (ImGui::BeginChild(realID.c_str(), {0,200}, true)) {
 			const ImVec2 region = ImGui::GetContentRegionAvail();

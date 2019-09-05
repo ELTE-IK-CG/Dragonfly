@@ -23,7 +23,6 @@
     </ClCompile>
     <ClCompile Include="..\include\ElteCG\utils\Camera.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Program.cpp" />
-    <ClCompile Include="..\include\ElteCG\utils\ProgramEditor.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Shader.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\ShaderEditor.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\UniformEditor.cpp" />
