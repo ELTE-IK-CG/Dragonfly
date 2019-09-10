@@ -70,7 +70,7 @@ public:
 	inline bool isDirty() const { return dirty; }
 
 	//This class doesn't implement these features:
-	void Render() {} void Update() {} void Open() {} void Close() {} void ViewFile(){}
+	void Render(std::string name = "") {} void Update() {} void Open() {} void Close() {} void ViewFile(){}
 };
 
 template<typename File_t> class ShaderBase;
@@ -105,7 +105,7 @@ public:
 	bool Compile();
 
 	//This class doesn't (really) implement these features:
-	void Render() {}	void Update();
+	void Render(std::string name = "") {}	void Update();
 };
 
 #include "Shader.inl"

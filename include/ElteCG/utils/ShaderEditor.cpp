@@ -32,7 +32,6 @@ void SFileEditor::SetErrorMarkers(const TextEditor::ErrorMarkers & errm) {
 
 void SFileEditor::Render()
 {
-	
 	std::string winname = "File Editor [" + path + ']';
 	ImGui::PushID(winname.c_str());
 	if (ImGui::CollapsingHeader(winname.c_str(), ImGuiTreeNodeFlags_None)) {
@@ -59,7 +58,6 @@ void SFileEditor::Render()
 		}
 	}
 	ImGui::PopID();
-
 }
 
 inline void SFileEditor::ViewFile() const {
@@ -146,55 +144,57 @@ bool ShaderEditor<File_t>::Compile()
 	bool b = Shader<File_t>::Compile(); onCompile(); return b;
 }
 
-static int ID = 0;
 template<typename File_t>
 void ShaderEditor<File_t>::Render(std::string program_name){
-	ImGui::PushID(this->getID());
+	
 	std::string winname = "Shader Editor [" + directory  + (name.empty() ? "] [" : "] [" + name + "] [") + this->getTypeStr() + "] ";
 	ImGui::SetWindowPos({ 800,100 }, ImGuiCond_Once);
 	ImGui::SetWindowSize({ 800,600 }, ImGuiCond_Once);
-	if (myID.empty()) {
-		if (program_name.empty())
-			myID = std::to_string(++ID);
-		else
-			myID = program_name;
-	}
-	if (ImGui::Begin((winname + myID).c_str() ))
+	ImGui::PushID(ImGui::GetID(winname.c_str()));
+	
+	if (ImGui::Begin(program_name.c_str()))
 	{
-		ImVec2 region = ImGui::GetContentRegionAvail();
-		std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
+			//ImGui::SameLine();
+			if (ImGui::CollapsingHeader(winname.c_str(), ImGuiTreeNodeFlags_CollapsingHeader)) {
+				
+				if (ImGui::BeginChild(this->getTypeStr().c_str(), {0,450}, true)) {
+				ImVec2 region = ImGui::GetContentRegionAvail();
+				std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
 
-		int tab = -1;
-		if (ImGui::BeginTabBar("ShaderTabBar", 0))		{
-			if (ImGui::BeginTabItem("Shader Build Setup")){
-				tab = 0;
-				ImGui::EndTabItem();
-			}
-			if (ImGui::BeginTabItem("Generated Source Code")){
-				tab = 1;
-				ImGui::EndTabItem();
-			}
-			if (ImGui::BeginTabItem("Code Editor")){
-				tab = 2;
-				ImGui::EndTabItem();
-			}
-			ImGui::EndTabBar();
+				int tab = -1;
+				ImGui::PushID(ImGui::GetID(winname.c_str()));
+				if (ImGui::BeginTabBar("ShaderTabBar", 0)) {
+					if (ImGui::BeginTabItem("Shader Build Setup")) {
+						tab = 0;
+						ImGui::EndTabItem();
+					}
+					if (ImGui::BeginTabItem("Generated Source Code")) {
+						tab = 1;
+						ImGui::EndTabItem();
+					}
+					if (ImGui::BeginTabItem("Code Editor")) {
+						tab = 2;
+						ImGui::EndTabItem();
+					}
+					ImGui::EndTabBar();
+				}
+				ImGui::PopID();
+
+				switch (tab) {
+				case 0:
+					this->renderFileSelector();		//Shader File selector
+					this->renderErrorWindow();
+					break;
+				case 1:
+					error_handling.generated.Render("Gencode");
+					break;
+				case 2:
+					this->renderShaderFiles();		//Templates are specialized
+				default:break;
+				}
+
+			}ImGui::EndChild();
 		}
-
-		switch (tab){
-		case 0:
-			this->renderFileSelector();		//Shader File selector
-			this->renderErrorWindow();
-			break;
-		case 1:
-			error_handling.generated.Render("Gencode");
-			break;
-		case 2:
-			this->renderShaderFiles();		//Templates are specialized
-		default:break;
-
-		}
-			
 	}	ImGui::End();
 	ImGui::PopID();
 }
@@ -209,7 +209,7 @@ void ShaderEditor<File_t>::renderFileSelector()
 {
 	ImVec2 region = ImGui::GetContentRegionAvail();
 	std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
-
+	ImGui::PushID(path.c_str());
 	if (ImGui::CollapsingHeader("Shader File Selector", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		bool focus = false;
@@ -295,38 +295,39 @@ void ShaderEditor<File_t>::renderFileSelector()
 	}
 	float wid = 0.1945f;
 	// Buttons
-	if (ImGui::Button("Load config", { region.x* wid, 12.f + region.y*0.05f })) Load();
+	float y_height = 35.f;
+	if (ImGui::Button("Load config", { region.x* wid, y_height })) Load();
 	if (ImGui::IsItemHovered()) ImGui::SetTooltip("Load shader file list from %s.", path.c_str());
 	if (!this->shaders.empty())	{
 		ImGui::SameLine();
-		if (ImGui::Button("Save config", { region.x* wid, 12.f + region.y*0.05f }))
+		if (ImGui::Button("Save config", { region.x* wid, y_height }))
 			Save();
 		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Save shader file list to %s.", path.c_str());
 		ImGui::SameLine();
-		if (ImGui::Button("Clear", { region.x * wid, 12.f + region.y * 0.05f })) {
+		if (ImGui::Button("Clear", { region.x * wid, y_height })) {
 			this->shaders.clear();
 		}
 		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Clear the current shader setup.");
 		ImGui::SameLine();
-		if (ImGui::Button("Pop Shader", { region.x* wid, 12.f + region.y*0.05f })) {
+		if (ImGui::Button("Pop Shader", { region.x* wid, y_height })) {
 			selector.active_paths.erase(this->shaders.back().GetPath());
 			this->PopShader();
 		}
 		else if (ImGui::IsItemHovered()) ImGui::SetTooltip("Remove shader from compile list: %s.", this->shaders.back().GetPath());
 		ImGui::SameLine();
-		if (ImGui::Button("Compile", { region.x* wid, 12.f + region.y*0.05f }))	{
+		if (ImGui::Button("Compile", { region.x* wid, y_height }))	{
 			Compile();
 		}
 		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Compile %i shader files.", this->shaders.size());
 	}
+	ImGui::PopID();
 }
 
 template<typename File_t>
 void ShaderEditor<File_t>::renderErrorWindow() {
-
 	ImVec2 region = ImGui::GetContentRegionAvail();
+	ImGui::PushID(ImGui::GetID(this->getTypeStr().c_str()));
 	if (ImGui::CollapsingHeader("Error List", ImGuiTreeNodeFlags_DefaultOpen)) {
-
 		float height = selector.height;
 		if (ImGui::BeginChild("Error Window", { region.x , height + 10.f }, true, ImGuiWindowFlags_HorizontalScrollbar))
 		{
@@ -347,6 +348,7 @@ void ShaderEditor<File_t>::renderErrorWindow() {
 			}
 		}	ImGui::EndChild();
 	} 
+	ImGui::PopID();
 }
 
 template <typename File_t>
@@ -471,7 +473,7 @@ template<> void ShaderEditor<SFile>::renderShaderFiles(){
 
 //dont dock next to each other, but rather below
 template<> void ShaderEditor<SFileEditor>::renderShaderFiles() {
-		for (auto& sh : shaders) {
+	for (auto& sh : shaders) {
 			sh.Render();
 		}
 }

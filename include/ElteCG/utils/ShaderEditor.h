@@ -84,7 +84,6 @@ protected:
 	std::string directory, name;
 	ShaderEditor() = delete;
 	bool first_time_load = true;
-	std::string myID;
 public:
 	// You can also specify a directory view and a name so the shader retains its state via a config file
 	ShaderEditor(GLenum type, const std::string &directory_ = "", const std::string &name = "");
@@ -95,7 +94,7 @@ public:
 	void Save();
 
 	//Render Shader Editor
-	void Render(std::string program_name = "");
+	void Render(std::string program_name = "default");
 
 	//Optimizations need one update per frame
 	void Update();

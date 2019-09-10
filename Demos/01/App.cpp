@@ -61,6 +61,7 @@ void App::InitShaders() {
 	program2 << "Shaders/quad.vert.glsl"_vs << LinkProgram;
 
 	std::cout << program.GetErrors();
+	std::cout << program2.GetErrors();
 	GL_CHECK;
 }
 
@@ -83,19 +84,23 @@ void App::Render() {
 	cam.RenderUI("Main Camera");
 	cam2.RenderUI("Left-Side Camera");
 	program.Render();
+	//In the UI 'prog2 - Main prog' will override controls
 	program2.Render();
+	
 }
 
 
 void App::KeyboardDown(SDL_KeyboardEvent& key) {
 	cam.KeyboardDown(key);
+	cam2.KeyboardDown(key);
 }
 
 void App::KeyboardUp(SDL_KeyboardEvent& key) {
 	cam.KeyboardUp(key);
+	cam2.KeyboardUp(key);
 }
 
-void App::MouseMove(SDL_MouseMotionEvent& mouse) { cam.MouseMove(mouse); }
+void App::MouseMove(SDL_MouseMotionEvent& mouse) { cam.MouseMove(mouse); cam2.MouseMove(mouse);}
 void App::MouseDown(SDL_MouseButtonEvent&) {}
 void App::MouseUp(SDL_MouseButtonEvent&) {}
-void App::MouseWheel(SDL_MouseWheelEvent&wheel) { cam.MouseWheel(wheel); }
+void App::MouseWheel(SDL_MouseWheelEvent&wheel) { cam.MouseWheel(wheel); cam2.MouseWheel(wheel);}
