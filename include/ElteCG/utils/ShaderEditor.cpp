@@ -148,53 +148,47 @@ template<typename File_t>
 void ShaderEditor<File_t>::Render(std::string program_name){
 	
 	std::string winname = "Shader Editor [" + directory  + (name.empty() ? "] [" : "] [" + name + "] [") + this->getTypeStr() + "] ";
-	ImGui::SetWindowPos({ 800,100 }, ImGuiCond_Once);
-	ImGui::SetWindowSize({ 800,600 }, ImGuiCond_Once);
 	ImGui::PushID(ImGui::GetID(winname.c_str()));
 	
 	if (ImGui::Begin(program_name.c_str()))
 	{
-			//ImGui::SameLine();
-			if (ImGui::CollapsingHeader(winname.c_str(), ImGuiTreeNodeFlags_CollapsingHeader)) {
-				
-				if (ImGui::BeginChild(this->getTypeStr().c_str(), {0,450}, true)) {
-				ImVec2 region = ImGui::GetContentRegionAvail();
-				std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
+			if (ImGui::BeginChild(this->getTypeStr().c_str(), ImGui::GetContentRegionAvail())) {
+			ImVec2 region = ImGui::GetContentRegionAvail();
+			std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
 
-				int tab = -1;
-				ImGui::PushID(ImGui::GetID(winname.c_str()));
-				if (ImGui::BeginTabBar("ShaderTabBar", 0)) {
-					if (ImGui::BeginTabItem("Shader Build Setup")) {
-						tab = 0;
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem("Generated Source Code")) {
-						tab = 1;
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem("Code Editor")) {
-						tab = 2;
-						ImGui::EndTabItem();
-					}
-					ImGui::EndTabBar();
+			int tab = -1;
+			ImGui::PushID(ImGui::GetID(winname.c_str()));
+			if (ImGui::BeginTabBar("ShaderTabBar", 0)) {
+				if (ImGui::BeginTabItem("Shader Build Setup")) {
+					tab = 0;
+					ImGui::EndTabItem();
 				}
-				ImGui::PopID();
-
-				switch (tab) {
-				case 0:
-					this->renderFileSelector();		//Shader File selector
-					this->renderErrorWindow();
-					break;
-				case 1:
-					error_handling.generated.Render("Gencode");
-					break;
-				case 2:
-					this->renderShaderFiles();		//Templates are specialized
-				default:break;
+				if (ImGui::BeginTabItem("Generated Source Code")) {
+					tab = 1;
+					ImGui::EndTabItem();
 				}
+				if (ImGui::BeginTabItem("Code Editor")) {
+					tab = 2;
+					ImGui::EndTabItem();
+				}
+				ImGui::EndTabBar();
+			}
+			ImGui::PopID();
 
-			}ImGui::EndChild();
-		}
+			switch (tab) {
+			case 0:
+				this->renderFileSelector();		//Shader File selector
+				this->renderErrorWindow();
+				break;
+			case 1:
+				error_handling.generated.Render("Gencode");
+				break;
+			case 2:
+				this->renderShaderFiles();		//Templates are specialized
+			default:break;
+			}
+
+		}ImGui::EndChild();
 	}	ImGui::End();
 	ImGui::PopID();
 }
@@ -295,27 +289,26 @@ void ShaderEditor<File_t>::renderFileSelector()
 	}
 	float wid = 0.1945f;
 	// Buttons
-	float y_height = 35.f;
-	if (ImGui::Button("Load config", { region.x* wid, y_height })) Load();
+	if (ImGui::Button("Load config", { region.x * wid, 12.f + region.y * 0.05f })) Load();
 	if (ImGui::IsItemHovered()) ImGui::SetTooltip("Load shader file list from %s.", path.c_str());
-	if (!this->shaders.empty())	{
+	if (!this->shaders.empty()) {
 		ImGui::SameLine();
-		if (ImGui::Button("Save config", { region.x* wid, y_height }))
+		if (ImGui::Button("Save config", { region.x * wid, 12.f + region.y * 0.05f }))
 			Save();
 		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Save shader file list to %s.", path.c_str());
 		ImGui::SameLine();
-		if (ImGui::Button("Clear", { region.x * wid, y_height })) {
+		if (ImGui::Button("Clear", { region.x * wid, 12.f + region.y * 0.05f })) {
 			this->shaders.clear();
 		}
 		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Clear the current shader setup.");
 		ImGui::SameLine();
-		if (ImGui::Button("Pop Shader", { region.x* wid, y_height })) {
+		if (ImGui::Button("Pop Shader", { region.x * wid, 12.f + region.y * 0.05f })) {
 			selector.active_paths.erase(this->shaders.back().GetPath());
 			this->PopShader();
 		}
 		else if (ImGui::IsItemHovered()) ImGui::SetTooltip("Remove shader from compile list: %s.", this->shaders.back().GetPath());
 		ImGui::SameLine();
-		if (ImGui::Button("Compile", { region.x* wid, y_height }))	{
+		if (ImGui::Button("Compile", { region.x * wid, 12.f + region.y * 0.05f })) {
 			Compile();
 		}
 		if (ImGui::IsItemHovered()) ImGui::SetTooltip("Compile %i shader files.", this->shaders.size());
