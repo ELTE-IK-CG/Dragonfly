@@ -321,8 +321,7 @@ void ShaderEditor<File_t>::renderErrorWindow() {
 	ImVec2 region = ImGui::GetContentRegionAvail();
 	ImGui::PushID(ImGui::GetID(this->getTypeStr().c_str()));
 	if (ImGui::CollapsingHeader("Error List", ImGuiTreeNodeFlags_DefaultOpen)) {
-		float height = selector.height;
-		if (ImGui::BeginChild("Error Window", { region.x , height + 10.f }, true, ImGuiWindowFlags_HorizontalScrollbar))
+		if (ImGui::BeginChild("Error Window", { region.x , 120.f }, true, ImGuiWindowFlags_HorizontalScrollbar))
 		{
 			for (const auto& e : error_handling.parsed_errors) {
 				float pos = ImGui::GetCursorPosX();
@@ -339,6 +338,7 @@ void ShaderEditor<File_t>::renderErrorWindow() {
 				ImGui::SameLine(pos + 330.f);		ImGui::TextUnformatted(e.message.c_str(), e.message.c_str() + e.message.length());
 				ImGui::PopStyleColor();
 			}
+			
 		}	ImGui::EndChild();
 	} 
 	ImGui::PopID();
@@ -363,7 +363,7 @@ void ShaderEditor<File_t>::onCompile() {
 	}
 	error_handling.generated.SetReadOnly(true);
 	//helper functions
-	static auto parseError = [](const std::string &line) -> ErrorLine {
+	auto parseError = [](const std::string &line) -> ErrorLine {
 		static std::regex r_i("((?:ERROR)|(?:WARNING)):\\s*(\\d+):(\\d+):\\s*(.*?)\\s*", std::regex::flag_type::optimize);						//intel compiler
 		static std::regex r_n("(.*?)\\((\\d+)\\)\\s*:\\s*((?:error)|(?:warning))\\s*C(\\d{4}):\\s*(.*?)\\s*",std::regex::flag_type::optimize);	//nvidia compiler
 		//static std::regex r_a("((?:ERROR)|(?:WARNING)):\\s*(\\d+):(\\d+):\\s*(.*?)\\s*",std::regex::flag_type::optimize);						//amd compiler
@@ -386,7 +386,8 @@ void ShaderEditor<File_t>::onCompile() {
 	TextEditor::ErrorMarkers gen_markers;
 	std::vector<TextEditor::ErrorMarkers> file_markers;
 	if constexpr (std::is_same_v<SFileEditor, File_t>) file_markers.resize(this->shaders.size());
-	static auto addError = [&](const std::string& errline) -> void {
+
+	auto addError = [&](const std::string& errline) -> void {
 		ErrorLine err = parseError(errline);
 		if (!(line_numbers.front() <= err.line && err.line <= line_numbers.back())) {
 			ASSERT(false, "Parsing the error probably failed.");
@@ -405,12 +406,13 @@ void ShaderEditor<File_t>::onCompile() {
 
 		err.path = this->shaders[file_id].GetFolder() + '/' + this->shaders[file_id].GetFilename() + this->shaders[file_id].GetExtension();
 
-		if(err.type == ErrorLine::Type::ERROR)	gen_markers.emplace(err.line, err.message);
+		//if(err.type == ErrorLine::Type::ERROR)	gen_markers.emplace(err.line, err.message);
 
 		err.line = err.line - total_lines_to_src + 1; //line number in file
 		error_handling.parsed_errors.emplace_back(err);
 		if constexpr (std::is_same_v<SFileEditor, File_t>) if(err.type == ErrorLine::Type::ERROR) file_markers[file_id].emplace(err.line, err.message);
 	};
+
 	//error setup
 	error_handling.parsed_errors.clear();
 	if (!this->GetErrors().empty()) {
