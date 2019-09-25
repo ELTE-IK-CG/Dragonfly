@@ -81,8 +81,8 @@ void App::Render() {
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
 	GL_CHECK;
 
-	cam.RenderUI("Main Camera");
-	cam2.RenderUI("Left-Side Camera");
+	cam.RenderUI();
+	cam2.RenderUI();
 	program.Render();
 	//In the UI 'prog2 - Main prog' will override controls
 	program2.Render();

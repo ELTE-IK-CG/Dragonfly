@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Program.h"
+#include <ImGui/imgui.h>
 
 
 template< typename U, typename FC, typename V = NoShader, typename G = NoShader, typename TC = NoShader, typename TE = NoShader>
@@ -17,6 +18,7 @@ template<typename U, typename FC, typename V, typename G, typename TC, typename 
 inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 {
 	int tab = -1;
+	ImGui::SetNextWindowSize({ 600,400 }, ImGuiCond_FirstUseEver);
 	if (ImGui::Begin(this->program_name.c_str()))
 	{
 		if (ImGui::BeginTabBar("ProgramTabBar", 0)) {

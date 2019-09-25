@@ -27,7 +27,7 @@ class App {
 
 public:
 
-	App() {}
+	App() = default;
 
 	bool Init(int width, int height);
 	void Resize(int width, int height);
@@ -56,7 +56,7 @@ private:
 	eltecg::ogl::VertexArray MyVAO;
 
 	Camera cam;
-	Camera cam2;
+	Camera cam2 = Camera("CameraWithName");
 
 	void InitShaders();
 

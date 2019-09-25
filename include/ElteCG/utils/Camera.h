@@ -6,18 +6,20 @@
 
 class Camera
 {
+	static int CamCount_;
 public:
-	Camera() = default;
+	Camera(const std::string cameraName = "Camera") : name_(cameraName + "##" + std::to_string(CamCount_++)) {} // after ## stuff is not printed on UI
 	~Camera() = default;
 
 	bool Update(); //
-	bool RenderUI(std::string program_name);
+	bool RenderUI();
 
 	//setters
 
 	inline Camera& LookAt(const glm::vec3 &_at) { at_ = _at; look_changed = true;	return *this; }
 	inline Camera& SetView(const glm::vec3 &_eye, const glm::vec3 &_at, const glm::vec3 &_up) { eye_ = _eye; up_ = _up; return LookAt(_at); }
 	inline Camera& SetSpeed(float units_per_sec) { moveSpeed_ = units_per_sec; return *this; }
+	inline Camera& SetPerspective(float fowInDegs, float nearDist, float farDist) { proj_changed = true; fowDegs_ = fowInDegs; nearDist_ = nearDist; farDist_ = farDist; return *this; }
 
 	//getters
 
@@ -45,8 +47,6 @@ public:
 	// Returns pixel coordinates (could be optimized to be even faster, but who cares)
 	inline glm::vec2 GetProjection(const glm::vec3& pos) const { glm::vec4 v = viewProjMatrix_ * glm::vec4(pos, 1);  return (0.5f * glm::vec2(v.x, -v.y) / v.w + 0.5f) * resolution_; }
 
-	inline std::string GetNextID() { if (myID.empty()) myID = "Camera " + std::to_string(++ID); return myID; }
-
 	bool KeyboardDown(SDL_KeyboardEvent& key);
 	bool KeyboardUp(SDL_KeyboardEvent& key);
 	bool MouseMove(SDL_MouseMotionEvent& mouse);
@@ -71,16 +71,16 @@ private:
 	glm::vec3	frwdDir_, rghtDir_;
 	float	goFrwd_ = 0, goRght_ = 0;
 
-	float fowDegs_	=45;			// in degrees
+	float fowDegs_	= 45.f;			// in degrees
 	float tanPixelFow_;	//tangent of a single pixel's cone's half opening angle
-	glm::vec2 resolution_;
+	glm::vec2 resolution_ = glm::vec2(640.f,480.f);
 
 	glm::mat4 projMatrix_, viewMatrix_;
 	glm::mat4 viewProjMatrix_, viewProjInverse_;
 
 	bool isUiOpen_ = true;
 	float deltaTime_;
-	static int ID;
-	std::string myID = "";
+
+	std::string name_ = "";
 };
 	

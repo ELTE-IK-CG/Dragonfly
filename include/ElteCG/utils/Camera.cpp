@@ -5,6 +5,8 @@
 #include <chrono>
 #include <imgui/imgui.h>
 
+int Camera::CamCount_ = 0; //static variable
+
 bool Camera::Update()
 {
 	static std::chrono::high_resolution_clock::time_point last_measurement = std::chrono::high_resolution_clock::now();
@@ -39,7 +41,7 @@ bool Camera::Update()
 	if (proj_changed)
 	{
 		glm::vec2 resn = glm::normalize(resolution_);
-		float fow = acos(cos(glm::radians(fowDegs_))*resn.x); //i hope
+		float fow = acos(cos(glm::radians(fowDegs_*0.5f))*resn.x); //i hope
 		tanPixelFow_ = sqrtf(2.0f) * tanf(glm::radians(fowDegs_)) / glm::length(resolution_);
 		projMatrix_ = glm::perspective(fow, resn.x/resn.y, nearDist_, farDist_);
 	}
@@ -53,14 +55,13 @@ bool Camera::Update()
 	return anychange;
 }
 
-int Camera::ID = 0;
-bool Camera::RenderUI(std::string program_name)
+bool Camera::RenderUI()
 {
+	ImGui::SetNextWindowSize({ 500,350 }, ImGuiCond_FirstUseEver);
 	if (ImGui::Begin("Cameras",&isUiOpen_))
 	{
-		std::string realID = GetNextID() + " " + program_name;
-		if (ImGui::CollapsingHeader(realID.c_str(), ImGuiTreeNodeFlags_CollapsingHeader)) {
-			if (ImGui::BeginChild(realID.c_str(), { 0,150 }, true)) {
+		if (ImGui::CollapsingHeader(name_.c_str(), ImGuiTreeNodeFlags_CollapsingHeader)) {
+			if (ImGui::BeginChild(name_.c_str(), { 0,150 }, true)) {
 				float w = ImGui::GetContentRegionAvailWidth();
 
 				ImGui::Text("Measured delta T: %f seconds", this->deltaTime_);
