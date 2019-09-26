@@ -103,6 +103,15 @@ class ProgramBase<U>::	InvalidState
 public:
 	template<typename ValueType>
 	ValidState& operator <<(const ValueType &value) {
+
+		using VT = std::remove_cv_t < std::remove_reference_t < ValueType>>;
+		static_assert(!std::is_same_v < ProgramLowLevelBase::LinkType, VT>, "Invalid type in Program's << operator: cannot link in uniform mode.");
+		static_assert(!(
+			std::is_same_v<_CompShader, VT> || std::is_same_v<_FragShader, VT> || std::is_same_v<_VertShader, VT> || std::is_same_v<_GeomShader, VT> || std::is_same_v<_TescShader, VT> || std::is_same_v<_TeseShader, VT>
+			), "Invalid type in Program's << operator: Shader type as input in uniform mode.");
+		static_assert(!( std::is_same_v < std::string, VT> || std::is_same_v< char, std::remove_extent<std::remove_pointer_t<VT>>>
+			), "Invalid type in Program's << operator: cannot set a string as a uniform.");
+
 		ASSERT(that.program_id == bound_program_id, "Pretty hard to achive this error. Do not bind another program while adding uniforms.");
 		that.uniforms.SetUniform(std::move(new_name), value);
 #ifdef _DEBUG
