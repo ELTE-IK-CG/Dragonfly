@@ -1,3 +1,4 @@
+#version 330
 uniform float col_intensity;
 uniform vec3 gCameraPos;
 
@@ -10,6 +11,8 @@ void main()
 	vs_out_col = vec4(vs_in_pos,1);
 	vs_out_col.xy += gCameraPos.xy*col_intensity;
 }
+
+
 
 
 

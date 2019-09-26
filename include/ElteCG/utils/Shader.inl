@@ -11,7 +11,6 @@ private:
 	const GLenum type = 0;
 	const std::string type_str;
 	std::string error_msg;
-	std::string version = "#version 450\n";	//First line
 
 	ShaderLowLevelBase() = delete;
 protected:
@@ -23,7 +22,6 @@ protected:
 	inline GLuint getID() const { return shader_id; }
 	inline GLenum getType() const { return shader_id; }
 	inline const std::string& getTypeStr() const { return type_str; }
-	inline const std::string& getVersion() const { return version; }
 
 	bool Compile();
 public:
@@ -45,9 +43,8 @@ template<typename File_t>
 bool Shader<File_t>::Compile(){
 	this->source_strs.resize(2*shaders.size() + 1);
 	this->source_lens.resize(2*shaders.size() + 1);
-	this->source_strs[0] = this->getVersion().c_str();
-	this->source_lens[0] = (GLint)this->getVersion().length();
 	extra_lines.resize(shaders.size());
+	int ver_num = 110;		//smallest possible version number
 	for (size_t i = 0; i < shaders.size(); ++i)	{
 		extra_lines[i] = "/*************************************************\n" + shaders[i].GetPath() + "\n*************************************************/\n";
 		const std::string &line0 = extra_lines[i];
@@ -57,7 +54,11 @@ bool Shader<File_t>::Compile(){
 		const std::string &code = shaders[i].GetCode();
 		this->source_strs[2 * i + 2] = code.c_str();
 		this->source_lens[2 * i + 2] = (GLint)code.length();
+		ver_num = std::max(ver_num, this->shaders[i].GetVersionNumber());
 	}
+	std::string ver_str = "#version " + std::to_string(ver_num) + '\n';
+	this->source_strs[0] = ver_str.c_str();
+	this->source_lens[0] = (GLint)ver_str.length();
 	return ShaderLowLevelBase::Compile();
 }
 

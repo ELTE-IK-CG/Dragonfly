@@ -1,4 +1,4 @@
-//?#version 450
+#version 450
 #define RAY(r,t) (r.Direction*(t)+r.Origin)
 #define SDF(r,t) sdf(RAY(r,t))
 #define CONE_SDF(raycone, t) ((SDF(raycone.ray,t)-(t)*raycone.tana-raycone.rad)/(1.0+raycone.tana)) 
@@ -34,6 +34,8 @@ struct SphereTraceDesc
     float epsilon;  //Cone stopping distance to surface
     int maxiters;   //Maximum iteration count
 };
+
+
 
 
 

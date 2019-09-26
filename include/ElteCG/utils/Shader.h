@@ -35,6 +35,7 @@ protected:
 	std::string path;
 	std::string folder, filename, extension;
 	std::string code;
+	int version_number = 130; // default version number (130)
 	int folder_depth_level = 0;
 	mutable std::string error_msg;
 	mutable bool dirty = false;
@@ -62,10 +63,9 @@ public:
 	inline const std::string& GetFolder() const { return folder; }
 	inline const std::string& GetFilename() const { return filename; }
 	inline const std::string& GetExtension() const { return extension; }
-	//You cannot change
-	//inline const std::string& _GetLine0() const { return line0; }
 	inline const std::string& GetCode() const { return code; }
 	inline const std::string& GetErrors() const { return error_msg; }
+	inline const int GetVersionNumber() const { return version_number; }
 	// True if content of file differs from code in memory
 	inline bool isDirty() const { return dirty; }
 
