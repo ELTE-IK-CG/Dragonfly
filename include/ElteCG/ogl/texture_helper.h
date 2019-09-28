@@ -1,7 +1,6 @@
 #pragma once
 #include "object.h"
 #include <glm/fwd.hpp>
-#include <glm/glm.hpp>
 #include <cstdint>
 
 //namespace for opengl base classes
