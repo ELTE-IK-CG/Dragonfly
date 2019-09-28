@@ -7,7 +7,7 @@ namespace eltecg { namespace ogl {
 /****************************************************************************
  *						Enums												*/	
 
- enum class TextureType : decltype(TEX_1D)
+ enum class TextureType : decltype(GL_TEXTURE_1D)
 {
 	TEX_1D						= GL_TEXTURE_1D						,
 	TEX_2D						= GL_TEXTURE_2D						,
