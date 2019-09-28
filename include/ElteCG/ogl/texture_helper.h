@@ -1,5 +1,6 @@
 #pragma once
 #include "object.h"
+#include <glm/fwd.hpp>
 #include <cstdint>
 
 //namespace for opengl base classes
@@ -47,7 +48,7 @@ namespace eltecg { namespace ogl { namespace helper {
 	template<int T_precision> struct unsigned_integral {};
 	//TODO: unnormalized_singed_integral<>...
 	//TODO: unnormalized_unsinged_integral<>...
-	using half_float = floating<16>;
+	using half = floating<16>;
 
 	
 /****************************************************************************
@@ -55,31 +56,31 @@ namespace eltecg { namespace ogl { namespace helper {
  
 	
 	//convert floating<32> to float, signed_integral<n> to intn_t, unsigned_integral<n> to uint_t.
-	template<typename .. T_tail_formats>
+	template<typename ... T_tail_formats>
 	constexpr GLuint getInternalFormat< floating<32>, T_tail_formats ... >()
 	{	return getInternalFormat<float,  T_tail_formats ... >();	}
 	
-	template<typename .. T_tail_formats>
+	template<typename ... T_tail_formats>
 	constexpr GLuint getInternalFormat< signed_integral<8>, T_tail_formats ... >()
 	{	return getInternalFormat<int8_t,  T_tail_formats ... >();	}
 	
-	template<typename .. T_tail_formats>
+	template<typename ... T_tail_formats>
 	constexpr GLuint getInternalFormat< signed_integral<16>, T_tail_formats ... >()
 	{	return getInternalFormat<int16_t,  T_tail_formats ... >();	}
 	
-	template<typename .. T_tail_formats>
+	template<typename ... T_tail_formats>
 	constexpr GLuint getInternalFormat< signed_integral<32>, T_tail_formats ... >()
 	{	return getInternalFormat<int32_t,  T_tail_formats ... >();	}
 	
-	template<typename .. T_tail_formats>
+	template<typename ... T_tail_formats>
 	constexpr GLuint getInternalFormat< unsigned_integral<8>, T_tail_formats ... >()
 	{	return getInternalFormat<uint8_t,  T_tail_formats ... >();	}
 	
-	template<typename .. T_tail_formats>
+	template<typename ... T_tail_formats>
 	constexpr GLuint getInternalFormat< unsigned_integral<16>, T_tail_formats ... >()
 	{	return getInternalFormat<uint16_t,  T_tail_formats ... >();	}
 	
-	template<typename .. T_tail_formats>
+	template<typename ... T_tail_formats>
 	constexpr GLuint getInternalFormat< unsigned_integral<32>, T_tail_formats ... >()
 	{	return getInternalFormat<uint32_t,  T_tail_formats ... >();	}
 	
@@ -95,75 +96,67 @@ namespace eltecg { namespace ogl { namespace helper {
  	
 
 //shorten following definitions
-#define T_GET_INT_FORMAT template<> constexpr GLuint getInternalFormatImpl
 
-//Unsinged normalized integer formats
-	T_GET_INT_FORMAT<uint8_t>() { return GL_R8; }
-	T_GET_INT_FORMAT<uint8_t, uint8_t>() { return GL_RG8; }
-	T_GET_INT_FORMAT<uint8_t, uint8_t, uint8_t>() { return G_RGB8; }
-	T_GET_INT_FORMAT<uint8_t, uint8_t, uint8_t, uint8_t>() { return G_RGBA8; }
 
-	T_GET_INT_FORMAT<uint16_t> { return GL_R16; }
-	T_GET_INT_FORMAT<uint16_t, uint16_t> { return GL_RG16; }
-	T_GET_INT_FORMAT<uint16_t, uint16_t, uint16_t> { return G_RGB16; }
-	T_GET_INT_FORMAT<uint16_t, uint16_t, uint16_t, uint16_t> { return G_RGBA16; }
+template<typename T> struct _GetInternalFormat { static constexpr GLenum Get() { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return 0; } };
 
-	T_GET_INT_FORMAT<uint32_t> { return GL_R32; }
-	T_GET_INT_FORMAT<glm::uvec2> { return GL_RG32; }
-	T_GET_INT_FORMAT<uint32_t, uint32_t> { return GL_RG32; }
-	T_GET_INT_FORMAT<glm::uvec3> { return G_RGB32; }
-	T_GET_INT_FORMAT<uint32_t, uint32_t, uint32_t> { return G_RGB32; }
-	T_GET_INT_FORMAT<glm::uvec4> { return G_RGBA32; }
-	T_GET_INT_FORMAT<uint32_t, uint32_t, uint32_t, uint32_t> { return G_RGBA32; }
-	
-//Signed normalized integer formats
-	T_GET_INT_FORMAT<int8_t> { return GL_R8_SNORM; }
-	T_GET_INT_FORMAT<int8_t, int8_t> { return GL_RG8_SNORM; }
-	T_GET_INT_FORMAT<int8_t, int8_t, int8_t> { return G_RGB8_SNORM; }
-	T_GET_INT_FORMAT<int8_t, int8_t, int8_t, int8_t> { return G_RGBA8_SNORM; }
+#define DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(cpp_type, gl_type) template<> struct _GetInternalFormat<cpp_type> { static constexpr GLenum Get() { return gl_type; } };
 
-	T_GET_INT_FORMAT<int16_t> { return GL_R16_SNORM; }
-	T_GET_INT_FORMAT<int16_t, int16_t> { return GL_RG16_SNORM; }
-	T_GET_INT_FORMAT<int16_t, int16_t, int16_t> { return G_RGB16_SNORM; }
-	T_GET_INT_FORMAT<int16_t, int16_t, int16_t, int16_t> { return G_RGBA16_SNORM; }
+//[0,1] normalized formats
 
-	T_GET_INT_FORMAT<int32_t> { return GL_R32_SNORM; }
-	T_GET_INT_FORMAT<glm::ivec2> { return GL_RG32_SNORM; }
-	T_GET_INT_FORMAT<int32_t, int32_t> { return GL_RG32_SNORM; }
-	T_GET_INT_FORMAT<glm::ivec3> { return G_RGB32_SNORM; }
-	T_GET_INT_FORMAT<int32_t, int32_t, int32_t> { return G_RGB32_SNORM; }
-	T_GET_INT_FORMAT<glm::ivec4> { return G_RGBA32_SNORM; }
-	T_GET_INT_FORMAT<int32_t, int32_t, int32_t, int32_t> { return G_RGBA32_SNORM; }
-	
-//Floating integer formats
-	T_GET_INT_FORMAT<half_float>() { return GL_R16F; }
-	T_GET_INT_FORMAT<half_float, half_float>() { return GL_RG16F; }
-	T_GET_INT_FORMAT<half_float, half_float, half_float>() { return GL_RGB16F; }
-	T_GET_INT_FORMAT<half_float, half_float, half_float, half_float>() { return GL_RGBA16F; }
-	
-	T_GET_INT_FORMAT<float>() { return GL_R32F; }
-	T_GET_INT_FORMAT<float, float>() { return GL_RG32F; }
-	T_GET_INT_FORMAT<glm::vec2>() { return GL_RG32F; }
-	T_GET_INT_FORMAT<float, float, float>() { return GL_RGB32F; }
-	T_GET_INT_FORMAT<glm::vec3>() { return GL_RGBA32F; }
-	T_GET_INT_FORMAT<float, float, float, float>() { return GL_RGBA32F; }
-	T_GET_INT_FORMAT<glm::vec4>() { return GL_RGBA32F; }
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(uint8_t, GL_R8)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::u8vec1, GL_R8)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::u8vec2, GL_RG8)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::u8vec3, GL_RGB8)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::u8vec4, GL_RGBA8)
 
-//Uncommon unsinged integer formats
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(uint16_t, GL_R16)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::u16vec1, GL_R16)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::u16vec2, GL_RG16)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::u16vec3, GL_RGB16)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::u16vec4, GL_RGBA16)
 
-	T_GET_INT_FORMAT<unsigned_integral<4>, unsigned_integral<4>, unsigned_integral<4>>() { return GL_RGB4; }
-	T_GET_INT_FORMAT<unsigned_integral<5>, unsigned_integral<5>, unsigned_integral<5>>() { return GL_RGB5; }
-	T_GET_INT_FORMAT<unsigned_integral<10>, unsigned_integral<10>, unsigned_integral<10>>() { return GL_RGB10; }
-	T_GET_INT_FORMAT<unsigned_integral<12>, unsigned_integral<12>, unsigned_integral<12>>() { return GL_RGB12; }
-	
-	T_GET_INT_FORMAT<unsigned_integral<2>, unsigned_integral<2>, unsigned_integral<2>, unsigned_integral<2>>() { return GL_RGBA2; }
-	T_GET_INT_FORMAT<unsigned_integral<4>, unsigned_integral<4>, unsigned_integral<4>, unsigned_integral<4>>() { return GL_RGBA4; }
-	T_GET_INT_FORMAT<unsigned_integral<12>, unsigned_integral<12>, unsigned_integral<12>, unsigned_integral<12>>() { return GL_RGBA12; }
+//[-1,1] normalized formats
 
-//Special types
-	 //TODO: finish!
-	 //source: Table 1 at https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml
-	
-#undef T_GET_INT_FORMAT	
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(int8_t, GL_R8_SNORM)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::i8vec1, GL_R8_SNORM)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::i8vec2, GL_RG8_SNORM)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::i8vec3, GL_RGB8_SNORM)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::i8vec4, GL_RGBA8_SNORM)
+
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(int16_t, GL_R16_SNORM)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::i16vec1, GL_R16_SNORM)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::i16vec2, GL_RG16_SNORM)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::i16vec3, GL_RGB16_SNORM)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::i16vec4, GL_RGBA16_SNORM)
+
+// floating point formats
+
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(half, GL_R16F)
+//DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(hvec1, GL_R16F)
+//DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(hvec2, GL_RG16F)
+//DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(hvec3, GL_RGB16F)
+//DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(hvec4, GL_RGBA16F)
+
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(float, GL_R32F)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::vec1, GL_R32F)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::vec2, GL_RG32F)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::vec3, GL_RGB32F)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::vec4, GL_RGBA32F)
+
+//TODO FINISH
+//32 bit integer formats
+
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(uint32_t, GL_R32UI)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::uvec1, GL_R32UI)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::uvec2, GL_RG32UI)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::uvec3, GL_RGB32UI)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::uvec4, GL_RGBA32UI)
+
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(int32_t, GL_R32I)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::ivec1, GL_R32I)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::ivec2, GL_RG32I)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::ivec3, GL_RGB32I)
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::ivec4, GL_RGBA32I)
 	
 } } } // namespace eltecg::ogl::helper
