@@ -13,7 +13,7 @@ namespace eltecg { namespace ogl { namespace helper {
  
 	//Returns the most fitting internalFormat for the number of cannels and bytes per channel
 	//Whenever available, the floating point version is returned
-	GLuint getInternalFormat(int num_of_channels, int bytes_per_channel = 8);
+	GLuint getInternalFormat(int num_of_channels = 3, int bytes_per_channel = 8);
 	
 	//Returns base format for a given internalFormat
 	GLuint getBaseFormat(GLuint internalFormat);
