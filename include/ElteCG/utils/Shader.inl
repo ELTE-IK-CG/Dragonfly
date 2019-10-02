@@ -16,6 +16,7 @@ private:
 protected:
 	std::vector<GLint>		 source_lens;	//For efficient compilation
 	std::vector<const char*> source_strs;	//For efficient compilation
+	std::string				 version_str;
 
 	ShaderLowLevelBase(GLenum type);
 	~ShaderLowLevelBase();
@@ -56,9 +57,9 @@ bool Shader<File_t>::Compile(){
 		this->source_lens[2 * i + 2] = (GLint)code.length();
 		ver_num = std::max(ver_num, this->shaders[i].GetVersionNumber());
 	}
-	std::string ver_str = "#version " + std::to_string(ver_num) + '\n';
-	this->source_strs[0] = ver_str.c_str();
-	this->source_lens[0] = (GLint)ver_str.length();
+	this->version_str = "#version " + std::to_string(ver_num) + '\n';
+	this->source_strs[0] = this->version_str.c_str();
+	this->source_lens[0] = (GLint)this->version_str.length();
 	return ShaderLowLevelBase::Compile();
 }
 

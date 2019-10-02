@@ -321,7 +321,7 @@ void ShaderEditor<File_t>::renderErrorWindow() {
 	ImVec2 region = ImGui::GetContentRegionAvail();
 	ImGui::PushID(ImGui::GetID(this->getTypeStr().c_str()));
 	if (ImGui::CollapsingHeader("Error List", ImGuiTreeNodeFlags_DefaultOpen)) {
-		if (ImGui::BeginChild("Error Window", { region.x , 120.f }, true, ImGuiWindowFlags_HorizontalScrollbar))
+		if (ImGui::BeginChild("Error Window", { 0,0 }, true, ImGuiWindowFlags_HorizontalScrollbar))
 		{
 			for (const auto& e : error_handling.parsed_errors) {
 				float pos = ImGui::GetCursorPosX();
@@ -394,23 +394,36 @@ void ShaderEditor<File_t>::onCompile() {
 			error_handling.parsed_errors.emplace_back(err);
 			return;
 		}
+		gen_markers.emplace(err.line, err.message);
+
 		//find out which file has that error
-		auto it_src_line_nbr = std::upper_bound(line_numbers.cbegin(), line_numbers.cend(), err.line)-1;
+		auto it_src_line_nbr = std::upper_bound(line_numbers.cbegin(), line_numbers.cend(), err.line) - 1;
 		int total_lines_to_src = *it_src_line_nbr;
-		ASSERT(0 <= total_lines_to_src && total_lines_to_src<= err.line,"");
-		ASSERT(it_src_line_nbr != line_numbers.cend() && err.line <= *(it_src_line_nbr + 1),"");
-		size_t which_source = std::distance(line_numbers.cbegin(),it_src_line_nbr);
-		//ASSERT(which_source % 2 == 1);// error on version number or comment between files. TODO: fix if thats the case -> partial fix done
-		size_t file_id = (which_source - which_source % 2) / 2;	// FOUND YOU! (I hope)
-		ASSERT(0 <= file_id && file_id < this->shaders.size(),"Invalid file ID");
+		ASSERT(0 <= total_lines_to_src && total_lines_to_src <= err.line, "Error finding exact line of the shader error message in file.");
+		ASSERT(it_src_line_nbr + 1 == line_numbers.cend() || err.line <= *(it_src_line_nbr + 1), "Error finding exact line of the shader error message in file.");
+		size_t which_source = std::distance(line_numbers.cbegin(), it_src_line_nbr);
+		ASSERT(0 <= which_source && which_source < this->source_strs.size(), "Error finding exact line of the shader error message in file.");
+		if (which_source == 0)
+		{	// problem with version
+			err.path = "WRONG GENERATED VERSION";
+			err.message = "Check the first line of all shader files under compilation externally to this application. (" + err.message + ')';
+		}
+		else
+		{
+			size_t file_id = (which_source - 1) / 2;	// FOUND YOU! (I hope)
+			ASSERT(0 <= file_id && file_id < this->shaders.size(), "Invalid file ID");
 
-		err.path = this->shaders[file_id].GetFolder() + '/' + this->shaders[file_id].GetFilename() + this->shaders[file_id].GetExtension();
+			err.path = this->shaders[file_id].GetFolder() + '/' + this->shaders[file_id].GetFilename() + this->shaders[file_id].GetExtension();
 
-		//if(err.type == ErrorLine::Type::ERROR)	gen_markers.emplace(err.line, err.message);
+			//if(err.type == ErrorLine::Type::ERROR)	gen_markers.emplace(err.line, err.message);
 
-		err.line = err.line - total_lines_to_src + 1; //line number in file
+			err.line = which_source % 2 == 1 ? //line number in file
+				err.line - total_lines_to_src + 1:
+				line_numbers[which_source]-1; //last line number of that previous file.
+
+			if constexpr (std::is_same_v<SFileEditor, File_t>) if (err.type == ErrorLine::Type::ERROR) file_markers[file_id].emplace(err.line, err.message);
+		}
 		error_handling.parsed_errors.emplace_back(err);
-		if constexpr (std::is_same_v<SFileEditor, File_t>) if(err.type == ErrorLine::Type::ERROR) file_markers[file_id].emplace(err.line, err.message);
 	};
 
 	//error setup
