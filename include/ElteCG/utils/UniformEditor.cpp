@@ -94,34 +94,29 @@ void UniformEditor::Render(std::string program_name){
 
 bool UniformEditor::Compile()
 {
-	GLint uni_num = 0, uni_max_name_len = 0;
-	GPU_ASSERT(program_id != 0 && glIsProgram(program_id), "Invalid shader program");
-	glGetProgramiv(program_id, GL_ACTIVE_UNIFORMS, &uni_num);
-	WARNING(uni_num == 0, "The shader program does not have any uniforms");
+	GreedyUniforms::Compile();
+	//We have to use the parent code to be able to maintain the code
+	//However, Greedy uniforms has to be fast -- both in debug and (especially) in release
+	//Unfortunatelly, this means this function is very similar and does basically the same stuff
+	// -- it seems like there is an easy fix for simplification: don't waste your time on it: (here, simplification will make it slower or harder to maintain)
+
+	GLint uni_max_name_len = 0, uni_num = this->locations.size();
 	glGetProgramiv(program_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uni_max_name_len);
-	ASSERT(uni_num == 0 || uni_max_name_len > 1, "Weird. The uniform names should be longer.");
-	ASSERT(uni_num >= locations.size(), "Weird. Cannot have more uniform locations stored then there are uniforms in the program.");
 	std::vector<char> namebuff(uni_max_name_len);
-	this->locations.reserve(uni_num);
-	loc2data.reserve(uni_num); loc_order.reserve(uni_num);
+	loc2data.reserve(this->locations.size()); loc_order.reserve(uni_num);
 	for (int i = 0; i < uni_num; ++i) {
 		GLsizei size; GLenum type;
 		glGetActiveUniform(program_id, (GLuint)i, (GLsizei)uni_max_name_len, nullptr, &size, &type, namebuff.data());
 
-		GreedyUniforms::Values vals; vals.loc = glGetUniformLocation(program_id, namebuff.data());
-#ifdef _DEBUG
-		vals.size = size; vals.gpu_type = type;
-#endif // _DEBUG
-		this->locations.emplace(namebuff.data(), vals);
+		GLuint loc = glGetUniformLocation(program_id, namebuff.data());
+		loc_order.emplace_back(loc);
 
-		loc_order.emplace_back(vals.loc);
-
-		UniformData dats(namebuff.data(), type, i, vals.loc, size);
+		UniformData dats(namebuff.data(), type, i, loc, size);
 		ASSERT(dats.loc >= 0, ("The uniform \"" + dats.gpu_type + ' ' + dats.name +"\" does not have a location.").c_str());
 		loc2data.emplace(dats.loc, dats);
 		//	WARNING(vals.cpu_size != vals.gpu_size, ("The uniform \"" + vals.gpu_type + ' ' + vals.name + "\" has different size on the cpu (" + std::to_string(vals.cpu_size) +") then on the gpu (" + std::to_string(vals.gpu_size) + ").").c_str());
 	}
-	loc2data.rehash(0);	locations.rehash(0); loc_order.shrink_to_fit();
+	loc2data.rehash(0); loc_order.shrink_to_fit();
 	return true;
 }
 

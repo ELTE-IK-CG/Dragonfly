@@ -16,13 +16,13 @@ enum class TextureType : decltype(GL_TEXTURE_1D)
 
 class TextureLowLevelBase {
 protected:
-	GLuint texture_id;
+	GLuint texture_id = 0;
 
 	TextureLowLevelBase() { glGenTextures(1, &texture_id); }
 	~TextureLowLevelBase() { glDeleteTextures(1, &texture_id); }
 };
 
-template<TextureType TexType>
+template<typename InternalFormat, TextureType TexType>
 class TextureBase : protected TextureLowLevelBase
 {
 protected:
@@ -33,12 +33,16 @@ protected:
 	inline void bind() const { glBindTexture(static_cast<GLenum>(TexType), this->texture_id); }
 };
 
-template<typename InternalFormat = glm::u8vec3>
-class Texture2D : public TextureBase<TextureType::TEX_2D>
+template<typename InternalFormat, TextureType TexType> class Texture{
+	//Only specializations are allowed
+};
+
+template<typename InternalFormat>
+class Texture<InternalFormat, TextureType::TEX_2D> : public TextureBase<InternalFormat, TextureType::TEX_2D>
 {
-	using Base = TextureBase<TextureType::TEX_2D>;
+	using Base = TextureBase<InternalFormat, TextureType::TEX_2D>;
 public:
-	Texture2D(int width, int height, int levels = 1) : Base(width, height, levels)
+	Texture(int width, int height, int levels = 1) : Base(width, height, levels)
 	{
 		ASSERT(width >= 1 && height >= 1 && levels >= 1 && levels <= log2(width > height ? width : height)+1, "Texture2D: Invalid dimensions");
 		this->bind(); // todo named
@@ -46,13 +50,13 @@ public:
 		glTexStorage2D(GL_TEXTURE_2D, levels, iFormat, width, height);
 	}
 
-	Texture2D(const std::string &file, int levels = -1)
+	Texture(const std::string &file, int levels = -1)
 	{
 		SDL_Surface* loaded_img = IMG_Load(file.c_str());
 		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
 		
 		if(levels == -1) levels = floor(log2(loaded_img->w > loaded_img->h ? loaded_img->w : loaded_img->h)) + 1;
-		Texture2D(loaded_img->w, loaded_img->h, levels);
+		Texture(loaded_img->w, loaded_img->h, levels);
 
 		GLenum sdl_channels = SDL_BYTEORDER == SDL_LIL_ENDIAN ? (loaded_img->format->BytesPerPixel == 4 ? GL_BGRA : GL_BGR) : (loaded_img->format->BytesPerPixel == 4 ? GL_RGB : GL_RGB);
 		GLenum sdl_pxformat = GL_UNSIGNED_BYTE; //todo calculate from format
@@ -66,3 +70,6 @@ public:
 		SDL_FreeSurface(loaded_img);
 	}
 };
+
+template<typename InternalFormat = glm::u8vec3>
+using Texture2D = Texture<InternalFormat, TextureType::TEX_2D>;

@@ -36,10 +36,11 @@ bool GreedyUniforms::Compile()
 	for (int i = 0; i < uni_num; ++i)	{
 		GLsizei size; GLenum type;
 		glGetActiveUniform(program_id, (GLuint)i, (GLsizei)uni_max_name_len, nullptr, &size, &type,	namebuff.data());
-		Values vals; vals.loc = glGetUniformLocation(program_id, namebuff.data());
+		Values vals;
 #ifdef _DEBUG
 		vals.size = size; vals.gpu_type = type;
 #endif // _DEBUG
+		vals.loc = glGetUniformLocation(program_id, namebuff.data());
 		locations.emplace(namebuff.data(), vals);
 	}
 	locations.rehash(0);

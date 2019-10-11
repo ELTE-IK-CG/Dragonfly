@@ -58,5 +58,5 @@ private:
 
 	void InitGL();
 
-	Texture2D<> testTex = Texture2D("scales.jpg");
+	Texture2D<> testTex = Texture2D<>("scales.jpg");
 };
