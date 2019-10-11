@@ -61,19 +61,18 @@ void UniformEditor::Render(std::string program_name){
 				if (ImGui::IsItemHovered()) ImGui::SetTooltip("gpu_size=%i, cpu_size=%i", d.gpu_size, d.gpu_size);
 				ImGui::SameLine(positions[3]);
 				{
-					if (d.input_var == nullptr)
-					{
-						if (d.ignore_input)
-							std::visit([&](auto&& arg) {
-							ImGui::Auto(arg, "");
-							if (ImGui::IsItemEdited())
-								this->SetUni(d.loc, arg);
-								}, d.variant);
-						else
-							std::visit([](auto&& arg) {
-							ImGui::Auto(std::as_const(arg), "");
-								}, d.variant);
-					}
+					if (d.ignore_input)
+						std::visit([&](auto&& arg) {
+						ImGui::Auto(arg, "");
+						if (ImGui::IsItemEdited())
+							this->SetUni(d.loc, arg);
+							}, d.variant);
+					else
+						std::visit([](auto&& arg) {
+						ImGui::Auto(std::as_const(arg), "");
+							}, d.variant);
+					/*if (d.input_var == nullptr)
+					{}
 					else
 						std::visit([&](auto&& arg) {
 						ImGui::Auto(arg, "");
@@ -82,7 +81,7 @@ void UniformEditor::Render(std::string program_name){
 							this->SetUni(d.loc, arg);
 							memcpy(d.input_var, static_cast<void*>(&arg), d.cpu_size);
 						}
-							}, d.variant);
+							}, d.variant);*/
 				}
 				ImGui::PopID();
 			}
@@ -95,8 +94,6 @@ void UniformEditor::Render(std::string program_name){
 
 bool UniformEditor::Compile()
 {
-	Base::Compile();
-
 	GLint uni_num = 0, uni_max_name_len = 0;
 	GPU_ASSERT(program_id != 0 && glIsProgram(program_id), "Invalid shader program");
 	glGetProgramiv(program_id, GL_ACTIVE_UNIFORMS, &uni_num);
@@ -105,17 +102,26 @@ bool UniformEditor::Compile()
 	ASSERT(uni_num == 0 || uni_max_name_len > 1, "Weird. The uniform names should be longer.");
 	ASSERT(uni_num >= locations.size(), "Weird. Cannot have more uniform locations stored then there are uniforms in the program.");
 	std::vector<char> namebuff(uni_max_name_len);
+	this->locations.reserve(uni_num);
 	loc2data.reserve(uni_num); loc_order.reserve(uni_num);
 	for (int i = 0; i < uni_num; ++i) {
 		GLsizei size; GLenum type;
 		glGetActiveUniform(program_id, (GLuint)i, (GLsizei)uni_max_name_len, nullptr, &size, &type, namebuff.data());
-		UniformData vals(namebuff.data(), type, i, glGetUniformLocation(program_id, namebuff.data()), size);
-		ASSERT(vals.loc >= 0, ("The uniform \"" + vals.gpu_type + ' ' + vals.name +"\" does not have a location.").c_str());
+
+		GreedyUniforms::Values vals; vals.loc = glGetUniformLocation(program_id, namebuff.data());
+#ifdef _DEBUG
+		vals.size = size; vals.gpu_type = type;
+#endif // _DEBUG
+		this->locations.emplace(namebuff.data(), vals);
+
+		loc_order.emplace_back(vals.loc);
+
+		UniformData dats(namebuff.data(), type, i, vals.loc, size);
+		ASSERT(dats.loc >= 0, ("The uniform \"" + dats.gpu_type + ' ' + dats.name +"\" does not have a location.").c_str());
+		loc2data.emplace(dats.loc, dats);
 		//	WARNING(vals.cpu_size != vals.gpu_size, ("The uniform \"" + vals.gpu_type + ' ' + vals.name + "\" has different size on the cpu (" + std::to_string(vals.cpu_size) +") then on the gpu (" + std::to_string(vals.gpu_size) + ").").c_str());
-		loc2data.emplace(vals.loc, vals);
-		loc_order.push_back(vals.loc);
 	}
-	loc2data.rehash(0);
+	loc2data.rehash(0);	locations.rehash(0); loc_order.shrink_to_fit();
 	return true;
 }
 

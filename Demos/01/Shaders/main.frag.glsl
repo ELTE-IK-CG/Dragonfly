@@ -1,3 +1,4 @@
+#version 130
 
 in vec4 vs_out_col;
 out vec4 fs_out_col;
@@ -6,8 +7,12 @@ out vec4 fs_out_col;
 
 void main()
 {
-    fs_out_col = vs_out_col;
+    fs_out_col = texture(testTexture, vs_out_col.xy);
+    fs_out_col += vs_out_col;
 }
+
+
+
 
 
 

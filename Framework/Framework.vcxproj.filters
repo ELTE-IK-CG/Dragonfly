@@ -224,6 +224,9 @@
     <ClInclude Include="..\include\ElteCG\utils\ProgramEditor.h">
       <Filter>ElteCG\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\Texture.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\ElteCG\utils\Program.inl">

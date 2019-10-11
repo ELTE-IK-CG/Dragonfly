@@ -7,11 +7,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 
-// GLWrapper
-#include "glw/VertexArray.h"
-#include "glw/ShaderProgram.h"
-#include "glw/Texture.h"
-#include "glw/FrameBuffer.h"
 
 //Dragonfly Runtime
 #include "ElteCG/Utils/Camera.h"
@@ -22,6 +17,7 @@
 #include "ElteCG/utils/ProgramEditor.h"
 #include "ElteCG/ogl/buffer.h"
 #include "ElteCG/ogl/vao.h"
+#include <ElteCG/utils/Texture.h>
 
 class App {
 
@@ -62,4 +58,5 @@ private:
 
 	void InitGL();
 
+	Texture2D<> testTex = Texture2D("scales.jpg");
 };

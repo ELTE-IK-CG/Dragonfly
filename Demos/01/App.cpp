@@ -19,6 +19,9 @@ bool App::Init(int width, int height) {
 	Resize(width, height);
 
 	GL_CHECK;
+
+	
+
 	return true;
 }
 

@@ -13,7 +13,7 @@ private:
 		GLsizei gpu_size; size_t cpu_size;
 		std::string gpu_type, name, cpu_type;
 		bool ignore_input = false; 
-		void* input_var = nullptr; //this way we can change the varible in this ugly manner (very unsafe for the user)
+		//void* input_var = nullptr; //this way we can change the varible in this ugly manner (very unsafe for the user)
 	};
 	std::unordered_map<GLint, UniformData> loc2data;
 	std::vector<GLint> loc_order;
@@ -42,7 +42,7 @@ inline void UniformEditor::SetUniform(std::string&& str, const ValType& val)
 	if (d.ignore_input) return; //input ignored haha
 	ASSERT(std::holds_alternative<std::remove_cv_t<std::remove_reference_t<ValType>>>(d.variant), ("The uniform \""+ d.name + "\" had a different type before.").c_str());
 	d.variant = val;
-	d.input_var = nullptr;
+	//d.input_var = nullptr;
 	SetUni(loc, val);
 }
 
@@ -56,7 +56,7 @@ inline void UniformEditor::SetUniform(std::string&& str, ValType& val)
 	UniformData& d = it->second;
 	if (d.ignore_input) return; //input ignored haha
 	ASSERT(std::holds_alternative<std::remove_cv_t<std::remove_reference_t<ValType>>>(d.variant), ("The uniform \"" + d.name + "\" had a different type before.").c_str());
-	d.input_var = &val;
+	//d.input_var = &val;
 	d.variant = val;
 	SetUni(loc, val);
 }

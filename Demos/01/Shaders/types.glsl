@@ -4,6 +4,8 @@
 #define CONE_SDF(raycone, t) ((SDF(raycone.ray,t)-(t)*raycone.tana-raycone.rad)/(1.0+raycone.tana)) 
 #define CONE_SDF_FOS(fos, raycone, t) (((fos)-(t)*raycone.tana-raycone.rad)/(1.0+raycone.tana)) 
 
+uniform sampler2D testTexture;
+
 struct RayDesc
 {
 	vec3 Origin;
@@ -34,6 +36,7 @@ struct SphereTraceDesc
     float epsilon;  //Cone stopping distance to surface
     int maxiters;   //Maximum iteration count
 };
+
 
 
 

@@ -88,6 +88,11 @@ std::string OpenGL_BaseType::GetTypeNameFromOpenGlType(GLenum type)
 	case GL_DOUBLE_MAT3x4:		return "dmat3x4";	break;
 	case GL_DOUBLE_MAT4x3:		return "dmat4x3";	break;
 
+	case GL_SAMPLER_1D:			return "sampler1D";	break;
+	case GL_SAMPLER_2D:			return "sampler2D";	break;
+	case GL_SAMPLER_3D:			return "sampler1D";	break;
+	case GL_SAMPLER_CUBE:		return "samplerCube";	break;
+
 	default: return "unknown type"; break;
 	}
 }

@@ -1,0 +1,68 @@
+#pragma once
+#include <string>
+#include <ElteCG/define.h>
+#include <ElteCG/ogl/texture_helper.h>
+#include <glm/glm.hpp>
+#include <GL/glew.h>
+#include <SDL/SDL_image.h>
+
+enum class TextureType : decltype(GL_TEXTURE_1D)
+{
+	TEX_1D = GL_TEXTURE_1D,							TEX_2D = GL_TEXTURE_2D,					TEX_3D = GL_TEXTURE_3D,
+	TEX_RECTANGLE = GL_TEXTURE_RECTANGLE,			TEX_BUFFER = GL_TEXTURE_BUFFER,			TEX_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
+	TEX_1D_ARRAY = GL_TEXTURE_1D_ARRAY,				TEX_2D_ARRAY = GL_TEXTURE_2D_ARRAY,		TEX_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
+	TEX_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,	TEX_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
+};
+
+class TextureLowLevelBase {
+protected:
+	GLuint texture_id;
+
+	TextureLowLevelBase() { glGenTextures(1, &texture_id); }
+	~TextureLowLevelBase() { glDeleteTextures(1, &texture_id); }
+};
+
+template<TextureType TexType>
+class TextureBase : protected TextureLowLevelBase
+{
+protected:
+	int _width = 0, _height = 0, _depth = 0;
+	TextureBase(int width, int height, int depth) : _width(width), _height(height), _depth(depth) {}
+	TextureBase() = default;
+	~TextureBase() = default;
+	inline void bind() const { glBindTexture(static_cast<GLenum>(TexType), this->texture_id); }
+};
+
+template<typename InternalFormat = glm::u8vec3>
+class Texture2D : public TextureBase<TextureType::TEX_2D>
+{
+	using Base = TextureBase<TextureType::TEX_2D>;
+public:
+	Texture2D(int width, int height, int levels = 1) : Base(width, height, levels)
+	{
+		ASSERT(width >= 1 && height >= 1 && levels >= 1 && levels <= log2(width > height ? width : height)+1, "Texture2D: Invalid dimensions");
+		this->bind(); // todo named
+		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+		glTexStorage2D(GL_TEXTURE_2D, levels, iFormat, width, height);
+	}
+
+	Texture2D(const std::string &file, int levels = -1)
+	{
+		SDL_Surface* loaded_img = IMG_Load(file.c_str());
+		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
+		
+		if(levels == -1) levels = floor(log2(loaded_img->w > loaded_img->h ? loaded_img->w : loaded_img->h)) + 1;
+		Texture2D(loaded_img->w, loaded_img->h, levels);
+
+		GLenum sdl_channels = SDL_BYTEORDER == SDL_LIL_ENDIAN ? (loaded_img->format->BytesPerPixel == 4 ? GL_BGRA : GL_BGR) : (loaded_img->format->BytesPerPixel == 4 ? GL_RGB : GL_RGB);
+		GLenum sdl_pxformat = GL_UNSIGNED_BYTE; //todo calculate from format
+
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->_width, this->_height, sdl_channels, sdl_pxformat, static_cast<void*>(loaded_img));
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		SDL_FreeSurface(loaded_img);
+	}
+};

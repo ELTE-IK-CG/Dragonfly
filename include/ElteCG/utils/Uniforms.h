@@ -27,6 +27,7 @@ public:
 
 class GreedyUniforms : public UniformLowLevelBase {
 	friend class ProgramBase<GreedyUniforms>;
+protected:
 	struct Values {
 		GLuint loc;
 #ifdef _DEBUG
@@ -35,7 +36,6 @@ class GreedyUniforms : public UniformLowLevelBase {
 		GLint size;
 #endif // _DEBUG
 	};
-protected:
 	GLuint program_id = 0;
 	std::unordered_map<std::string, Values> locations;
 	GreedyUniforms(GLuint program_id) : program_id(program_id) {}
