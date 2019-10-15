@@ -1,29 +1,6 @@
 #include "Uniforms.h"
 
-GLuint LazyUniforms::GetUniformLocation(const std::string & str) const {
-	if (auto it = locations.find(str); it != locations.end()) {
-		return it->second;
-	}
-	else if (const GLint uloc = glGetUniformLocation(program_id, str.c_str()); uloc != -1) {
-		return locations[str] = uloc;
-	}
-	else {
-		ASSERT(false, ("Uniform \"" + str + "\" is not an active uniform in the shader program.").c_str());
-		return -1;
-	}
-}
-
-GLuint GreedyUniforms::GetUniformLocation(const std::string& str) const {
-	if (auto it = locations.find(str); it != locations.end()) {
-		return it->second.loc;
-	}
-	else {
-		WARNING(true, ("Uniform \"" + str + "\" location not found. The shader program might not have this uniform, or it was not properly compiled.").c_str());
-		return -1;
-	}
-}
-
-bool GreedyUniforms::Compile()
+bool Uniforms::Compile()
 {
 	GLint uni_num = 0, uni_max_name_len = 0;
 	GPU_ASSERT(program_id != 0 && glIsProgram(program_id), "Invalid shader program");
@@ -40,7 +17,12 @@ bool GreedyUniforms::Compile()
 #ifdef _DEBUG
 		vals.size = size; vals.gpu_type = type;
 #endif // _DEBUG
-		vals.loc = glGetUniformLocation(program_id, namebuff.data());
+		vals.loc = static_cast<uint16_t>(glGetUniformLocation(program_id, namebuff.data()));
+		if (isOpenGLTextureType(type))
+		{
+			sampler2texLoc.emplace_back(vals.loc);
+			texLoc2sampler.emplace(vals.loc, static_cast<uint8_t>(sampler2texLoc.size()-1));
+		}
 		locations.emplace(namebuff.data(), vals);
 	}
 	locations.rehash(0);

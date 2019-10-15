@@ -6,61 +6,38 @@
 #include <glm/glm.hpp>
 #include <map>
 
-class LazyUniforms : public UniformLowLevelBase {
-	friend class ProgramBase<LazyUniforms>;
-protected:
-	GLuint program_id = 0;
-	mutable std::map<std::string, GLuint> locations;
-#ifdef GPU_DEBUG
-	std::map<GLuint, GLenum> debug_types; //only use it in gpu_debug mode
-#endif
-
-	LazyUniforms(GLuint program_id) : program_id(program_id) {}
-	GLuint GetUniformLocation(const std::string& str) const;
-
-public:
-	LazyUniforms() = delete;
-	template<typename ValType>
-	inline void SetUniform(std::string &&str, ValType &&val);
-	inline bool Compile() { return true; }
-};
-
-class GreedyUniforms : public UniformLowLevelBase {
-	friend class ProgramBase<GreedyUniforms>;
+class Uniforms : public UniformLowLevelBase {
+	friend class ProgramBase<Uniforms>;
 	struct Values {
-		GLuint loc;
+		uint16_t loc; //minimum required uniform locations are 1024, much less then 2^16
 #ifdef _DEBUG
+	private:
+		uint16_t _dummy_for_alignment;
+	public:
+		GLenum gpu_type;		//type information from opengl
 		size_t cpu_type = 0;	//type information from typeinfo
-		GLenum gpu_type;	//type information from opengl
 		GLint size;
 #endif // _DEBUG
 	};
 protected:
 	GLuint program_id = 0;
 	std::unordered_map<std::string, Values> locations;
-	GreedyUniforms(GLuint program_id) : program_id(program_id) {}
+	std::unordered_map<uint16_t, uint8_t> texLoc2sampler;
+	std::vector<uint16_t> sampler2texLoc;
+	Uniforms(GLuint program_id) : program_id(program_id) {}
 	GLuint GetUniformLocation(const std::string& str) const;
 public:
-	GreedyUniforms() = delete;
+	Uniforms() = delete;
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, ValType&& val);
 	//Do this on shader program compilation.
 	bool Compile();
+
+	//Does absolutely nothing. For UI use UniformEditor
+	inline void Render(const std::string& program_name = "") {}
 };
 
-class CachedUniforms : public GreedyUniforms {
-	using Base = GreedyUniforms;
-	friend class ProgramBase<CachedUniforms>;
-protected:
-	using UniData = decltype(UniformLowLevelBase::get_types_as_variant(valid_types{}));
 
-	std::map<GLuint, UniData> cache;
-	CachedUniforms(GLuint program_id) : Base(program_id) {}
-public:
-	CachedUniforms() = delete;
-	template<typename ValType>
-	void SetUniform(std::string &&str, const ValType &val);
-
-};
+using GreedyUniforms [[deprecated("Use the \"Uniforms\" class instead.")]] = Uniforms;
 
 #include "Uniforms.inl"

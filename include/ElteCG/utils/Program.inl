@@ -232,7 +232,11 @@ inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC
 // ========================= Program implementation ==============================
 
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-	Program<U,FC,V,G,TC,TE>::Program(const char* name)	: ProgramBase<U>::ProgramBase(),
+	Program<U,FC,V,G,TC,TE>::Program(const char* name)	: Program<U, FC, V, G, TC, TE>::Program(std::string(name))
+	{}
+
+template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
+	Program<U,FC,V,G,TC,TE>::Program(const std::string& name)	: ProgramBase<U>::ProgramBase(),
 		  fragcomp(std::is_same_v<V, NoShader>? GL_COMPUTE_SHADER: GL_FRAGMENT_SHADER),
 		  vert(GL_VERTEX_SHADER), geom(GL_GEOMETRY_SHADER), tesc(GL_TESS_CONTROL_SHADER), tese(GL_TESS_EVALUATION_SHADER),
 		  program_name(name)

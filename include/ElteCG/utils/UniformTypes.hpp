@@ -134,6 +134,8 @@ DEFINE_CPP_TO_GL_TYPE_CONVERSION(GLushort, GL_UNSIGNED_SHORT)
 
 template<typename T> constexpr GLenum getOpenGLType() { return _GetOpenGLType< std::remove_cv_t<std::remove_reference_t<T>>>::Get(); }
 
+bool isOpenGLTextureType(GLenum type);
+
 //Useful for converting an opengl type to a variant
 class OpenGL_BaseType
 {

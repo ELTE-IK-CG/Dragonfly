@@ -44,7 +44,7 @@ private:
 	int canvas_height=480;
 	float col_intensity = 0.15f;
 
-	ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>	> program = "Side-Prog" ;
+	ProgramEditor<UniformEditor, ShaderEditor<SFile>,	   ShaderEditor<SFile>			> program  = "Side-Prog";
 	ProgramEditor<UniformEditor, ShaderEditor<SFileEditor>, ShaderEditor<SFileEditor>	> program2 = "Main-Prog";
 		
 

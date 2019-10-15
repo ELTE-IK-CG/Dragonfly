@@ -3,8 +3,8 @@
 
 
 
-class UniformEditor : public GreedyUniforms {
-	using Base = GreedyUniforms;
+class UniformEditor : public Uniforms {
+	using Base = Uniforms;
 private:
 	class UniformData : OpenGL_BaseType{
 		friend class UniformEditor;
@@ -19,7 +19,7 @@ private:
 	std::vector<GLint> loc_order;
 public:
 	UniformEditor(GLuint program_id) : Base(program_id) {}
-	void Render(std::string program_name = "");
+	void Render(const std::string &program_name = "");
 	bool Compile();
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, ValType& val);

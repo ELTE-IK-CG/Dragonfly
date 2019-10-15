@@ -30,10 +30,15 @@ protected:
 	TextureBase(int width, int height, int depth) : _width(width), _height(height), _depth(depth) {}
 	TextureBase() = default;
 	~TextureBase() = default;
+public:
 	inline void bind() const { glBindTexture(static_cast<GLenum>(TexType), this->texture_id); }
+	inline void bind(unsigned int hwSamplerUnit) const {
+		ASSERT(hwSamplerUnit < 256, "Texture or sampler units you can attach your texture to start from 0 (and go to 96 minimum in OpenGL 4.5.)");
+		glActiveTexture(GL_TEXTURE0 + hwSamplerUnit); glBindTexture(static_cast<GLenum>(TexType), this->texture_id); }
 };
 
-template<typename InternalFormat, TextureType TexType> class Texture{
+template<typename InternalFormat, TextureType TexType>
+class Texture{
 	//Only specializations are allowed
 };
 
@@ -55,7 +60,7 @@ public:
 		SDL_Surface* loaded_img = IMG_Load(file.c_str());
 		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
 		
-		if(levels == -1) levels = floor(log2(loaded_img->w > loaded_img->h ? loaded_img->w : loaded_img->h)) + 1;
+		if(levels == -1) levels = static_cast<int>(floor(log2(loaded_img->w > loaded_img->h ? loaded_img->w : loaded_img->h))) + 1;
 		Texture(loaded_img->w, loaded_img->h, levels);
 
 		GLenum sdl_channels = SDL_BYTEORDER == SDL_LIL_ENDIAN ? (loaded_img->format->BytesPerPixel == 4 ? GL_BGRA : GL_BGR) : (loaded_img->format->BytesPerPixel == 4 ? GL_RGB : GL_RGB);

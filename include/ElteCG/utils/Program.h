@@ -24,7 +24,8 @@ class Program :
 	class LoadState;	//fwd decl
 	LoadState load_state = LoadState(*this);
 public:
-	Program(const char* name = ""); //glCreateProgram :)
+	Program(const std::string& name = ""); //glCreateProgram :)
+	Program(const char* name = "");
 	~Program() = default;
 
 	bool Link();

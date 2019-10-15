@@ -6,7 +6,7 @@
 
 IMGUI_AUTO_DEFINE_INLINE(template<>, UniformLowLevelBase::uni_hash_type, ImGui::Text("%s%u", (name.empty() ? "" : name + "=").c_str(), var.h);)
 
-void UniformEditor::Render(std::string program_name){
+void UniformEditor::Render(const std::string &program_name){
 	if( ImGui::Begin(program_name.c_str())) {
 		if (ImGui::BeginChild("Uniforms", ImGui::GetContentRegionAvail(), true)) {
 			const ImVec2 region = ImGui::GetContentRegionAvail();
@@ -94,13 +94,13 @@ void UniformEditor::Render(std::string program_name){
 
 bool UniformEditor::Compile()
 {
-	GreedyUniforms::Compile();
+	Uniforms::Compile();
 	//We have to use the parent code to be able to maintain the code
 	//However, Greedy uniforms has to be fast -- both in debug and (especially) in release
 	//Unfortunatelly, this means this function is very similar and does basically the same stuff
 	// -- it seems like there is an easy fix for simplification: don't waste your time on it: (here, simplification will make it slower or harder to maintain)
 
-	GLint uni_max_name_len = 0, uni_num = this->locations.size();
+	GLint uni_max_name_len = 0, uni_num = static_cast<GLint>(this->locations.size());
 	glGetProgramiv(program_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uni_max_name_len);
 	std::vector<char> namebuff(uni_max_name_len);
 	loc2data.reserve(this->locations.size()); loc_order.reserve(uni_num);
