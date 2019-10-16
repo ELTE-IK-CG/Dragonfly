@@ -1,6 +1,6 @@
 #pragma once
 #include "Uniforms.h"
-
+#include <ImGui/imgui.h>
 
 
 class UniformEditor : public Uniforms {
@@ -17,15 +17,25 @@ private:
 	};
 	std::unordered_map<GLint, UniformData> loc2data;
 	std::vector<GLint> loc_order;
+	void RenderImpl();
 public:
-	UniformEditor(GLuint program_id) : Base(program_id) {}
-	void Render(const std::string &program_name = "");
+	UniformEditor(GLuint program_id, const std::string& program_name = "") : Base(program_name,program_id) {}
+	void Render();
 	bool Compile();
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, ValType& val);
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, const ValType& val);
 };
+
+inline void UniformEditor::Render()
+{
+	if (ImGui::Begin(program_name.c_str())) {
+		if (ImGui::BeginChild("Uniforms", ImGui::GetContentRegionAvail(), true)) {
+			RenderImpl();
+		}ImGui::EndChild();
+	}	ImGui::End();
+}
 
 template<typename ValType>
 inline void UniformEditor::SetUniform(std::string&& str, const ValType& val)

@@ -20,11 +20,11 @@ class Uniforms : public UniformLowLevelBase {
 #endif // _DEBUG
 	};
 protected:
-	GLuint program_id = 0;
+	GLuint program_id = 0; const std::string program_name;
 	std::unordered_map<std::string, Values> locations;
 	std::unordered_map<uint16_t, uint8_t> texLoc2sampler;
 	std::vector<uint16_t> sampler2texLoc;
-	Uniforms(GLuint program_id) : program_id(program_id) {}
+	Uniforms(const std::string& program_name, GLuint program_id) : program_id(program_id), program_name(program_name) {}
 	GLuint GetUniformLocation(const std::string& str) const;
 public:
 	Uniforms() = delete;
@@ -34,7 +34,7 @@ public:
 	bool Compile();
 
 	//Does absolutely nothing. For UI use UniformEditor
-	inline void Render(const std::string& program_name = "") {}
+	inline void Render() {}
 };
 
 

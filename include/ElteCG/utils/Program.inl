@@ -32,7 +32,7 @@ protected:
 	}
 public:
 	struct LinkType {};	//contains nothing at all
-	const std::string& getErrors() const;
+	const std::string& getErrors() const;	
 };
 
 template<typename Uniform_T> 
@@ -44,7 +44,7 @@ protected:
 	class InvalidState;	//fwd decl
 protected:
 	Uniform_T uniforms;
-	ProgramBase(): uniforms(program_id){}
+	ProgramBase(const std::string &name): uniforms(program_id, name){}
 	ValidState	 valid_state   = ValidState(*this);		//	for the << trick with uniforms
 	InvalidState invalid_state = InvalidState(*this);	//	only the first use binds
 #ifdef _DEBUG
@@ -77,6 +77,7 @@ struct NoShader {
 	constexpr GLuint getID() const { return 0; }
 	constexpr const char* GetErrors() const { return ""; }
 	constexpr bool Compile() { return true; }
+	constexpr void RenderImpl() {}
 	constexpr void Render() {}
 	constexpr void Update() {}
 };
@@ -236,7 +237,7 @@ template<typename U, typename FC, typename V, typename G, typename TC, typename 
 	{}
 
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-	Program<U,FC,V,G,TC,TE>::Program(const std::string& name)	: ProgramBase<U>::ProgramBase(),
+	Program<U,FC,V,G,TC,TE>::Program(const std::string& name)	: ProgramBase<U>::ProgramBase(name),
 		  fragcomp(std::is_same_v<V, NoShader>? GL_COMPUTE_SHADER: GL_FRAGMENT_SHADER),
 		  vert(GL_VERTEX_SHADER), geom(GL_GEOMETRY_SHADER), tesc(GL_TESS_CONTROL_SHADER), tese(GL_TESS_EVALUATION_SHADER),
 		  program_name(name)

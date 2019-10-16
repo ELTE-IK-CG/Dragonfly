@@ -64,11 +64,13 @@ private:
 		float height = 100.f;
 		size_t selected_shader = 0;
 		std::map<std::string, size_t> active_paths;
+		bool show = false;
 	} selector;
 	using ErrorLine = SFileEditor::ErrorLine;
 	struct {
 		std::vector<ErrorLine> parsed_errors;
 		TextEditor generated;
+		bool show = true;
 	}error_handling;
 	struct {
 		std::unique_ptr<File_t> file;
@@ -94,7 +96,17 @@ public:
 	void Save();
 
 	//Render Shader Editor
-	void Render(std::string program_name = "default");
+	void RenderLongData();
+	void RenderShortData();
+	inline void Render()
+	{
+		std::string winname = "Shader Editor [" + directory + (name.empty() ? "] [" : "] [" + name + "] [") + this->getTypeStr() + "] ";
+		if(ImGui::Begin(winname.c_str()))
+		{
+			RenderImpl();
+		}
+		ImGui::End();
+	}
 
 	//Optimizations need one update per frame
 	void Update();

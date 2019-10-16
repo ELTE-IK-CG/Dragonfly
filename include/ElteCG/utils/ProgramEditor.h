@@ -17,7 +17,7 @@ public:
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 {
-	int tab = -1;
+	int tab = 5;
 	ImGui::SetNextWindowSize({ 600,400 }, ImGuiCond_FirstUseEver);
 	if (ImGui::Begin(this->program_name.c_str()))
 	{
@@ -26,36 +26,49 @@ inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 			this->Link();
 		}
 		if (ImGui::BeginTabBar("ProgramTabBar", 0)) {
-			if (ImGui::BeginTabItem("Fragment editor")) {
+			if (!std::is_same_v<Uniforms, U> && ImGui::BeginTabItem("Uniform editor")) {
 				tab = 0;
 				ImGui::EndTabItem();
 			}
-			if (ImGui::BeginTabItem("Vertex editor")) {
+			if (!std::is_same_v<NoShader, V> && ImGui::BeginTabItem("Vertex Shader")) {
 				tab = 1;
 				ImGui::EndTabItem();
 			}
-			if (ImGui::BeginTabItem("Uniform editor")) {
+			if (!std::is_same_v<NoShader, G> && ImGui::BeginTabItem("Geometry Shader")) {
 				tab = 2;
+				ImGui::EndTabItem();
+			}
+			if (!std::is_same_v<NoShader, TC> && ImGui::BeginTabItem("Tessellation Control")) {
+				tab = 3;
+				ImGui::EndTabItem();
+			}
+			if (!std::is_same_v<NoShader, TE> && ImGui::BeginTabItem("Tessellation Evaluation")) {
+				tab = 4;
+				ImGui::EndTabItem();
+			}
+			if (ImGui::BeginTabItem(std::is_same_v<NoShader, V> ? "Compute Shader" : "Fragment Shader")) {
+				tab = 5;
 				ImGui::EndTabItem();
 			}
 			ImGui::EndTabBar();
 		}
-	}ImGui::End();
+	}
 
 	switch (tab) {
-	case(0):
-		this->fragcomp.Render(this->program_name);	this->fragcomp.Update(); break;
-	case(1):
-		this->vert.Render(this->program_name);		this->vert.Update(); break;
-	case(2):
-		this->uniforms.Render(this->program_name); break;
-	default:
-		break;
+	case(0):	 this->uniforms.Render();					break;
+	case(1):	 this->vert.RenderImpl();		break;
+	case(2):	 this->geom.RenderImpl();		break;
+	case(3):	 this->tesc.RenderImpl();		break;
+	case(4):	 this->tese.RenderImpl();		break;
+	case(5):	 this->fragcomp.RenderImpl();	break;
+	default:												break;
 	}
-	
-	this->geom.Render();		this->geom.Update();
-	this->tesc.Render();		this->tesc.Update();
-	this->tese.Render();		this->tese.Update();	
+	this->fragcomp.Update();
+	this->vert.Update();
+	this->geom.Update();
+	this->tesc.Update();
+	this->tese.Update();
+	ImGui::End();
 }
 
 using ShaderProgramEditorVF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader, NoShader>;

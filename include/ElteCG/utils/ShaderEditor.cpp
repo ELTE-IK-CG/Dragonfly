@@ -145,52 +145,60 @@ bool ShaderEditor<File_t>::Compile()
 }
 
 template<typename File_t>
-void ShaderEditor<File_t>::Render(std::string program_name){
-	
-	std::string winname = "Shader Editor [" + directory  + (name.empty() ? "] [" : "] [" + name + "] [") + this->getTypeStr() + "] ";
-	ImGui::PushID(ImGui::GetID(winname.c_str()));
-	
-	if (ImGui::Begin(program_name.c_str()))
+void ShaderEditor<File_t>::RenderShortData()
+{
+	ImGui::TextUnformatted(this->type_str.c_str());
+	std::string str = "Files: " + std::to_string(this->shaders.size()) + ", Lines: " + std::to_string(error_handling.generated.GetTotalLines());
+	ImGui::Selectable(str.c_str(), &selector.show);
+	if (!this->error_msg.empty())
 	{
-			if (ImGui::BeginChild(this->getTypeStr().c_str(), ImGui::GetContentRegionAvail())) {
-			ImVec2 region = ImGui::GetContentRegionAvail();
-			std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
+		std::string str = "Errors: " + std::to_string(this->error_handling.parsed_errors.size());
+		ImGui::PushStyleColor(ImGuiCol_Text);
+		ImGui::Selectable(str.c_str(), &error_handling.show);
+		ImGui::PopStyleColor();
+	}
+}
 
-			int tab = -1;
-			ImGui::PushID(ImGui::GetID(winname.c_str()));
-			if (ImGui::BeginTabBar("ShaderTabBar", 0)) {
-				if (ImGui::BeginTabItem("Shader Build Setup")) {
-					tab = 0;
-					ImGui::EndTabItem();
-				}
-				if (ImGui::BeginTabItem("Generated Source Code")) {
-					tab = 1;
-					ImGui::EndTabItem();
-				}
-				if (ImGui::BeginTabItem("Code Editor")) {
-					tab = 2;
-					ImGui::EndTabItem();
-				}
-				ImGui::EndTabBar();
-			}
-			ImGui::PopID();
+template<typename File_t>
+void ShaderEditor<File_t>::RenderShortData()
+{
+	if (!this->error_msg.empty() && error_handling.show)
+	{
 
-			switch (tab) {
-			case 0:
-				this->renderFileSelector();		//Shader File selector
-				this->renderErrorWindow();
-				break;
-			case 1:
-				error_handling.generated.Render("Gencode");
-				break;
-			case 2:
-				this->renderShaderFiles();		//Templates are specialized
-			default:break;
-			}
+	}
 
-		}ImGui::EndChild();
-	}	ImGui::End();
-	ImGui::PopID();
+	ImVec2 region = ImGui::GetContentRegionAvail();
+	std::string path = directory + '/' + name + "_" + this->getTypeStr() + "_shader.config";
+
+	int tab = -1;
+	//ImGui::PushID(ImGui::GetID(winname.c_str()));
+	if (ImGui::BeginTabBar("ShaderTabBar", 0)) {
+		if (ImGui::BeginTabItem("Shader Build Setup")) {
+			tab = 0;
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Generated Source Code")) {
+			tab = 1;
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Code Editor")) {
+			tab = 2;
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
+	//ImGui::PopID();
+	switch (tab)
+	{
+	case 0:
+		this->renderErrorWindow();
+		this->renderFileSelector();		//Shader File selector
+		error_handling.generated.Render("Gencode");
+		break;
+	case 2:
+		this->renderShaderFiles();		//Templates are specialized
+	default:break;
+	}
 }
 
 template<typename File_t>
