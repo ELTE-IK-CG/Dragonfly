@@ -92,7 +92,7 @@ std::string OpenGL_BaseType::GetTypeNameFromOpenGlType(GLenum type)
 #endif
 	case GL_SAMPLER_1D:									return "sampler1D";			
 	case GL_SAMPLER_2D:									return "sampler2D";			
-	case GL_SAMPLER_3D:									return "sampler1D";			
+	case GL_SAMPLER_3D:									return "sampler3D";			
 	case GL_SAMPLER_CUBE:								return "samplerCube";		
 	case GL_SAMPLER_1D_SHADOW:							return "sampler1DShadow";	
 	case GL_SAMPLER_2D_SHADOW:							return "sampler2DShadow";	
@@ -109,7 +109,7 @@ std::string OpenGL_BaseType::GetTypeNameFromOpenGlType(GLenum type)
 
 	case GL_INT_SAMPLER_1D:								return "isampler1D";		
 	case GL_INT_SAMPLER_2D:								return "isampler2D";		
-	case GL_INT_SAMPLER_3D:								return "isampler1D";		
+	case GL_INT_SAMPLER_3D:								return "isampler3D";		
 	case GL_INT_SAMPLER_CUBE:							return "isamplerCube";		
 	case GL_INT_SAMPLER_1D_ARRAY:						return "isampler1DArray";	
 	case GL_INT_SAMPLER_2D_ARRAY:						return "isampler2DArray";	
@@ -120,7 +120,7 @@ std::string OpenGL_BaseType::GetTypeNameFromOpenGlType(GLenum type)
 
 	case GL_UNSIGNED_INT_SAMPLER_1D:					return "usampler1D";		
 	case GL_UNSIGNED_INT_SAMPLER_2D:					return "usampler2D";		
-	case GL_UNSIGNED_INT_SAMPLER_3D:					return "usampler1D";		
+	case GL_UNSIGNED_INT_SAMPLER_3D:					return "usampler3D";		
 	case GL_UNSIGNED_INT_SAMPLER_CUBE:					return "usamplerCube";		
 	case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY:				return "usampler1DArray";	
 	case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:				return "usampler2DArray";	
