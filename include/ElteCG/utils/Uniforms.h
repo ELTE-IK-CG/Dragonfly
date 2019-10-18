@@ -1,6 +1,7 @@
 #pragma once
 #include "Program.h"
 #include "UniformTypes.hpp"
+#include "Texture.h"
 
 #include <unordered_map>
 #include <glm/glm.hpp>
@@ -19,6 +20,31 @@ class Uniforms : public UniformLowLevelBase {
 		GLint size;
 #endif // _DEBUG
 	};
+
+	template<typename ValType>
+	struct _UniformSetterHelper
+	{
+		void call(const Uniforms& u, const std::string& str, const Uniforms::Values& vals, const ValType& val)
+		{
+			ASSERT(getOpenGLType<ValType>() == vals.gpu_type, ("The uniform \"" + str + "\" of type \"" + typeid(ValType).name() + "\" had a different type in the shader.").c_str());
+			ASSERT(u.texLoc2sampler.find(vals.loc) == u.texLoc2sampler.end(), ("The uniform \"" + str + "\" of type \"" + typeid(ValType).name() + "\" is supposed to be a texture.").c_str());
+			u.SetUni(vals.loc, val); // Regular uniforms
+		}
+	};
+
+	template<typename InternalFormat, TextureType TextureType>
+	struct _UniformSetterHelper < Texture<InternalFormat, TextureType>>
+	{
+		inline void call(const Uniforms& u, const std::string& str, const Uniforms::Values& vals, const Texture<InternalFormat, TextureType>& val)
+		{
+			auto it = u.texLoc2sampler.find(vals.loc);
+			ASSERT(it != u.texLoc2sampler.end(), ("Texture sampler \"" + str + "\" not found of type \"Texture<" + typeid(InternalFormat).name() + ">\". This error should not occur.").c_str());
+			//TODO ASSERT TYPE CHECK
+			val.bind(it->second);
+			glUniform1i(vals.loc, static_cast<GLint>(it->second)); //same as SetUni
+		}
+	};
+
 protected:
 	GLuint program_id = 0;
 	std::unordered_map<std::string, Values> locations;
