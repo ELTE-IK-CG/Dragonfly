@@ -61,12 +61,18 @@ public:
 		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
 		
 		if(levels == -1) levels = static_cast<int>(floor(log2(loaded_img->w > loaded_img->h ? loaded_img->w : loaded_img->h))) + 1;
-		Texture(loaded_img->w, loaded_img->h, levels);
+		this->_width = loaded_img->w;
+		this->_height = loaded_img->h;
+		this->_depth = levels;
+		ASSERT(this->_width >= 1 && this->_height >= 1 && levels >= 1 && levels <= log2(this->_width > this->_height ? this->_width : this->_height)+1, "Texture2D: Invalid dimensions");
+		this->bind(); // todo named
+		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+		glTexStorage2D(GL_TEXTURE_2D, levels, iFormat, this->_width, this->_height);
 
 		GLenum sdl_channels = SDL_BYTEORDER == SDL_LIL_ENDIAN ? (loaded_img->format->BytesPerPixel == 4 ? GL_BGRA : GL_BGR) : (loaded_img->format->BytesPerPixel == 4 ? GL_RGB : GL_RGB);
 		GLenum sdl_pxformat = GL_UNSIGNED_BYTE; //todo calculate from format
 
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->_width, this->_height, sdl_channels, sdl_pxformat, static_cast<void*>(loaded_img));
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->_width, this->_height, sdl_channels, sdl_pxformat, static_cast<void*>(loaded_img->pixels));
 
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);

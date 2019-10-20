@@ -30,10 +30,16 @@ inline void Uniforms::SetUniform(std::string&& str, ValType&& val)
 
 	using NakedValType = std::remove_reference_t<std::remove_cv_t<ValType>>;
 	if constexpr (std::is_base_of_v<TextureLowLevelBase, NakedValType>) {
-		_UniformSetterHelper<Texture<glm::u8vec3, TextureType::TEX_2D>>().call(*this, str, it->second, val);
+		auto tex_it = texLoc2sampler.find(it->second.loc);
+		//ASSERT(tex_it != texLoc2sampler.end(), ("Texture sampler \"" + str + "\" not found of type \"Texture<" + typeid(InternalFormat).name() + ">\". This error should not occur.").c_str());
+		//TODO ASSERT TYPE CHECK
+		val.bind(tex_it->second);
+		glUniform1i(it->second.loc, static_cast<GLint>(tex_it->second)); //same as SetUni
 	}
 	else {
-		_UniformSetterHelper<ValType>().call(*this, str, it->second, val);
+		ASSERT(getOpenGLType<ValType>() == it->second.gpu_type, ("The uniform \"" + str + "\" of type \"" + typeid(ValType).name() + "\" had a different type in the shader.").c_str());
+		ASSERT(texLoc2sampler.find(it->second.loc) == texLoc2sampler.end(), ("The uniform \"" + str + "\" of type \"" + typeid(ValType).name() + "\" is supposed to be a texture.").c_str());
+		SetUni(it->second.loc, val); // Regular uniforms
 	}
 
 }

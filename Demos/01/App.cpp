@@ -79,7 +79,7 @@ void App::Render() {
 
 	program << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
 	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam2.GetEye();
-	//program << "testTexture" << testTex;
+	program << "testTexture" << testTex;
 	MyVAO.bindVertexArray();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
