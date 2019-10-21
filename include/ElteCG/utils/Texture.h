@@ -27,7 +27,6 @@ class TextureBase : protected TextureLowLevelBase
 {
 protected:
 	int _width = 0, _height = 0, _depth = 0;
-	TextureBase(int width, int height, int depth) : _width(width), _height(height), _depth(depth) {}
 	TextureBase() = default;
 	~TextureBase() = default;
 public:
@@ -40,19 +39,29 @@ public:
 template<typename InternalFormat, TextureType TexType>
 class Texture{
 	//Only specializations are allowed
+	Texture() = delete;
 };
 
 template<typename InternalFormat>
 class Texture<InternalFormat, TextureType::TEX_2D> : public TextureBase<InternalFormat, TextureType::TEX_2D>
 {
 	using Base = TextureBase<InternalFormat, TextureType::TEX_2D>;
-public:
-	Texture(int width, int height, int levels = 1) : Base(width, height, levels)
+
+	void InitTexture(int width, int height, int levels = 1)
 	{
-		ASSERT(width >= 1 && height >= 1 && levels >= 1 && levels <= log2(width > height ? width : height)+1, "Texture2D: Invalid dimensions");
+		this->_width = width;
+		this->_height = height;
+		this->_depth = levels;
+		ASSERT(width >= 1 && height >= 1 && levels >= 1 && levels <= log2(width > height ? width : height) + 1, "Texture2D: Invalid dimensions");
 		this->bind(); // todo named
 		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
 		glTexStorage2D(GL_TEXTURE_2D, levels, iFormat, width, height);
+	}
+
+public:
+	Texture(int width, int height, int levels = 1)
+	{
+		InitTexture(width, height, levels);
 	}
 
 	Texture(const std::string &file, int levels = -1)
@@ -61,13 +70,7 @@ public:
 		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
 		
 		if(levels == -1) levels = static_cast<int>(floor(log2(loaded_img->w > loaded_img->h ? loaded_img->w : loaded_img->h))) + 1;
-		this->_width = loaded_img->w;
-		this->_height = loaded_img->h;
-		this->_depth = levels;
-		ASSERT(this->_width >= 1 && this->_height >= 1 && levels >= 1 && levels <= log2(this->_width > this->_height ? this->_width : this->_height)+1, "Texture2D: Invalid dimensions");
-		this->bind(); // todo named
-		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
-		glTexStorage2D(GL_TEXTURE_2D, levels, iFormat, this->_width, this->_height);
+		InitTexture(loaded_img->w, loaded_img->h, levels);
 
 		GLenum sdl_channels = SDL_BYTEORDER == SDL_LIL_ENDIAN ? (loaded_img->format->BytesPerPixel == 4 ? GL_BGRA : GL_BGR) : (loaded_img->format->BytesPerPixel == 4 ? GL_RGB : GL_RGB);
 		GLenum sdl_pxformat = GL_UNSIGNED_BYTE; //todo calculate from format
@@ -79,6 +82,28 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		SDL_FreeSurface(loaded_img);
+	}
+};
+
+template<typename InternalFormat>
+class Texture<InternalFormat, TextureType::TEX_CUBE_MAP> : public TextureBase<InternalFormat, TextureType::TEX_CUBE_MAP>
+{
+	using Base = TextureBase<InternalFormat, TextureType::TEX_CUBE_MAP>;
+	void InitTexture(int size, int levels = 1)
+	{
+		if (levels == -1) levels = static_cast<int>(floor(log2(size))) + 1;
+		this->bind();
+		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+		glTexStorage2D(GL_TEXTURE_CUBE_MAP, levels, iFormat, size, size);
+	}
+public:
+	Texture(GLint size, GLint levels = -1)
+	{
+		InitTexture(size, levels);
+	}
+	Texture(const std::string& Xpos, const std::string& Xneg, const std::string& Ypos, const std::string& Yneg, const std::string& Zpos, const std::string& Zneg)
+	{
+		InitTexture();
 	}
 };
 
