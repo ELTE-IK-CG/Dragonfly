@@ -12,9 +12,33 @@ enum class TextureType : decltype(GL_TEXTURE_1D)
 	TEX_RECTANGLE = GL_TEXTURE_RECTANGLE,			TEX_BUFFER = GL_TEXTURE_BUFFER,			TEX_CUBE_MAP = GL_TEXTURE_CUBE_MAP,
 	TEX_1D_ARRAY = GL_TEXTURE_1D_ARRAY,				TEX_2D_ARRAY = GL_TEXTURE_2D_ARRAY,		TEX_CUBE_MAP_ARRAY = GL_TEXTURE_CUBE_MAP_ARRAY,
 	TEX_2D_MULTISAMPLE = GL_TEXTURE_2D_MULTISAMPLE,	TEX_2D_MULTISAMPLE_ARRAY = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
+	TEX_CUBE_X_POS = GL_TEXTURE_CUBE_MAP_POSITIVE_X,	TEX_CUBE_X_NEG = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+	TEX_CUBE_Y_POS = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,	TEX_CUBE_Y_NEG = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+	TEX_CUBE_Z_POS = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,	TEX_CUBE_Z_NEG = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
 };
 
+namespace detail
+{
+	constexpr bool IsTextureTypeCubeSide(TextureType type)
+	{
+		switch (type)
+		{
+		case TextureType::TEX_CUBE_X_POS:
+		case TextureType::TEX_CUBE_X_NEG:
+		case TextureType::TEX_CUBE_Y_POS:
+		case TextureType::TEX_CUBE_Y_NEG:
+		case TextureType::TEX_CUBE_Z_POS:
+		case TextureType::TEX_CUBE_Z_NEG:
+			return true;
+		default:
+			return false;
+		}
+	}
+}
+
 class TextureLowLevelBase {
+public:
+	operator GLuint() { return texture_id; }
 protected:
 	GLuint texture_id = 0;
 
@@ -23,12 +47,26 @@ protected:
 };
 
 template<typename InternalFormat, TextureType TexType>
-class TextureBase : protected TextureLowLevelBase
+class Texture{
+	//Only specializations are allowed
+	Texture() = delete;
+};
+
+template<typename InternalFormat, TextureType TexType>
+class TextureBase : public TextureLowLevelBase
 {
 protected:
 	int _width = 0, _height = 0, _depth = 0;
 	TextureBase() = default;
 	~TextureBase() = default;
+	template<TextureType NewTexType, typename NewInternalFormat>
+	Texture<NewInternalFormat, NewTexType> _MakeView(GLuint minLevel, GLuint numLevels, GLuint minLayer, GLuint numLayers)
+	{
+		Texture<NewInternalFormat, NewTexType> view;
+		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+		static_assert(sizeof(InternalFormat) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
+		glTextureView(view.texture_id, static_cast<GLenum>(NewTexType), this->texture_id, iFormat, minLevel, numLevels, minLayer, numLayers);
+	}
 public:
 	inline void bind() const { glBindTexture(static_cast<GLenum>(TexType), this->texture_id); }
 	inline void bind(unsigned int hwSamplerUnit) const {
@@ -36,11 +74,6 @@ public:
 		glActiveTexture(GL_TEXTURE0 + hwSamplerUnit); glBindTexture(static_cast<GLenum>(TexType), this->texture_id); }
 };
 
-template<typename InternalFormat, TextureType TexType>
-class Texture{
-	//Only specializations are allowed
-	Texture() = delete;
-};
 
 template<typename InternalFormat>
 class Texture<InternalFormat, TextureType::TEX_2D> : public TextureBase<InternalFormat, TextureType::TEX_2D>
@@ -62,6 +95,16 @@ public:
 	Texture(int width, int height, int levels = 1)
 	{
 		InitTexture(width, height, levels);
+	}
+
+	template<TextureType NewTexType = TextureType::TEX_2D, typename NewInternalFormat = InternalFormat>
+	Texture<NewInternalFormat, NewTexType> MakeView(GLuint minLevel = 0, GLuint numLevels = -1)
+	{
+		static_assert(NewTexType == TextureType::TEX_2D || NewTexType == TextureType::TEX_2D_ARRAY, "Texture2D: Incompatible view target.");
+		if (numLevels == -1) numLevels = this->_depth - minLevel;
+		ASSERT(minLevel < this->_depth, "Texture2D: Too large mipmap index.");
+		WARNING(minLevel + numLevels > this->_depth, "Texture2D: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
+		return this->_MakeView<NewInternalFormat, NewTexType>(minLevel, numLevels, 0, 1);
 	}
 
 	Texture(const std::string &file, int levels = -1)
@@ -105,7 +148,34 @@ public:
 	{
 		InitTexture();
 	}
+
+	
+	template<TextureType NewTexType = TextureType::TEX_CUBE_MAP, typename NewInternalFormat = InternalFormat>
+	auto MakeView(GLuint minLevel = 0, GLuint numLevels = -1)
+	{
+		static_assert(NewTexType != TextureType::TEX_2D, "TextureCube: Use the TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG} instead of TextureType::TEX_2D.")
+		static_assert(/*NewTexType == TextureType::TEX_2D*/		|| NewTexType == TextureType::TEX_2D_ARRAY
+			|| NewTexType == TextureType::TEX_CUBE_MAP			|| NewTexType == TextureType::TEX_CUBE_MAP_ARRAY
+			|| detail::IsTextureTypeCubeSide(NewTexType)		, "TextureCube: Incompatible view target.");
+		GLuint minLayers = 0, numLayers = 6;
+		constexpr if (detail::IsTextureTypeCubeSide(NewTexType))
+		{
+			minLayers = static_cast<GLuint>(NewTexType) - static_cast<GLuint>(TextureType::TEX_CUBE_X_POS);
+			numLayers = 1;
+		}
+		if (numLevels == -1) numLevels = this->_depth - minLevel;
+		ASSERT(minLevel < this->_depth, "TextureCube: Too large mipmap index.");
+		WARNING(minLevel + numLevels > this->_depth, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
+		constexpr if (detail::IsTextureTypeCubeSide(NewTexType))
+			return this->_MakeView<NewInternalFormat, TextureType::TEX_2D>, NewTexType>(minLevel, numLevels, minLayers, numLayers);
+		else
+			return this->_MakeView<NewInternalFormat, NewTexType>(minLevel, numLevels, minLayers, numLayers);
+
+	}
+
 };
 
 template<typename InternalFormat = glm::u8vec3>
 using Texture2D = Texture<InternalFormat, TextureType::TEX_2D>;
+template<typename InternalFormat = glm::u8vec3>
+using TextureCube = Texture<InternalFormat, TextureType::TEX_CUBE_MAP>;

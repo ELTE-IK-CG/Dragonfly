@@ -20,7 +20,19 @@ bool App::Init(int width, int height) {
 
 	GL_CHECK;
 
+	/* TODO: GOAL to make this work:
+	Texture<glm::u8vec3, TextureType::TEX_CUBE_MAP> tex;
+
+	Texture2D<glm::u8vec3> uj = tex.MakeView<GL_TEXTURE_CUBE_MAP_NEGATIVE_X, [default = same]>();
+	uj = "negx.png";
 	
+	tex.GeneralMakeView<glm::u8vec3, TextureType::TEX_2D>(minLevels, numlevels, minLevels, numLayers);
+	*/
+	
+	//[...]
+
+	//myFBO[0] = tex.MakeView<glm::u8vec3, GL_TEXTURE_CUBE_MAP_NEGATIVE_X>();
+
 
 	return true;
 }
