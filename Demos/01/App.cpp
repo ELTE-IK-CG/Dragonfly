@@ -18,6 +18,21 @@ bool App::Init(int width, int height) {
 	InitGL();
 	Resize(width, height);
 
+	//testTex2 = "wood.jpg";
+	testTex2.InitTexture(500, 275);
+	testTex2.MakeView<>() = "Assets/wood.jpg";
+
+	testCubemap2.InitSizeFromFile("Assets/xpos.png");
+	testCubemap2.MakeView<TextureType::TEX_CUBE_X_POS>().LoadFromFile("Assets/xpos.png", false);
+	testCubemap2.MakeView<TextureType::TEX_CUBE_X_NEG>().LoadFromFile("Assets/xneg.png", false);
+	testCubemap2.MakeView<TextureType::TEX_CUBE_Y_POS>().LoadFromFile("Assets/ypos.png", false);
+	testCubemap2.MakeView<TextureType::TEX_CUBE_Y_NEG>().LoadFromFile("Assets/yneg.png", false);
+	testCubemap2.MakeView<TextureType::TEX_CUBE_Z_POS>().LoadFromFile("Assets/zpos.png", false);
+	testCubemap2.MakeView<TextureType::TEX_CUBE_Z_NEG>().LoadFromFile("Assets/zneg.png", false);
+
+	testAlias = testCubemap2.MakeView<TextureType::TEX_CUBE_X_POS>();
+	testAlias = testCubemap.MakeView<TextureType::TEX_CUBE_Y_POS>();
+
 	GL_CHECK;
 
 	/* TODO: GOAL to make this work:
@@ -91,7 +106,7 @@ void App::Render() {
 
 	program << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
 	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam2.GetEye();
-	program << "testTexture" << testTex;
+	program << "testTexture" << testAlias;
 	MyVAO.bindVertexArray();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);

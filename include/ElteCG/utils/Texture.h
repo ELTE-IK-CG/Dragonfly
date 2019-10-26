@@ -81,6 +81,17 @@ protected:
 
 	TextureLowLevelBase() { glGenTextures(1, &texture_id); }
 	~TextureLowLevelBase() { glDeleteTextures(1, &texture_id); }
+
+	TextureLowLevelBase(const TextureLowLevelBase&) = delete;
+	TextureLowLevelBase(TextureLowLevelBase&& _o) : texture_id(_o.texture_id) { _o.texture_id = 0; }
+
+	TextureLowLevelBase& operator= (const TextureLowLevelBase&) = delete;
+	TextureLowLevelBase& operator= (TextureLowLevelBase&& _o) {
+		GLuint temp = texture_id;
+		texture_id = _o.texture_id;
+		_o.texture_id = temp;
+		return *this;
+	}
 };
 
 template<typename InternalFormat, TextureType TexType>
@@ -93,24 +104,55 @@ template<typename InternalFormat, TextureType TexType>
 class TextureBase : public TextureLowLevelBase
 {
 protected:
-	int _width = 0, _height = 0, _depth = 0;
-	TextureBase() = default;
-	~TextureBase() = default;
-	template<TextureType NewTexType, typename NewInternalFormat>
+	GLuint _width = 0, _height = 0;
+	GLuint _levels = 0; // mipmap
+	GLuint _layers = 0; // array
+	bool _hasStorage = false;
+
+	TextureBase() {}
+	~TextureBase() {}
+
+	TextureBase(const TextureBase&) = delete;
+	TextureBase(TextureBase&& _o)
+		: TextureLowLevelBase(std::move(_o)),
+		_width(_o._width), _height(_o._height), _levels(_o._levels), _layers(_o._layers), _hasStorage(_o._hasStorage) {}
+
+	TextureBase& operator= (const TextureBase&) = delete;
+	TextureBase& operator= (TextureBase&& _o) {
+		_width = _o._width;
+		_height = _o._height;
+		_levels = _o._levels;
+		_layers = _o._layers;
+		_hasStorage = _o._hasStorage;
+		TextureLowLevelBase::operator=(std::move(_o));
+		return *this;
+	}
+
+	template<typename NewInternalFormat, TextureType NewTexType>
 	Texture<NewInternalFormat, NewTexType> _MakeView(GLuint minLevel, GLuint numLevels, GLuint minLayer, GLuint numLayers)
 	{
+		ASSERT(this->_hasStorage, "Texture: Cannot create a view from a texture that has no storage.");
 		Texture<NewInternalFormat, NewTexType> view;
-		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
-		static_assert(sizeof(InternalFormat) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
-		glTextureView(view.texture_id, static_cast<GLenum>(NewTexType), this->texture_id, iFormat, minLevel, numLevels, minLayer, numLayers);
-		GL_CHECK;
-		return view;
+		if (this->_hasStorage) {
+			constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+			static_assert(sizeof(InternalFormat) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
+			glTextureView(view.texture_id, static_cast<GLenum>(NewTexType), this->texture_id, iFormat, minLevel, numLevels, minLayer, numLayers);
+			GL_CHECK;
+			view._width = this->_width;
+			view._height = this->_height;
+			view._levels = numLevels;
+			view._layers = numLayers;
+			view._hasStorage = this->_hasStorage;
+		}
+		return std::move(view);
 	}
 public:
 	inline void bind() const { glBindTexture(static_cast<GLenum>(TexType), this->texture_id); }
-	inline void bind(unsigned int hwSamplerUnit) const {
+	inline void bind(GLuint hwSamplerUnit) const {
 		ASSERT(hwSamplerUnit < 256, "Texture or sampler units you can attach your texture to start from 0 (and go to 96 minimum in OpenGL 4.5.)");
-		glActiveTexture(GL_TEXTURE0 + hwSamplerUnit); glBindTexture(static_cast<GLenum>(TexType), this->texture_id); }
+		glActiveTexture(GL_TEXTURE0 + hwSamplerUnit);
+		this->bind();
+	}
 };
 
 
@@ -119,63 +161,108 @@ class Texture<InternalFormat, TextureType::TEX_2D> : public TextureBase<Internal
 {
 	using Base = TextureBase<InternalFormat, TextureType::TEX_2D>;
 
-	void InitTexture(int width, int height, int levels = 1)
+	template<typename IF, TextureType TT>
+	friend class TextureBase;
+
+	void LoadFromSDLSurface(SDL_Surface* img, bool invertImage)
 	{
-		this->_width = width;
-		this->_height = height;
-		this->_depth = levels;
-		ASSERT(width >= 1 && height >= 1 && levels >= 1 && levels <= log2(width > height ? width : height) + 1, "Texture2D: Invalid dimensions");
-		this->bind(); // todo named
-		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
-		glTexStorage2D(GL_TEXTURE_2D, levels, iFormat, width, height);
+		GLenum sdl_pxformat = GL_UNSIGNED_BYTE; //todo calculate from format
+		Uint32 sdl_format = img->format->BytesPerPixel == 3 ? SDL_PIXELFORMAT_RGB24 : SDL_PIXELFORMAT_RGBA32;
+		GLenum sdl_channels = img->format->BytesPerPixel == 3 ? GL_RGB : GL_RGBA;
+		if (img->format->format != sdl_format) {
+			SDL_Surface* formattedSurf = SDL_ConvertSurfaceFormat(img, sdl_format, 0);
+			SDL_FreeSurface(img);
+			ASSERT(formattedSurf != nullptr, "Texture2D: Failed to convert texture format.");
+			img = formattedSurf;
+		}
+
+		if (invertImage) {
+			int ret = detail::invert_image(img->pitch, img->h, img->pixels);
+			ASSERT(ret == 0, "Texture2D: Failed to invert image");
+		}
+
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->_width, this->_height, sdl_channels, sdl_pxformat, static_cast<void*>(img->pixels));
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		SDL_FreeSurface(img);
 	}
 
 public:
-	Texture(int width, int height, int levels = 1)
+	Texture() {}
+	Texture(GLuint width, GLuint height, GLuint levels = -1)
 	{
 		InitTexture(width, height, levels);
+	}
+	Texture(const std::string &file, bool invertImage = true, GLuint levels = -1)
+	{
+		SDL_Surface* loaded_img = IMG_Load(file.c_str());
+		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
+		
+		InitTexture(loaded_img->w, loaded_img->h, levels);
+
+		LoadFromSDLSurface(loaded_img, invertImage);
+	}
+	~Texture() {}
+
+	Texture(const Texture&) = delete;
+	Texture(Texture&& _o) : Base(std::move(_o)) {}
+
+	Texture& operator= (const Texture&) = delete;
+	Texture& operator= (Texture&& _o) {
+		Base::operator=(std::move(_o));
+		return *this;
+	}
+
+	Texture<InternalFormat, TextureType::TEX_2D>& operator= (const std::string& file)
+	{
+		return LoadFromFile(file);
+	}
+
+	void InitTexture(GLuint width, GLuint height, GLuint levels = -1)
+	{
+		ASSERT(!this->_hasStorage, "Texture2D: cannot change texture's size after the storage has been set");
+		if (!this->_hasStorage) {
+			this->_width = width;
+			this->_height = height;
+			if(levels == -1) levels = static_cast<int>(floor(log2(width > height ? width : height))) + 1;
+			this->_levels = levels;
+			this->_layers = 1;
+			ASSERT(width >= 1 && height >= 1 && levels >= 1 && levels <= log2(width > height ? width : height) + 1, "Texture2D: Invalid dimensions");
+			this->bind(); // todo named
+			constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+			glTexStorage2D(GL_TEXTURE_2D, levels, iFormat, width, height);
+			this->_hasStorage = true;
+		}
+	}
+
+	Texture<InternalFormat, TextureType::TEX_2D>& LoadFromFile(const std::string& file, bool invertImage = true)
+	{
+		SDL_Surface* loaded_img = IMG_Load(file.c_str());
+		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
+
+		if (!this->_hasStorage) {
+			InitTexture(loaded_img->w, loaded_img->h, -1);
+		}
+		else {
+			ASSERT(this->_width == loaded_img->w && this->_height == loaded_img->h, "Texture2D: cannot change texture's size after the storage has been set");
+			this->bind();
+		}
+		LoadFromSDLSurface(loaded_img, invertImage);
+
+		return *this;
 	}
 
 	template<TextureType NewTexType = TextureType::TEX_2D, typename NewInternalFormat = InternalFormat>
 	Texture<NewInternalFormat, NewTexType> MakeView(GLuint minLevel = 0, GLuint numLevels = -1)
 	{
 		static_assert(NewTexType == TextureType::TEX_2D || NewTexType == TextureType::TEX_2D_ARRAY, "Texture2D: Incompatible view target.");
-		if (numLevels == -1) numLevels = this->_depth - minLevel;
-		ASSERT(minLevel < this->_depth, "Texture2D: Too large mipmap index.");
-		WARNING(minLevel + numLevels > this->_depth, "Texture2D: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
+		if (numLevels == -1) numLevels = this->_levels - minLevel;
+		ASSERT(minLevel < this->_levels, "Texture2D: Too large mipmap index.");
+		WARNING(minLevel + numLevels > this->_levels, "Texture2D: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
 		return this->_MakeView<NewInternalFormat, NewTexType>(minLevel, numLevels, 0, 1);
-	}
-
-	Texture(const std::string &file, bool invertImage = true, int levels = -1)
-	{
-		SDL_Surface* loaded_img = IMG_Load(file.c_str());
-		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
-		
-		if(levels == -1) levels = static_cast<int>(floor(log2(loaded_img->w > loaded_img->h ? loaded_img->w : loaded_img->h))) + 1;
-		InitTexture(loaded_img->w, loaded_img->h, levels);
-
-		GLenum sdl_pxformat = GL_UNSIGNED_BYTE; //todo calculate from format
-		Uint32 sdl_format = loaded_img->format->BytesPerPixel == 3 ? SDL_PIXELFORMAT_RGB24 : SDL_PIXELFORMAT_RGBA32;
-		GLenum sdl_channels = loaded_img->format->BytesPerPixel == 3 ? GL_RGB : GL_RGBA;
-		if (loaded_img->format->format != sdl_format) {
-			SDL_Surface* formattedSurf = SDL_ConvertSurfaceFormat(loaded_img, sdl_format, 0);
-			SDL_FreeSurface(loaded_img);
-			ASSERT(formattedSurf != nullptr, "Texture2D: Failed to convert texture type.");
-			loaded_img = formattedSurf;
-		}
-
-		if (invertImage) {
-			int ret = detail::invert_image(loaded_img->pitch, loaded_img->h, loaded_img->pixels);
-			ASSERT(ret == 0, "Texture2D: Failed to invert image");
-		}
-
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->_width, this->_height, sdl_channels, sdl_pxformat, static_cast<void*>(loaded_img->pixels));
-
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		SDL_FreeSurface(loaded_img);
 	}
 };
 
@@ -183,23 +270,111 @@ template<typename InternalFormat>
 class Texture<InternalFormat, TextureType::TEX_CUBE_MAP> : public TextureBase<InternalFormat, TextureType::TEX_CUBE_MAP>
 {
 	using Base = TextureBase<InternalFormat, TextureType::TEX_CUBE_MAP>;
-	void InitTexture(int size, int levels = 1)
+
+	void LoadFromSDLSurface(SDL_Surface* img, TextureType side)
 	{
-		if (levels == -1) levels = static_cast<int>(floor(log2(size))) + 1;
-		this->bind();
-		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
-		glTexStorage2D(GL_TEXTURE_CUBE_MAP, levels, iFormat, size, size);
+		ASSERT(detail::IsTextureTypeCubeSide(side), "TextureCube: side must be one of TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG}");
+		GLenum target = static_cast<GLenum>(side);
+
+		GLenum sdl_pxformat = GL_UNSIGNED_BYTE; //todo calculate from format
+		Uint32 sdl_format = img->format->BytesPerPixel == 3 ? SDL_PIXELFORMAT_RGB24 : SDL_PIXELFORMAT_RGBA32;
+		GLenum sdl_channels = img->format->BytesPerPixel == 3 ? GL_RGB : GL_RGBA;
+		if (img->format->format != sdl_format) {
+			SDL_Surface* formattedSurf = SDL_ConvertSurfaceFormat(img, sdl_format, 0);
+			SDL_FreeSurface(img);
+			ASSERT(formattedSurf != nullptr, "TextureCube: Failed to convert texture format.");
+			img = formattedSurf;
+		}
+
+		glTexSubImage2D(target, 0, 0, 0, this->_width, this->_height, sdl_channels, sdl_pxformat, static_cast<void*>(img->pixels));
+
+		SDL_FreeSurface(img);
 	}
+
 public:
+	Texture() {}
 	Texture(GLint size, GLint levels = -1)
 	{
 		InitTexture(size, levels);
 	}
 	Texture(const std::string& Xpos, const std::string& Xneg, const std::string& Ypos, const std::string& Yneg, const std::string& Zpos, const std::string& Zneg)
 	{
-		InitTexture();
+		SDL_Surface* loaded_img = IMG_Load(Xpos.c_str());
+		ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load texture from \"" + Xpos + "\".").c_str());
+		ASSERT(loaded_img->w == loaded_img->h, "TextureCube: wrong image size");
+
+		if (!this->_hasStorage) {
+			InitTexture(loaded_img->w, -1);
+		}
+		else {
+			ASSERT(this->_width == loaded_img->w, "TextureCube: wrong image size");
+			this->bind();
+		}
+		LoadFromSDLSurface(loaded_img, TextureType::TEX_CUBE_X_POS);
+
+		loaded_img = IMG_Load(Xneg.c_str());
+		ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load texture from \"" + Xneg + "\".").c_str());
+		ASSERT(loaded_img->w == loaded_img->h && this->_width == loaded_img->w, "TextureCube: wrong image size");
+		LoadFromSDLSurface(loaded_img, TextureType::TEX_CUBE_X_NEG);
+
+		loaded_img = IMG_Load(Ypos.c_str());
+		ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load texture from \"" + Ypos + "\".").c_str());
+		ASSERT(loaded_img->w == loaded_img->h && this->_width == loaded_img->w, "TextureCube: wrong image size");
+		LoadFromSDLSurface(loaded_img, TextureType::TEX_CUBE_Y_POS);
+
+		loaded_img = IMG_Load(Yneg.c_str());
+		ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load texture from \"" + Yneg + "\".").c_str());
+		ASSERT(loaded_img->w == loaded_img->h && this->_width == loaded_img->w, "TextureCube: wrong image size");
+		LoadFromSDLSurface(loaded_img, TextureType::TEX_CUBE_Y_NEG);
+
+		loaded_img = IMG_Load(Zpos.c_str());
+		ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load texture from \"" + Zpos + "\".").c_str());
+		ASSERT(loaded_img->w == loaded_img->h && this->_width == loaded_img->w, "TextureCube: wrong image size");
+		LoadFromSDLSurface(loaded_img, TextureType::TEX_CUBE_Z_POS);
+
+		loaded_img = IMG_Load(Zneg.c_str());
+		ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load texture from \"" + Zneg + "\".").c_str());
+		ASSERT(loaded_img->w == loaded_img->h && this->_width == loaded_img->w, "TextureCube: wrong image size");
+		LoadFromSDLSurface(loaded_img, TextureType::TEX_CUBE_Z_NEG);
+
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	}
+	~Texture() {}
+
+	Texture(const Texture&) = delete;
+	Texture(Texture&& _o) : Base(std::move(_o)) {}
+
+	Texture& operator= (const Texture&) = delete;
+	Texture& operator= (Texture&& _o) {
+		Base::operator=(std::move(_o));
+		return *this;
 	}
 
+	void InitTexture(int size, int levels = -1)
+	{
+		ASSERT(!this->_hasStorage, "TextureCube: cannot change texture's size after the storage has been set");
+		if (!this->_hasStorage) {
+			this->_width = size;
+			this->_height = size;
+			if (levels == -1) levels = static_cast<int>(floor(log2(size))) + 1;
+			this->_levels = levels;
+			this->_layers = 1;
+			this->bind();
+			constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+			glTexStorage2D(GL_TEXTURE_CUBE_MAP, levels, iFormat, size, size);
+			this->_hasStorage = true;
+		}
+	}
+	void InitSizeFromFile(const std::string& file, int levels = -1)
+	{
+		SDL_Surface* loaded_img = IMG_Load(file.c_str());
+		ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load file \"" + file + "\".").c_str());
+		ASSERT(loaded_img->w == loaded_img->h, "TextureCube: wrong image size");
+
+		InitTexture(loaded_img->w, levels);
+
+		SDL_FreeSurface(loaded_img);
+	}
 	
 	template<TextureType NewTexType = TextureType::TEX_CUBE_MAP, typename NewInternalFormat = InternalFormat>
 	auto MakeView(GLuint minLevel = 0, GLuint numLevels = -1)
@@ -214,16 +389,14 @@ public:
 			minLayers = static_cast<GLuint>(NewTexType) - static_cast<GLuint>(TextureType::TEX_CUBE_X_POS);
 			numLayers = 1;
 		}
-		if (numLevels == -1) numLevels = this->_depth - minLevel;
-		ASSERT(minLevel < this->_depth, "TextureCube: Too large mipmap index.");
-		WARNING(minLevel + numLevels > this->_depth, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
+		if (numLevels == -1) numLevels = this->_levels - minLevel;
+		ASSERT(minLevel < this->_levels, "TextureCube: Too large mipmap index.");
+		WARNING(minLevel + numLevels > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
 		if constexpr (detail::IsTextureTypeCubeSide(NewTexType))
-			return this->_MakeView<NewInternalFormat, TextureType::TEX_2D>, NewTexType>(minLevel, numLevels, minLayers, numLayers);
+			return this->_MakeView<NewInternalFormat, TextureType::TEX_2D>(minLevel, numLevels, minLayers, numLayers);
 		else
 			return this->_MakeView<NewInternalFormat, NewTexType>(minLevel, numLevels, minLayers, numLayers);
-
 	}
-
 };
 
 template<typename InternalFormat = glm::u8vec3>

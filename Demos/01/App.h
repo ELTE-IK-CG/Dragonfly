@@ -58,5 +58,11 @@ private:
 
 	void InitGL();
 
-	Texture2D<> testTex = Texture2D<>("scales.jpg");
+	Texture2D<> testTex = Texture2D<>("Assets/scales.jpg");
+	Texture2D<> testTex2;
+
+	TextureCube<> testCubemap = TextureCube<>("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
+	TextureCube<> testCubemap2;
+
+	Texture2D<> testAlias;
 };
