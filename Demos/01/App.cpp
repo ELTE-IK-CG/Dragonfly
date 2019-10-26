@@ -23,12 +23,12 @@ bool App::Init(int width, int height) {
 	testTex2.MakeView<>() = "Assets/wood.jpg";
 
 	testCubemap2.InitSizeFromFile("Assets/xpos.png");
-	testCubemap2.MakeView<TextureType::TEX_CUBE_X_POS>() = "Assets/xpos.png";
-	testCubemap2.MakeView<TextureType::TEX_CUBE_X_NEG>() = "Assets/xneg.png";
-	testCubemap2.MakeView<TextureType::TEX_CUBE_Y_POS>() = "Assets/ypos.png";
-	testCubemap2.MakeView<TextureType::TEX_CUBE_Y_NEG>() = "Assets/yneg.png";
-	testCubemap2.MakeView<TextureType::TEX_CUBE_Z_POS>() = "Assets/zpos.png";
-	testCubemap2.MakeView<TextureType::TEX_CUBE_Z_NEG>() = "Assets/zneg.png";
+	testCubemap2[TextureType::TEX_CUBE_X_POS] = "Assets/xpos.png";
+	testCubemap2[TextureType::TEX_CUBE_X_NEG] = "Assets/xneg.png";
+	testCubemap2[TextureType::TEX_CUBE_Y_POS] = "Assets/ypos.png";
+	testCubemap2[TextureType::TEX_CUBE_Y_NEG] = "Assets/yneg.png";
+	testCubemap2[TextureType::TEX_CUBE_Z_POS] = "Assets/zpos.png";
+	testCubemap2[TextureType::TEX_CUBE_Z_NEG] = "Assets/zneg.png";
 
 	testAlias = testCubemap2.MakeView<TextureType::TEX_CUBE_X_POS>();
 	testAlias = testCubemap.MakeView<TextureType::TEX_CUBE_Y_POS>();

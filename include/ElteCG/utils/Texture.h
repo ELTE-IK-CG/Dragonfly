@@ -301,6 +301,19 @@ class Texture<InternalFormat, TextureType::TEX_CUBE_MAP> : public TextureBase<In
 		SDL_FreeSurface(img);
 	}
 
+	template<typename NewInternalFormat = InternalFormat>
+	Texture<NewInternalFormat, TextureType::TEX_2D> MakeFaceView(TextureType face, GLuint minLevel = 0, GLuint numLevels = -1)
+	{
+		GLuint minLayers = static_cast<GLuint>(face) - static_cast<GLuint>(TextureType::TEX_CUBE_X_POS);
+		GLuint numLayers = 1;
+		if (numLevels == -1) numLevels = this->_levels - minLevel;
+		ASSERT(minLevel < this->_levels, "TextureCube: Too large mipmap index.");
+		WARNING(minLevel + numLevels > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
+		auto tex = this->_MakeView<NewInternalFormat, TextureType::TEX_2D>(minLevel, numLevels, minLayers, numLayers);
+		tex.invertYOnFileLoad = false;
+		return tex;
+	}
+
 public:
 	Texture() {}
 	Texture(GLint size, GLint levels = -1)
@@ -393,22 +406,23 @@ public:
 		static_assert(/*NewTexType == TextureType::TEX_2D || */    NewTexType == TextureType::TEX_2D_ARRAY
 			|| NewTexType == TextureType::TEX_CUBE_MAP			|| NewTexType == TextureType::TEX_CUBE_MAP_ARRAY
 			|| detail::IsTextureTypeCubeSide(NewTexType)		, "TextureCube: Incompatible view target.");
-		GLuint minLayers = 0, numLayers = 6;
 		if constexpr (detail::IsTextureTypeCubeSide(NewTexType))
 		{
-			minLayers = static_cast<GLuint>(NewTexType) - static_cast<GLuint>(TextureType::TEX_CUBE_X_POS);
-			numLayers = 1;
+			return MakeFaceView<NewInternalFormat>(NewTexType, minLevel, numLevels);
 		}
-		if (numLevels == -1) numLevels = this->_levels - minLevel;
-		ASSERT(minLevel < this->_levels, "TextureCube: Too large mipmap index.");
-		WARNING(minLevel + numLevels > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
-		if constexpr (detail::IsTextureTypeCubeSide(NewTexType)) {
-			auto tex = this->_MakeView<NewInternalFormat, TextureType::TEX_2D>(minLevel, numLevels, minLayers, numLayers);
-			tex.invertYOnFileLoad = false;
-			return tex;
-		}
-		else
+		else {
+			GLuint minLayers = 0, numLayers = 6;
+			if (numLevels == -1) numLevels = this->_levels - minLevel;
+			ASSERT(minLevel < this->_levels, "TextureCube: Too large mipmap index.");
+			WARNING(minLevel + numLevels > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
 			return this->_MakeView<NewInternalFormat, NewTexType>(minLevel, numLevels, minLayers, numLayers);
+		}
+	}
+
+	Texture<InternalFormat, TextureType::TEX_2D> operator[](TextureType face)
+	{
+		ASSERT(detail::IsTextureTypeCubeSide(face), "TextureCube: face parameter has to be one of TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG}");
+		return MakeFaceView(face);
 	}
 };
 
