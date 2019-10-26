@@ -78,18 +78,31 @@ public:
 	operator GLuint() { return texture_id; }
 protected:
 	GLuint texture_id = 0;
+	
+	GLuint _width = 0, _height = 0;
+	GLuint _levels = 0; // mipmap
+	GLuint _layers = 0; // array
+	bool _hasStorage = false;
 
 	TextureLowLevelBase() { glGenTextures(1, &texture_id); }
 	~TextureLowLevelBase() { glDeleteTextures(1, &texture_id); }
 
 	TextureLowLevelBase(const TextureLowLevelBase&) = delete;
-	TextureLowLevelBase(TextureLowLevelBase&& _o) : texture_id(_o.texture_id) { _o.texture_id = 0; }
+	TextureLowLevelBase(TextureLowLevelBase&& _o)
+		: texture_id(_o.texture_id), _width(_o._width), _height(_o._height), _levels(_o._levels), _layers(_o._layers), _hasStorage(_o._hasStorage)
+	{ _o.texture_id = 0; }
 
 	TextureLowLevelBase& operator= (const TextureLowLevelBase&) = delete;
 	TextureLowLevelBase& operator= (TextureLowLevelBase&& _o) {
 		GLuint temp = texture_id;
 		texture_id = _o.texture_id;
 		_o.texture_id = temp;
+
+		_width = _o._width;
+		_height = _o._height;
+		_levels = _o._levels;
+		_layers = _o._layers;
+		_hasStorage = _o._hasStorage;
 		return *this;
 	}
 };
@@ -104,26 +117,14 @@ template<typename InternalFormat, TextureType TexType>
 class TextureBase : public TextureLowLevelBase
 {
 protected:
-	GLuint _width = 0, _height = 0;
-	GLuint _levels = 0; // mipmap
-	GLuint _layers = 0; // array
-	bool _hasStorage = false;
-
 	TextureBase() {}
 	~TextureBase() {}
 
 	TextureBase(const TextureBase&) = delete;
-	TextureBase(TextureBase&& _o)
-		: TextureLowLevelBase(std::move(_o)),
-		_width(_o._width), _height(_o._height), _levels(_o._levels), _layers(_o._layers), _hasStorage(_o._hasStorage) {}
+	TextureBase(TextureBase&& _o) : TextureLowLevelBase(std::move(_o)) {}
 
 	TextureBase& operator= (const TextureBase&) = delete;
 	TextureBase& operator= (TextureBase&& _o) {
-		_width = _o._width;
-		_height = _o._height;
-		_levels = _o._levels;
-		_layers = _o._layers;
-		_hasStorage = _o._hasStorage;
 		TextureLowLevelBase::operator=(std::move(_o));
 		return *this;
 	}
@@ -164,7 +165,11 @@ class Texture<InternalFormat, TextureType::TEX_2D> : public TextureBase<Internal
 	template<typename IF, TextureType TT>
 	friend class TextureBase;
 
-	void LoadFromSDLSurface(SDL_Surface* img, bool invertImage)
+public:
+	bool invertYOnFileLoad = true;
+private:
+
+	void LoadFromSDLSurface(SDL_Surface* img)
 	{
 		GLenum sdl_pxformat = GL_UNSIGNED_BYTE; //todo calculate from format
 		Uint32 sdl_format = img->format->BytesPerPixel == 3 ? SDL_PIXELFORMAT_RGB24 : SDL_PIXELFORMAT_RGBA32;
@@ -176,7 +181,7 @@ class Texture<InternalFormat, TextureType::TEX_2D> : public TextureBase<Internal
 			img = formattedSurf;
 		}
 
-		if (invertImage) {
+		if (invertYOnFileLoad) {
 			int ret = detail::invert_image(img->pitch, img->h, img->pixels);
 			ASSERT(ret == 0, "Texture2D: Failed to invert image");
 		}
@@ -192,18 +197,20 @@ class Texture<InternalFormat, TextureType::TEX_2D> : public TextureBase<Internal
 
 public:
 	Texture() {}
-	Texture(GLuint width, GLuint height, GLuint levels = -1)
+	Texture(GLuint width, GLuint height, GLuint levels = -1, bool invertImage = true)
+		: invertYOnFileLoad(invertImage)
 	{
 		InitTexture(width, height, levels);
 	}
-	Texture(const std::string &file, bool invertImage = true, GLuint levels = -1)
+	Texture(const std::string &file, GLuint levels = -1, bool invertImage = true)
+		: invertYOnFileLoad(invertImage)
 	{
 		SDL_Surface* loaded_img = IMG_Load(file.c_str());
 		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
 		
 		InitTexture(loaded_img->w, loaded_img->h, levels);
 
-		LoadFromSDLSurface(loaded_img, invertImage);
+		LoadFromSDLSurface(loaded_img);
 	}
 	~Texture() {}
 
@@ -250,7 +257,7 @@ public:
 			ASSERT(this->_width == loaded_img->w && this->_height == loaded_img->h, "Texture2D: cannot change texture's size after the storage has been set");
 			this->bind();
 		}
-		LoadFromSDLSurface(loaded_img, invertImage);
+		LoadFromSDLSurface(loaded_img);
 
 		return *this;
 	}
@@ -395,8 +402,11 @@ public:
 		if (numLevels == -1) numLevels = this->_levels - minLevel;
 		ASSERT(minLevel < this->_levels, "TextureCube: Too large mipmap index.");
 		WARNING(minLevel + numLevels > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
-		if constexpr (detail::IsTextureTypeCubeSide(NewTexType))
-			return this->_MakeView<NewInternalFormat, TextureType::TEX_2D>(minLevel, numLevels, minLayers, numLayers);
+		if constexpr (detail::IsTextureTypeCubeSide(NewTexType)) {
+			auto tex = this->_MakeView<NewInternalFormat, TextureType::TEX_2D>(minLevel, numLevels, minLayers, numLayers);
+			tex.invertYOnFileLoad = false;
+			return tex;
+		}
 		else
 			return this->_MakeView<NewInternalFormat, NewTexType>(minLevel, numLevels, minLayers, numLayers);
 	}
