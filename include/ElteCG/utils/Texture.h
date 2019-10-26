@@ -271,6 +271,9 @@ class Texture<InternalFormat, TextureType::TEX_CUBE_MAP> : public TextureBase<In
 {
 	using Base = TextureBase<InternalFormat, TextureType::TEX_CUBE_MAP>;
 
+	template<typename IF, TextureType TT>
+	friend class TextureBase;
+
 	void LoadFromSDLSurface(SDL_Surface* img, TextureType side)
 	{
 		ASSERT(detail::IsTextureTypeCubeSide(side), "TextureCube: side must be one of TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG}");
