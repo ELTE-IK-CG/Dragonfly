@@ -21,7 +21,7 @@ protected:
 	ShaderLowLevelBase(GLenum type);
 	~ShaderLowLevelBase();
 	inline GLuint getID() const { return shader_id; }
-	inline GLenum getType() const { return shader_id; }
+	inline GLenum getType() const { return type; }
 	inline const std::string& getTypeStr() const { return type_str; }
 
 	bool Compile();
