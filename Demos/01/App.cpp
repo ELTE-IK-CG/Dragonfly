@@ -30,8 +30,17 @@ bool App::Init(int width, int height) {
 	testCubemap2[TextureType::TEX_CUBE_Z_POS] = "Assets/zpos.png";
 	testCubemap2[TextureType::TEX_CUBE_Z_NEG] = "Assets/zneg.png";
 
-	testAlias = testCubemap2.MakeView<TextureType::TEX_CUBE_X_POS>();
 	testAlias = testCubemap.MakeView<TextureType::TEX_CUBE_Y_POS>();
+
+	testAlias = testCubemap2[TextureType::TEX_CUBE_X_POS];
+
+	testAlias = testCubemap2[4_levelAll][TextureType::TEX_CUBE_X_POS];
+
+	testAlias = testCubemap2[TextureType::TEX_CUBE_X_POS][4_levelAll];
+
+	auto x = 0_levelAll & 0_layerAll;
+	auto y = 0_level >> ALL & 0_layer >> ALL;
+	auto z = 0_level >> 2 & 0_layer >> 3;
 
 	GL_CHECK;
 
