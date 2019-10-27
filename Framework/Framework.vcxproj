@@ -25,6 +25,7 @@
     <ClCompile Include="..\include\ElteCG\utils\Program.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Shader.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\ShaderEditor.cpp" />
+    <ClCompile Include="..\include\ElteCG\utils\Texture.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\UniformEditor.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Uniforms.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\UniformTypes.cpp" />
@@ -89,6 +90,7 @@
   <ItemGroup>
     <None Include="..\include\ElteCG\utils\Program.inl" />
     <None Include="..\include\ElteCG\utils\Shader.inl" />
+    <None Include="..\include\ElteCG\utils\Texture.inl" />
     <None Include="..\include\ElteCG\utils\Uniforms.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.inl" />
