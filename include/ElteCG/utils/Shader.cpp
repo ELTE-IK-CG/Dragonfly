@@ -77,15 +77,14 @@ void SFile::Assign(const std::string & code_){
 
 const char* shader2str(GLenum type){
 	switch (type)	{
-	case GL_COMPUTE_SHADER: return "comp"; break;
-	case GL_FRAGMENT_SHADER: return "frag"; break;
-	case GL_VERTEX_SHADER: return "vert"; break;
-	case GL_GEOMETRY_SHADER: return "geom"; break;
-	case GL_TESS_CONTROL_SHADER: return "tesc"; break;
-	case GL_TESS_EVALUATION_SHADER: return "tese"; break;
-	default: ASSERT(true, "Should not get here."); return nullptr; break;
+	case GL_COMPUTE_SHADER: return "comp";
+	case GL_FRAGMENT_SHADER: return "frag";
+	case GL_VERTEX_SHADER: return "vert";
+	case GL_GEOMETRY_SHADER: return "geom";
+	case GL_TESS_CONTROL_SHADER: return "tesc";
+	case GL_TESS_EVALUATION_SHADER: return "tese";
 	}
-	ASSERT(true, "Should not get here."); return nullptr;
+	ASSERT(false, "Should not get here."); return nullptr;
 }
 
 template class Shader<SFile>;
