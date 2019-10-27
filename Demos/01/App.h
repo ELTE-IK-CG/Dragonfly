@@ -44,8 +44,8 @@ private:
 	int canvas_height=480;
 	float col_intensity = 0.15f;
 
-	ProgramEditor<UniformEditor, ShaderEditor<SFile>,	   ShaderEditor<SFile>			> program  = "Side-Prog";
-	ProgramEditor<UniformEditor, ShaderEditor<SFileEditor>, ShaderEditor<SFileEditor>	> program2 = "Main-Prog";
+	ProgramEditor<Uniforms, ShaderEditor<SFile>,	   ShaderEditor<SFile>			> program  = "Side-Prog";
+	ProgramEditor<Uniforms, ShaderEditor<SFileEditor>, ShaderEditor<SFileEditor>	> program2 = "Main-Prog";
 		
 
 	eltecg::ogl::ArrayBuffer MyVBO;
@@ -58,5 +58,11 @@ private:
 
 	void InitGL();
 
-	Texture2D<> testTex = Texture2D<>("scales.jpg");
+	Texture2D<> testTex = Texture2D<>("Assets/scales.jpg");
+	Texture2D<> testTex2;
+
+	TextureCube<> testCubemap = TextureCube<>("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
+	TextureCube<> testCubemap2;
+
+	Texture2D<> testAlias;
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "Program.h"
 #include "UniformTypes.hpp"
+#include "Texture.h"
 
 #include <unordered_map>
 #include <glm/glm.hpp>
@@ -19,6 +20,7 @@ class Uniforms : public UniformLowLevelBase {
 		GLint size;
 #endif // _DEBUG
 	};
+
 protected:
 	GLuint program_id = 0;
 	std::unordered_map<std::string, Values> locations;

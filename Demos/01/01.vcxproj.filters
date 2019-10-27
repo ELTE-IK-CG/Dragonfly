@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{9d01fb4a-2f91-4b89-a7c9-df0dcdd081e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -24,5 +27,19 @@
     <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\sdf.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\types.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\main.frag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\quad.vert.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

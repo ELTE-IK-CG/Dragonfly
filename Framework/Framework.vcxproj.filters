@@ -99,6 +99,9 @@
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp">
       <Filter>ImGui-Addons\STD lib</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\Texture.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ElteCG\utils\Camera.h">
@@ -246,6 +249,9 @@
     </None>
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl">
       <Filter>ImGui-Addons\Node Editor</Filter>
+    </None>
+    <None Include="..\include\ElteCG\utils\Texture.inl">
+      <Filter>ElteCG\Utils</Filter>
     </None>
   </ItemGroup>
 </Project>

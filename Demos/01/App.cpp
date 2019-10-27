@@ -18,9 +18,45 @@ bool App::Init(int width, int height) {
 	InitGL();
 	Resize(width, height);
 
+	//testTex2 = "wood.jpg";
+	testTex2.InitTexture(500, 275);
+	testTex2.MakeView<>() = "Assets/wood.jpg";
+
+	testCubemap2.InitSizeFromFile("Assets/xpos.png");
+	testCubemap2[TextureType::TEX_CUBE_X_POS] = "Assets/xpos.png";
+	testCubemap2[TextureType::TEX_CUBE_X_NEG] = "Assets/xneg.png";
+	testCubemap2[TextureType::TEX_CUBE_Y_POS] = "Assets/ypos.png";
+	testCubemap2[TextureType::TEX_CUBE_Y_NEG] = "Assets/yneg.png";
+	testCubemap2[TextureType::TEX_CUBE_Z_POS] = "Assets/zpos.png";
+	testCubemap2[TextureType::TEX_CUBE_Z_NEG] = "Assets/zneg.png";
+
+	testAlias = testCubemap.MakeView<TextureType::TEX_CUBE_Y_POS>();
+
+	testAlias = testCubemap2[TextureType::TEX_CUBE_X_POS];
+
+	testAlias = testCubemap2[4_levelAll][TextureType::TEX_CUBE_X_POS];
+
+	testAlias = testCubemap2[TextureType::TEX_CUBE_X_POS][4_levelAll];
+
+	auto x = 0_levelAll & 0_layerAll;
+	auto y = 0_level >> ALL & 0_layer >> ALL;
+	auto z = 0_level >> 2 & 0_layer >> 3;
+
 	GL_CHECK;
 
+	/* TODO: GOAL to make this work:
+	Texture<glm::u8vec3, TextureType::TEX_CUBE_MAP> tex;
+
+	Texture2D<glm::u8vec3> uj = tex.MakeView<GL_TEXTURE_CUBE_MAP_NEGATIVE_X, [default = same]>();
+	uj = "negx.png";
 	
+	tex.GeneralMakeView<glm::u8vec3, TextureType::TEX_2D>(minLevels, numlevels, minLevels, numLayers);
+	*/
+	
+	//[...]
+
+	//myFBO[0] = tex.MakeView<glm::u8vec3, GL_TEXTURE_CUBE_MAP_NEGATIVE_X>();
+
 
 	return true;
 }
@@ -79,7 +115,7 @@ void App::Render() {
 
 	program << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
 	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam2.GetEye();
-	//program << "testTexture" << testTex;
+	program << "testTexture" << testAlias;
 	MyVAO.bindVertexArray();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);

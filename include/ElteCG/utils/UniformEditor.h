@@ -31,7 +31,7 @@ template<typename ValType>
 inline void UniformEditor::SetUniform(std::string&& str, const ValType& val)
 {
 
-	static_assert(is_list_member<ValType, valid_types>(), "Invalid type in SetUniform: wrong type given to program with << operator (like a string), or implementation may be missing.");
+	//static_assert(is_list_member<ValType, valid_types>(), "Invalid type in SetUniform: wrong type given to program with << operator (like a string), or implementation may be missing.");
 	GLuint loc = GetUniformLocation(str);
 	auto it = loc2data.find(loc);
 	if (it == loc2data.end()) {

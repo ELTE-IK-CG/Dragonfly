@@ -80,7 +80,7 @@ void Shader<File_t>::PopShader() {
 }
 template<typename File_t>
 void Shader<File_t>::EraseShader(size_t idx) {
-	ASSERT(idx < shaders.size() && idx < 0,"Invalid index"); shaders.erase(shaders.begin() + idx);
+	ASSERT(idx < shaders.size() && idx >= 0,"Invalid index");	shaders.erase(shaders.begin() + idx);
 }
 
 template<typename File_t> void Shader<File_t>::Update() {
