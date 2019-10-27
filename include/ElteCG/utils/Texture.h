@@ -168,17 +168,19 @@ protected:
 	Texture<NewTexType, NewInternalFormat> _MakeView(TexLevels levels, TexLayers layers)
 	{
 		ASSERT(this->_hasStorage, "Texture: Cannot create a view from a texture that has no storage.");
+		ASSERT(levels.min < this->_levels && levels.min + levels.num <= this->_levels, "Texture: wrong mipmap level arguments");
+		ASSERT(layers.min < this->_layers && layers.min + layers.num <= this->_layers, "Texture: wrong array layer arguments");
 		Texture<NewTexType, NewInternalFormat> view;
 		if (this->_hasStorage) {
 			constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
 			static_assert(sizeof(InternalFormat) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
 			glTextureView(view.texture_id, static_cast<GLenum>(NewTexType), this->texture_id, iFormat, levels.min, levels.num, layers.min, layers.num);
 			GL_CHECK;
-			view._width = this->_width;
-			view._height = this->_height;
+			view._width = this->_width >> levels.min;
+			view._height = this->_height >> levels.min;
 			view._levels = levels.num;
 			view._layers = layers.num;
-			view._hasStorage = this->_hasStorage;
+			view._hasStorage = true;
 		}
 		return std::move(view);
 	}
@@ -365,13 +367,8 @@ public:
 		ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load texture from \"" + Xpos + "\".").c_str());
 		ASSERT(loaded_img->w == loaded_img->h, "TextureCube: wrong image size");
 
-		if (!this->_hasStorage) {
-			InitTexture(loaded_img->w, ALL);
-		}
-		else {
-			ASSERT(this->_width == loaded_img->w, "TextureCube: wrong image size");
-			this->bind();
-		}
+		InitTexture(loaded_img->w, ALL);
+
 		LoadFromSDLSurface(loaded_img, TextureType::TEX_CUBE_X_POS);
 
 		loaded_img = IMG_Load(Xneg.c_str());
@@ -420,7 +417,7 @@ public:
 			this->_height = size;
 			if (numLevels == ALL) numLevels = static_cast<GLuint>(floor(log2(size))) + 1;
 			this->_levels = numLevels;
-			this->_layers = 1;
+			this->_layers = 6;
 			this->bind();
 			constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
 			glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, iFormat, size, size);
