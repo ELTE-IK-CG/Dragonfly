@@ -107,13 +107,13 @@ protected:
 	}
 };
 
-template<typename InternalFormat, TextureType TexType>
+template<TextureType TexType, typename InternalFormat>
 class Texture{
 	//Only specializations are allowed
 	Texture() = delete;
 };
 
-template<typename InternalFormat, TextureType TexType>
+template<TextureType TexType, typename InternalFormat>
 class TextureBase : public TextureLowLevelBase
 {
 protected:
@@ -129,11 +129,11 @@ protected:
 		return *this;
 	}
 
-	template<typename NewInternalFormat, TextureType NewTexType>
-	Texture<NewInternalFormat, NewTexType> _MakeView(GLuint minLevel, GLuint numLevels, GLuint minLayer, GLuint numLayers)
+	template<TextureType NewTexType, typename NewInternalFormat>
+	Texture<NewTexType, NewInternalFormat> _MakeView(GLuint minLevel, GLuint numLevels, GLuint minLayer, GLuint numLayers)
 	{
 		ASSERT(this->_hasStorage, "Texture: Cannot create a view from a texture that has no storage.");
-		Texture<NewInternalFormat, NewTexType> view;
+		Texture<NewTexType, NewInternalFormat> view;
 		if (this->_hasStorage) {
 			constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
 			static_assert(sizeof(InternalFormat) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
@@ -158,11 +158,11 @@ public:
 
 
 template<typename InternalFormat>
-class Texture<InternalFormat, TextureType::TEX_2D> : public TextureBase<InternalFormat, TextureType::TEX_2D>
+class Texture<TextureType::TEX_2D, InternalFormat> : public TextureBase<TextureType::TEX_2D, InternalFormat>
 {
-	using Base = TextureBase<InternalFormat, TextureType::TEX_2D>;
+	using Base = TextureBase<TextureType::TEX_2D, InternalFormat>;
 
-	template<typename IF, TextureType TT>
+	template<TextureType TT, typename IF>
 	friend class TextureBase;
 
 public:
@@ -223,7 +223,7 @@ public:
 		return *this;
 	}
 
-	Texture<InternalFormat, TextureType::TEX_2D>& operator= (const std::string& file)
+	Texture<TextureType::TEX_2D, InternalFormat>& operator= (const std::string& file)
 	{
 		return LoadFromFile(file);
 	}
@@ -245,7 +245,7 @@ public:
 		}
 	}
 
-	Texture<InternalFormat, TextureType::TEX_2D>& LoadFromFile(const std::string& file, bool invertImage = true)
+	Texture<TextureType::TEX_2D, InternalFormat>& LoadFromFile(const std::string& file, bool invertImage = true)
 	{
 		SDL_Surface* loaded_img = IMG_Load(file.c_str());
 		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
@@ -263,22 +263,22 @@ public:
 	}
 
 	template<TextureType NewTexType = TextureType::TEX_2D, typename NewInternalFormat = InternalFormat>
-	Texture<NewInternalFormat, NewTexType> MakeView(GLuint minLevel = 0, GLuint numLevels = -1)
+	Texture<NewTexType, NewInternalFormat> MakeView(GLuint minLevel = 0, GLuint numLevels = -1)
 	{
 		static_assert(NewTexType == TextureType::TEX_2D || NewTexType == TextureType::TEX_2D_ARRAY, "Texture2D: Incompatible view target.");
 		if (numLevels == -1) numLevels = this->_levels - minLevel;
 		ASSERT(minLevel < this->_levels, "Texture2D: Too large mipmap index.");
 		WARNING(minLevel + numLevels > this->_levels, "Texture2D: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
-		return this->_MakeView<NewInternalFormat, NewTexType>(minLevel, numLevels, 0, 1);
+		return this->_MakeView<NewTexType, NewInternalFormat>(minLevel, numLevels, 0, 1);
 	}
 };
 
 template<typename InternalFormat>
-class Texture<InternalFormat, TextureType::TEX_CUBE_MAP> : public TextureBase<InternalFormat, TextureType::TEX_CUBE_MAP>
+class Texture<TextureType::TEX_CUBE_MAP, InternalFormat> : public TextureBase<TextureType::TEX_CUBE_MAP, InternalFormat>
 {
-	using Base = TextureBase<InternalFormat, TextureType::TEX_CUBE_MAP>;
+	using Base = TextureBase<TextureType::TEX_CUBE_MAP, InternalFormat>;
 
-	template<typename IF, TextureType TT>
+	template<TextureType TT, typename IF>
 	friend class TextureBase;
 
 	void LoadFromSDLSurface(SDL_Surface* img, TextureType side)
@@ -302,14 +302,14 @@ class Texture<InternalFormat, TextureType::TEX_CUBE_MAP> : public TextureBase<In
 	}
 
 	template<typename NewInternalFormat = InternalFormat>
-	Texture<NewInternalFormat, TextureType::TEX_2D> MakeFaceView(TextureType face, GLuint minLevel = 0, GLuint numLevels = -1)
+	Texture<TextureType::TEX_2D, NewInternalFormat> MakeFaceView(TextureType face, GLuint minLevel = 0, GLuint numLevels = -1)
 	{
 		GLuint minLayers = static_cast<GLuint>(face) - static_cast<GLuint>(TextureType::TEX_CUBE_X_POS);
 		GLuint numLayers = 1;
 		if (numLevels == -1) numLevels = this->_levels - minLevel;
 		ASSERT(minLevel < this->_levels, "TextureCube: Too large mipmap index.");
 		WARNING(minLevel + numLevels > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
-		auto tex = this->_MakeView<NewInternalFormat, TextureType::TEX_2D>(minLevel, numLevels, minLayers, numLayers);
+		auto tex = this->_MakeView<TextureType::TEX_2D, NewInternalFormat>(minLevel, numLevels, minLayers, numLayers);
 		tex.invertYOnFileLoad = false;
 		return tex;
 	}
@@ -415,11 +415,11 @@ public:
 			if (numLevels == -1) numLevels = this->_levels - minLevel;
 			ASSERT(minLevel < this->_levels, "TextureCube: Too large mipmap index.");
 			WARNING(minLevel + numLevels > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use -1.");
-			return this->_MakeView<NewInternalFormat, NewTexType>(minLevel, numLevels, minLayers, numLayers);
+			return this->_MakeView<NewTexType, NewInternalFormat>(minLevel, numLevels, minLayers, numLayers);
 		}
 	}
 
-	Texture<InternalFormat, TextureType::TEX_2D> operator[](TextureType face)
+	Texture<TextureType::TEX_2D, InternalFormat> operator[](TextureType face)
 	{
 		ASSERT(detail::IsTextureTypeCubeSide(face), "TextureCube: face parameter has to be one of TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG}");
 		return MakeFaceView(face);
@@ -427,6 +427,6 @@ public:
 };
 
 template<typename InternalFormat = glm::u8vec3>
-using Texture2D = Texture<InternalFormat, TextureType::TEX_2D>;
+using Texture2D = Texture<TextureType::TEX_2D, InternalFormat>;
 template<typename InternalFormat = glm::u8vec3>
-using TextureCube = Texture<InternalFormat, TextureType::TEX_CUBE_MAP>;
+using TextureCube = Texture<TextureType::TEX_CUBE_MAP, InternalFormat>;
