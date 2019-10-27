@@ -226,8 +226,6 @@ private:
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->_width, this->_height, sdl_channels, sdl_pxformat, static_cast<void*>(img->pixels));
 
 		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		SDL_FreeSurface(img);
 	}
@@ -282,7 +280,7 @@ public:
 		}
 	}
 
-	Texture<TextureType::TEX_2D, InternalFormat>& LoadFromFile(const std::string& file, bool invertImage = true)
+	Texture<TextureType::TEX_2D, InternalFormat>& LoadFromFile(const std::string& file)
 	{
 		SDL_Surface* loaded_img = IMG_Load(file.c_str());
 		ASSERT(loaded_img != nullptr, ("Texture2D: Failed to load texture from \"" + file + "\".").c_str());
