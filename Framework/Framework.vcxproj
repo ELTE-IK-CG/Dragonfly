@@ -25,6 +25,7 @@
     <ClCompile Include="..\include\ElteCG\utils\Program.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Shader.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\ShaderEditor.cpp" />
+    <ClCompile Include="..\include\ElteCG\utils\Subroutines.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Texture.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\UniformEditor.cpp" />
     <ClCompile Include="..\include\ElteCG\utils\Uniforms.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="..\include\ElteCG\utils\ProgramEditor.h" />
     <ClInclude Include="..\include\ElteCG\utils\Shader.h" />
     <ClInclude Include="..\include\ElteCG\utils\ShaderEditor.h" />
+    <ClInclude Include="..\include\ElteCG\utils\Subroutines.h" />
     <ClInclude Include="..\include\ElteCG\utils\Texture.h" />
     <ClInclude Include="..\include\ElteCG\utils\UniformEditor.h" />
     <ClInclude Include="..\include\ElteCG\utils\Uniforms.h" />

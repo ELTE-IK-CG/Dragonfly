@@ -99,6 +99,9 @@
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp">
       <Filter>ImGui-Addons\STD lib</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\ElteCG\utils\Subroutines.cpp">
+      <Filter>ElteCG\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\include\ElteCG\utils\Texture.cpp">
       <Filter>ElteCG\Utils</Filter>
     </ClCompile>
@@ -228,6 +231,9 @@
       <Filter>ElteCG\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\include\ElteCG\utils\Texture.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\Subroutines.h">
       <Filter>ElteCG\Utils</Filter>
     </ClInclude>
   </ItemGroup>
