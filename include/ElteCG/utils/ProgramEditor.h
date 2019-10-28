@@ -58,6 +58,8 @@ inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 	this->tese.Render();		this->tese.Update();	
 }
 
+class UniformEditor;
+
 using ShaderProgramEditorVF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader, NoShader>;
 using ShaderProgramEditorVGF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader>;
 using ShaderProgramEditorVTF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, ShaderEditor<SFile>, ShaderEditor<SFile>>;
