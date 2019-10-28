@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <ElteCG/define.h>
 #include <ElteCG/ogl/texture_helper.h>
 #include <glm/glm.hpp>
@@ -146,10 +147,14 @@ public:
 	Texture& operator= (Texture&& _o);
 
 	Texture& operator= (const std::string& file);
+	template<typename Format>
+	Texture& operator= (const std::vector<Format>& data);
 
 	void InitTexture(GLuint width, GLuint height, GLuint numLevels = ALL);
 
 	Texture& LoadFromFile(const std::string& file);
+	template<typename Format>
+	Texture& LoadData(const std::vector<Format>& data, bool genMipmap = true);
 
 	template<TextureType NewTexType = TextureType::TEX_2D, typename NewInternalFormat = InternalFormat>
 	Texture<NewTexType, NewInternalFormat> MakeView(TexLevels levels = 0_levelAll);

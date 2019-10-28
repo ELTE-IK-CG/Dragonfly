@@ -60,6 +60,7 @@ private:
 
 	Texture2D<> testTex = Texture2D<>("Assets/scales.jpg");
 	Texture2D<> testTex2;
+	Texture2D<> testTex3;
 
 	TextureCube<> testCubemap = TextureCube<>("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
 	TextureCube<> testCubemap2;

@@ -38,6 +38,24 @@ bool App::Init(int width, int height) {
 
 	testAlias = testCubemap2[TextureType::TEX_CUBE_X_POS][4_levelAll];
 
+	const int WW = 64, HH = 64;
+	testTex3.InitTexture(WW, HH);
+
+	std::vector<glm::u8vec3> pixels(WW * HH);
+	for (int i = 0; i < HH; ++i) for (int j = 0; j < WW; ++j) {
+		pixels[WW*i + j] = glm::u8vec3(4 * j, 4 * i, 0);
+	}
+	testTex3 = pixels;
+
+	std::vector<glm::vec3> pixels2(WW * HH);
+	for (int i = 0; i < HH; ++i) for (int j = 0; j < WW; ++j) {
+		pixels2[WW*i + j] = glm::vec3(j/float(WW), 0, i / float(HH));
+	}
+	testTex3 = pixels2;
+
+	testAlias = testTex3.MakeView();
+
+
 	auto x = 0_levelAll & 0_layerAll;
 	auto y = 0_level >> ALL & 0_layer >> ALL;
 	auto z = 0_level >> 2 & 0_layer >> 3;

@@ -103,6 +103,13 @@ Texture<TextureType::TEX_2D, InternalFormat>& Texture<TextureType::TEX_2D, Inter
 }
 
 template<typename InternalFormat>
+template<typename Format>
+Texture<TextureType::TEX_2D, InternalFormat>& Texture<TextureType::TEX_2D, InternalFormat>::operator= (const std::vector<Format>& data)
+{
+	return LoadData(data);
+}
+
+template<typename InternalFormat>
 void Texture<TextureType::TEX_2D, InternalFormat>::InitTexture(GLuint width, GLuint height, GLuint numLevels)
 {
 	ASSERT(!this->_hasStorage, "Texture2D: cannot change texture's size after the storage has been set");
@@ -135,6 +142,29 @@ Texture<TextureType::TEX_2D, InternalFormat>& Texture<TextureType::TEX_2D, Inter
 	}
 	LoadFromSDLSurface(loaded_img);
 
+	return *this;
+}
+
+template<typename InternalFormat>
+template<typename Format>
+Texture<TextureType::TEX_2D, InternalFormat>& Texture<TextureType::TEX_2D, InternalFormat>::LoadData(const std::vector<Format>& data, bool genMipmap)
+{
+	ASSERT(this->_hasStorage, "Texture2D: you can only load data to a texture if it has its size set (Init)");
+	if (this->_hasStorage) {
+		this->bind();
+
+		constexpr GLenum pxFormat = eltecg::ogl::helper::getInternalChannel<Format>();
+		constexpr GLenum pxType = eltecg::ogl::helper::getInternalBaseType<Format>();
+
+		ASSERT(this->_width * this->_height == data.size(), "Texture2D: trying to write a texture with the wrong amount of data");
+		if (this->_width * this->_height > data.size())
+			return *this;
+
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->_width, this->_height, pxFormat, pxType, static_cast<const void*>(&data[0]));
+
+		if(genMipmap)
+			glGenerateMipmap(GL_TEXTURE_2D);
+	}
 	return *this;
 }
 
