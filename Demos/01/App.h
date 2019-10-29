@@ -66,4 +66,6 @@ private:
 	TextureCube<> testCubemap2;
 
 	Texture2D<> testAlias;
+
+	Texture3D<float> testField;
 };

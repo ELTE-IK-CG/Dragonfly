@@ -54,7 +54,17 @@ bool App::Init(int width, int height) {
 	testTex3 = pixels2;
 
 	testAlias = testTex3.MakeView();
+	
+	const int W3 = 10, H3 = 10, D3 = 10;
+	testField.InitTexture(W3, H3, D3);
+	std::vector<float> fieldValues(W3 * H3 * D3);
+	for (int i = 0; i < D3; ++i)for (int j = 0; j < H3; ++j)for (int k = 0; k < W3; ++k) {
+		glm::vec3 v = (glm::vec3(k, j, i) - (glm::vec3(W3, H3, D3) - 1.0f) / 2.0f) / (glm::vec3(W3, H3, D3) / 2.0f);
+		fieldValues[W3 * H3 * i + W3 * j + k] = glm::length(v) < 1.0f ? 0.0f : 1.0f;
+	}
+	testField = fieldValues;
 
+	testField[1_levelAll];
 
 	auto x = 0_levelAll & 0_layerAll;
 	auto y = 0_level >> ALL & 0_layer >> ALL;
@@ -133,7 +143,7 @@ void App::Render() {
 
 	program << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
 	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam2.GetEye();
-	program << "testTexture" << testAlias;
+	program << "testTexture" << testAlias << "testField" << testField;
 	MyVAO.bindVertexArray();
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);

@@ -66,7 +66,7 @@ public:
 protected:
 	GLuint texture_id = 0;
 	
-	GLuint _width = 0, _height = 0;
+	GLuint _width = 0, _height = 0, _depth = 0;
 	GLuint _levels = 0; // mipmap
 	GLuint _layers = 0; // array
 	bool _hasStorage = false;
@@ -76,7 +76,7 @@ protected:
 
 	TextureLowLevelBase(const TextureLowLevelBase&) = delete;
 	TextureLowLevelBase(TextureLowLevelBase&& _o)
-		: texture_id(_o.texture_id), _width(_o._width), _height(_o._height), _levels(_o._levels), _layers(_o._layers), _hasStorage(_o._hasStorage)
+		: texture_id(_o.texture_id), _width(_o._width), _height(_o._height), _depth(_o._depth), _levels(_o._levels), _layers(_o._layers), _hasStorage(_o._hasStorage)
 	{ _o.texture_id = 0; }
 
 	TextureLowLevelBase& operator= (const TextureLowLevelBase&) = delete;
@@ -87,6 +87,7 @@ protected:
 
 		_width = _o._width;
 		_height = _o._height;
+		_depth = _o._depth;
 		_levels = _o._levels;
 		_layers = _o._layers;
 		_hasStorage = _o._hasStorage;
@@ -159,7 +160,40 @@ public:
 	template<TextureType NewTexType = TextureType::TEX_2D, typename NewInternalFormat = InternalFormat>
 	Texture<NewTexType, NewInternalFormat> MakeView(TexLevels levels = 0_levelAll);
 
-	Texture<TextureType::TEX_2D, InternalFormat> operator[] (TexLevels levels);
+	Texture operator[] (TexLevels levels);
+};
+
+template<typename InternalFormat>
+class Texture<TextureType::TEX_3D, InternalFormat> : public TextureBase<TextureType::TEX_3D, InternalFormat>
+{
+	using Base = TextureBase<TextureType::TEX_3D, InternalFormat>;
+
+	template<TextureType TT, typename IF>
+	friend class TextureBase;
+
+public:
+	Texture() {}
+	Texture(GLuint width, GLuint height, GLuint depth, GLuint numLevels = ALL);
+	~Texture() {}
+
+	Texture(const Texture&) = delete;
+	Texture(Texture&& _o) : Base(std::move(_o)) {}
+
+	Texture& operator= (const Texture&) = delete;
+	Texture& operator= (Texture&& _o);
+
+	template<typename Format>
+	Texture& operator= (const std::vector<Format>& data);
+
+	void InitTexture(GLuint width, GLuint height, GLuint depth, GLuint numLevels = ALL);
+
+	template<typename Format>
+	Texture& LoadData(const std::vector<Format>& data, bool genMipmap = true);
+
+	template<TextureType NewTexType = TextureType::TEX_3D, typename NewInternalFormat = InternalFormat>
+	Texture<NewTexType, NewInternalFormat> MakeView(TexLevels levels = 0_levelAll);
+
+	Texture operator[] (TexLevels levels);
 };
 
 template<typename InternalFormat>
@@ -200,6 +234,8 @@ public:
 
 template<typename InternalFormat = glm::u8vec3>
 using Texture2D = Texture<TextureType::TEX_2D, InternalFormat>;
+template<typename InternalFormat = glm::u8vec3>
+using Texture3D = Texture<TextureType::TEX_3D, InternalFormat>;
 template<typename InternalFormat = glm::u8vec3>
 using TextureCube = Texture<TextureType::TEX_CUBE_MAP, InternalFormat>;
 
