@@ -17,6 +17,7 @@ public:
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 {
+	this->bind();
 	int tab = -1;
 	ImGui::SetNextWindowSize({ 600,400 }, ImGuiCond_FirstUseEver);
 	if (ImGui::Begin(this->program_name.c_str()))
