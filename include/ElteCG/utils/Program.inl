@@ -77,7 +77,7 @@ struct NoShader {
 	constexpr GLuint getID() const { return 0; }
 	constexpr const char* GetErrors() const { return ""; }
 	constexpr bool Compile() { return true; }
-	constexpr void Render() {}
+	void Render(std::string program_name = "default") {}
 	constexpr void Update() {}
 };
 
