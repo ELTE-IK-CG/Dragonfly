@@ -14,15 +14,48 @@ struct NoShader;	//use this class to indicate left-out shader stages
 class ProgramLowLevelBase;
 template<typename Uniform_T> class ProgramBase;
 
+template<typename FragComp_t, typename Vert_t = NoShader, typename Geom_t = NoShader, typename TesC_t = NoShader, typename TesE_t = NoShader>
+struct Shaders
+{
+	using Comp = NoShader;
+	using Frag = FragComp_t;
+	using Vert = Vert_t;
+	using Geom = Geom_t;
+	using TesC = TesC_t;
+	using TesE = TesE_t;
+};
+
+template<typename Compute_t>
+struct Shaders<Compute_t, NoShader, NoShader, NoShader, NoShader>
+{
+	using Comp = Compute_t;
+	using Frag = NoShader;
+	using Vert = NoShader;
+	using Geom = NoShader;
+	using TesC = NoShader;
+	using TesE = NoShader;
+};
+
+template<typename Shaders_t>
+struct Subroutines {}; //todo include
+
 template<
+	typename Shaders_T,
 	typename Uni_T,					// Class implementing setting uniforms and rendering them
-	typename FragComp_t,			// Shader class implementation for fragment OR compute shader, and so on...
-	typename Vert_t = NoShader, typename Geom_t = NoShader,	typename TesC_t = NoShader,	typename TesE_t = NoShader>
+	typename Subroutines_T = Subroutines<Shaders_T>>
 class Program :
 	protected ProgramBase<Uni_T>
 {	//static_assert(std::is_base_of_v<FragComp_t, Shader<SFile>>, "Must have a proper fragment/compute shader type set");
 	class LoadState;	//fwd decl
 	LoadState load_state = LoadState(*this);
+
+	using Comp_t = typename Shaders_T::Comp;
+	using Frag_t = typename Shaders_T::Frag;
+	using Vert_t = typename Shaders_T::Vert;
+	using Geom_t = typename Shaders_T::Geom;
+	using TesC_t = typename Shaders_T::TesC;
+	using TesE_t = typename Shaders_T::TesE;
+
 public:
 	Program(const std::string& name = ""); //glCreateProgram :)
 	Program(const char* name = "");
@@ -46,7 +79,8 @@ public:
 	// This will render and update shaders. Only use it with the base program
 	void Render() {}
 protected:
-	FragComp_t	fragcomp;	Vert_t vert;	Geom_t geom;	TesC_t tesc;	TesE_t tese;
+	Comp_t	comp;
+	Frag_t	frag;	Vert_t vert;	Geom_t geom;	TesC_t tesc;	TesE_t tese;
 	std::string program_name;
 };
 

@@ -16,7 +16,7 @@ inline GLuint Uniforms::GetUniformLocation(const std::string& str) const {
 template<typename ValType>
 inline void Uniforms::SetUniform(std::string&& str, ValType&& val)
 {
-	ASSERT(!locations.empty(), "Shader program doesn't have any uniforms compiled.");
+	WARNING(locations.empty(), "Shader program doesn't have any uniforms compiled.");
 	auto it = locations.find(str);
 	if (it == locations.end())
 	{

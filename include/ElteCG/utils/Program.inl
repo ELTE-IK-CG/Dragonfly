@@ -144,9 +144,9 @@ private:
 };
 
 //This state ensures you cannot add uniforms while adding files.
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-class Program<U, FC, V, G, TC, TE>::LoadState {
-	using Prog = Program<U, FC, V, G, TC, TE>;
+template<typename S, typename U, typename R>
+class Program<S,U,R>::LoadState {
+	using Prog = Program<S, U, R>;
 	friend class Prog;
 	LoadState() = delete;
 public:
@@ -164,29 +164,29 @@ private:
 	std::deque<const char*> shader_list;
 };
 
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _CompShader & s){
-	static_assert(std::is_same_v<V, NoShader>, "Cannot add a compute shader when a vertex shader type is present.");
+template<typename S, typename U, typename R>
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _CompShader & s){
+	static_assert(!std::is_same_v<Comp_t, NoShader>, "Program: No compute shader is present. Maybe you have vertex and fragment shaders instead.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
-		shader_list.push_back(s.path); that.fragcomp << s.path;
+		shader_list.push_back(s.path); that.comp << s.path;
 	}
 	else
 		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
 	return *this;
 }
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _FragShader& s) {
-	static_assert(!std::is_same_v<V, NoShader>, "Cannot add a fragment shader when a vertex shader type is not set.");
+template<typename S, typename U, typename R>
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _FragShader& s) {
+	static_assert(!std::is_same_v<Frag_t, NoShader>, "Program: No fragment shader is present. Maybe you have a compute program.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
-		shader_list.push_back(s.path); that.fragcomp << s.path;
+		shader_list.push_back(s.path); that.frag << s.path;
 	}
 	else 
 		 WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
 	return *this;
 }
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _VertShader & s){
-	static_assert(!std::is_same_v<V, NoShader>, "Invalid vertex shader type to add.");
+template<typename S, typename U, typename R>
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _VertShader & s){
+	static_assert(!std::is_same_v<Vert_t, NoShader>, "Program: No vertex shader is present.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.vert << s.path;
 	}
@@ -194,9 +194,9 @@ inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC
 		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
 	return *this;
 }
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _GeomShader & s){
-	static_assert(!std::is_same_v<G, NoShader>, "Invalid geometry shader type to add.");
+template<typename S, typename U, typename R>
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _GeomShader & s){
+	static_assert(!std::is_same_v<Geom_t, NoShader>, "Program: No geometry shader is present.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.geom << s.path;
 	}
@@ -204,9 +204,9 @@ inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC
 		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
 	return *this;
 }
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _TescShader & s){
-	static_assert(!std::is_same_v<TC, NoShader>, "Invalid tessellation control shader type to add.");
+template<typename S, typename U, typename R>
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _TescShader & s){
+	static_assert(!std::is_same_v<TesC_t, NoShader>, "Program: No tessellation control shader is present.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.tesc << s.path;
 	}
@@ -214,9 +214,9 @@ inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC
 		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
 	return *this;
 }
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _TeseShader & s){
-	static_assert(!std::is_same_v<TE, NoShader>, "Invalid tessellation evaluation shader type to add.");
+template<typename S, typename U, typename R>
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _TeseShader & s){
+	static_assert(!std::is_same_v<TesE_t, NoShader>, "Program: No tessellation evaluation shader is present.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.tese << s.path;
 	}
@@ -224,27 +224,27 @@ inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC
 		WARNING(true, ("More than one occurenc of a shader file detected, extra item removed: " + std::string(s.path)).c_str() );
 	return *this;
 }
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const typename ProgramLowLevelBase::LinkType andCompile) {
+template<typename S, typename U, typename R>
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const typename ProgramLowLevelBase::LinkType andCompile) {
 	that.Link();		return *this;
 }
 
 // ========================= Program implementation ==============================
 
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-	Program<U,FC,V,G,TC,TE>::Program(const char* name)	: Program<U, FC, V, G, TC, TE>::Program(std::string(name))
+template<typename S, typename U, typename R>
+	Program<S, U, R>::Program(const char* name)	: Program<S, U, R>::Program(std::string(name))
 	{}
 
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-	Program<U,FC,V,G,TC,TE>::Program(const std::string& name)	: ProgramBase<U>::ProgramBase(),
-		  fragcomp(std::is_same_v<V, NoShader>? GL_COMPUTE_SHADER: GL_FRAGMENT_SHADER),
-		  vert(GL_VERTEX_SHADER), geom(GL_GEOMETRY_SHADER), tesc(GL_TESS_CONTROL_SHADER), tese(GL_TESS_EVALUATION_SHADER),
+template<typename S, typename U, typename R>
+	Program<S, U, R>::Program(const std::string& name)	: ProgramBase<U>::ProgramBase(),
+		  comp(GL_COMPUTE_SHADER),
+		  frag(GL_FRAGMENT_SHADER), vert(GL_VERTEX_SHADER), geom(GL_GEOMETRY_SHADER), tesc(GL_TESS_CONTROL_SHADER), tese(GL_TESS_EVALUATION_SHADER),
 		  program_name(name)
 	{}
 
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
+template<typename S, typename U, typename R>
 	inline typename ProgramBase<U>::InvalidState&
-		Program<U,FC,V,G,TC,TE>::operator<<(const std::string & str)
+		Program<S, U, R>::operator<<(const std::string & str)
 {
 	this->bind();
 #ifdef _DEBUG
@@ -256,13 +256,18 @@ template<typename U, typename FC, typename V, typename G, typename TC, typename 
 }
 
 
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline bool	Program<U, FC, V, G, TC, TE>::Link()
+template<typename S, typename U, typename R>
+inline bool	Program<S, U, R>::Link()
 {	//TODO make it smart, only compile when something changed. Not sure how...
 	this->error_msg.clear();
-	if (!this->fragcomp.Compile()){
-		this->error_msg += "\nFragment/Compute Shader did not compile.\n";
-		this->error_msg += this->fragcomp.GetErrors();
+	if (!this->comp.Compile()){
+		this->error_msg += "\nCompute Shader did not compile.\n";
+		this->error_msg += this->comp.GetErrors();
+		return false;
+	}
+	if (!this->frag.Compile()) {
+		this->error_msg += "\nFragment Shader did not compile.\n";
+		this->error_msg += this->frag.GetErrors();
 		return false;
 	}
 	if (!this->vert.Compile()){
@@ -286,7 +291,8 @@ inline bool	Program<U, FC, V, G, TC, TE>::Link()
 		return false;
 	}
 	GL_CHECK;
-	this->attachShader(fragcomp);
+	this->attachShader(comp);
+	this->attachShader(frag);
 	this->attachShader(vert);
 	this->attachShader(geom);
 	this->attachShader(tesc);

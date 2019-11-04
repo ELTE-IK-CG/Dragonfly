@@ -4,9 +4,9 @@
 #include <ImGui/imgui.h>
 
 
-template< typename U, typename FC, typename V = NoShader, typename G = NoShader, typename TC = NoShader, typename TE = NoShader>
-class ProgramEditor : public Program<U, FC, V, G, TC, TE> {
-	using Base = Program<U, FC, V, G, TC, TE>;
+template<typename S, typename U, typename R>
+class ProgramEditor : public Program<S, U, R> {
+	using Base = Program<S, U, R>;
 public:
 	ProgramEditor(const std::string& name) : Base(name) {}
 	ProgramEditor(const char* name) : Base(name) {}
@@ -14,8 +14,8 @@ public:
 	void Render();
 };
 
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
+template<typename S, typename U, typename R>
+inline void ProgramEditor<S, U, R>::Render()
 {
 	int tab = -1;
 	ImGui::SetNextWindowSize({ 600,400 }, ImGuiCond_FirstUseEver);
@@ -57,12 +57,12 @@ inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 	this->tesc.Render();		this->tesc.Update();
 	this->tese.Render();		this->tese.Update();	
 }
-
+/*
 using ShaderProgramEditorVF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader, NoShader>;
 using ShaderProgramEditorVGF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader>;
 using ShaderProgramEditorVTF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, ShaderEditor<SFile>, ShaderEditor<SFile>>;
 using ShaderProgramEditorVGTF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>>;
-using ComputeProgramEditor = ProgramEditor<UniformEditor, ShaderEditor<SFile>, NoShader, NoShader, NoShader, NoShader>;
+using ComputeProgramEditor = ProgramEditor<UniformEditor, ShaderEditor<SFile>, NoShader, NoShader, NoShader, NoShader>;*/
 
 /*
 inline ComputeProgramEditor ComputeProgramEditor(const std::string& name, const std::string& comp)
