@@ -9,6 +9,9 @@ bool Uniforms::Compile()
 	glGetProgramiv(program_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uni_max_name_len);
 	ASSERT(uni_num == 0 || uni_max_name_len > 1, "Weird. The uniform names should be longer.");
 	std::vector<char> namebuff(uni_max_name_len);
+	locations.clear();
+	sampler2texLoc.clear();
+	texLoc2sampler.clear();
 	locations.reserve(uni_num);
 	for (int i = 0; i < uni_num; ++i)	{
 		GLsizei size; GLenum type;

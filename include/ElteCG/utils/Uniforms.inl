@@ -43,3 +43,13 @@ inline void Uniforms::SetUniform(std::string&& str, ValType&& val)
 	}
 
 }
+
+template<>
+inline void Uniforms::SetUniform(std::string&& uniform, std::string&& subroutine)
+{
+	if (!subroutines.SetSubroutine(uniform, subroutine)) {
+		bool isSubroutineUniform = subroutines.HasUniform(uniform);
+		WARNING(!isSubroutineUniform, ("SetUniform: \"" + uniform + "\" is not a subroutine uniform, you might have set the uniforms wrong").c_str());
+		WARNING(isSubroutineUniform, ("SetUniform: couldn't set \"" + uniform + "\" to \"" + subroutine + "\" because it is not compatible").c_str());
+	}
+}

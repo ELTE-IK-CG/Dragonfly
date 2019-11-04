@@ -1,20 +1,21 @@
 #include "Subroutines.h"
 
 #include <imgui/imgui.h>
-
+#include <eltecg/define.h>
 
 #include <sstream>
 
 #define NAME_LENGTH 64
 
-void Subroutines::Init(GLuint program, GLenum shadertype)
+ShaderSubroutines::ShaderSubroutines(GLuint program, GLenum shadertype)
+	: program(program), shadertype(shadertype)
+{}
+
+void ShaderSubroutines::Compile()
 {
 	subNames.clear();
 	uniforms.clear();
 	indices.clear();
-
-	this->program = program;
-	this->shadertype = shadertype;
 
 	// TODO GL_CHEKS everywhere?
 	GLint num;
@@ -60,7 +61,7 @@ void Subroutines::Init(GLuint program, GLenum shadertype)
 	}
 }
 
-bool Subroutines::RenderUI()
+bool ShaderSubroutines::RenderUI()
 {
 	if (ImGui::Begin("Subroutines", &uiIsOpen))
 	{
@@ -87,14 +88,7 @@ bool Subroutines::RenderUI()
 	return uiIsOpen;
 }
 
-void Subroutines::SetSubroutines() const
-{
-	// TODO gl_checks?
-	if(!indices.empty())
-		glUniformSubroutinesuiv(shadertype, static_cast<GLsizei>(indices.size()), &indices[0]);
-}
-
-bool Subroutines::SubroutineSelector(const std::vector<GLint>& compatibleSubs, GLuint& subIndex)
+bool ShaderSubroutines::SubroutineSelector(const std::vector<GLint>& compatibleSubs, GLuint& subIndex)
 {
 	// mostly copied from ImGui::Combo()
 
@@ -129,26 +123,70 @@ bool Subroutines::SubroutineSelector(const std::vector<GLint>& compatibleSubs, G
 	return value_changed;
 }
 
-void CachedSubroutines::Init(GLuint program, GLenum shadertype)
-{
-	Subroutines::Init(program, shadertype);
 
-	for (const auto& uni : uniforms) {
-		uniLocs[uni.name] = uni.loc;
+bool SubroutinesBase::Compile()
+{
+	uniIndices.clear();
+	subInds.clear();
+
+	uint8_t shaderInd = 0;
+	for (auto& sub : shaderSubs) {
+		sub.Compile();
+
+		for (size_t i = 0; i < sub.uniforms.size(); ++i) {
+			auto& uni = sub.uniforms[i];
+			WARNING(uniIndices.find(uni.name) != uniIndices.end(), "Subroutines: subroutine uniform name used in multiple shader stages, we only allow unique names");
+			uniIndices[uni.name] = { shaderInd, i };
+		}
+		for (size_t i = 0; i < sub.subNames.size(); ++i) {
+			subInds[{shaderInd, sub.subNames[i]}] = static_cast<GLuint>(i);
+		}
+
+		++shaderInd;
 	}
-	for (size_t i = 0; i < subNames.size(); ++i) {
-		subInds[subNames[i]] = static_cast<GLuint>(i);
-	}
+
+	return true;
 }
 
-bool CachedSubroutines::SetSubroutine(const std::string& uniform, const std::string& subroutine)
+bool SubroutinesBase::SetSubroutine(const std::string & uniform, const std::string & subroutine)
 {
-	auto uniIt = uniLocs.find(uniform);
-	auto subIt = subInds.find(subroutine);
-
-	if (uniIt == uniLocs.end() || subIt == subInds.end())
+	auto uniIt = uniIndices.find(uniform);
+	if (uniIt == uniIndices.end()) {
 		return false;
+	}
+	size_t uniIndex = uniIt->second.second;
+	uint8_t shaderInd = uniIt->second.first;
 
-	indices[uniIt->second] = subIt->second;
+	auto subIt = subInds.find(std::pair<uint8_t, std::string>(shaderInd, subroutine));
+	if (subIt == subInds.end()) {
+		return false;
+	}
+	GLuint subInd = subIt->second;
+
+	const auto& compatible = shaderSubs[shaderInd].uniforms[uniIndex].compatibleSubs;
+	if (std::find(compatible.begin(), compatible.end(), subInd) == compatible.end()) {
+		return false;
+	}
+	GLint uniLoc = shaderSubs[shaderInd].uniforms[uniIndex].loc;
+
+	shaderSubs[shaderInd].indices[uniLoc] = subInd;
+
 	return true;
+}
+
+void SubroutinesBase::SetSubroutines()
+{
+	for (auto& sub : shaderSubs)
+		sub.SetSubroutines();
+}
+
+bool SubroutinesBase::HasUniform(const std::string & uniform) const
+{
+	return uniIndices.find(uniform) != uniIndices.end();
+}
+
+void SubroutinesBase::RenderUI()
+{
+	for (auto& sub : shaderSubs)
+		sub.RenderUI();
 }

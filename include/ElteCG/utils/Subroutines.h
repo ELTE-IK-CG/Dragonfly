@@ -4,14 +4,21 @@
 #include <vector>
 #include <map>
 
-class Subroutines
+class ShaderSubroutines
 {
+	friend class SubroutinesBase;
+	template<typename Shaders_T>
+	friend class Subroutines;
 public:
-	Subroutines() {}
-	// Init: can be recalled with a new program, old settings will be lost
-	void Init(GLuint program, GLenum shadertype);
+	ShaderSubroutines() = delete;
+	ShaderSubroutines(ShaderSubroutines&&) = default;
+	// Compile: can be called when shaders change, old settings will be lost
+	void Compile();
 	// SetSubroutines: has to be called after every program bind before drawing
-	void SetSubroutines() const;
+	void SetSubroutines() const {
+		if (!indices.empty())
+			glUniformSubroutinesuiv(shadertype, static_cast<GLsizei>(indices.size()), &indices[0]);
+	}
 
 	bool RenderUI();
 protected:
@@ -31,34 +38,52 @@ protected:
 
 	bool uiIsOpen;
 
+	ShaderSubroutines(GLuint program, GLenum shadertype);
+
 	bool SubroutineSelector(const std::vector<GLint>& compatibleSubs, GLuint& index);
 };
 
-class CachedSubroutines : public Subroutines
+class SubroutinesBase
 {
 public:
-	class UniformToSet {
-		friend class CachedSubroutines;
-		CachedSubroutines& that;
-		std::string uniName;
-		UniformToSet() = delete;
-		UniformToSet(CachedSubroutines& c, const std::string s) : that(c), uniName(s) {}
-		UniformToSet(const UniformToSet&) = delete;
-		UniformToSet& operator=(const UniformToSet&) = delete;
-	public:
-		CachedSubroutines& operator<<(const std::string& subName) {
-			that.SetSubroutine(uniName, subName);
-			return that;
-		}
-	};
-
-	void Init(GLuint program, GLenum shadertype);
+	// Compile: can be called when shaders change, old settings will be lost
+	bool Compile();
+	// SetSubroutine: set a named uniform subroutin to a named function
 	bool SetSubroutine(const std::string& uniform, const std::string& subroutine);
-	UniformToSet operator<<(const std::string& uniName) {
-		return UniformToSet(*this, uniName);
-	}
+	// SetSubroutines: has to be called after every program bind before drawing
+	void SetSubroutines();
+	// HasUnifrom: is a particular subroutine uniform present in the program
+	bool HasUniform(const std::string& uniform) const;
 
+	void RenderUI();
 protected:
-	std::map<std::string, GLint> uniLocs; // uniName name -> uniName location
-	std::map<std::string, GLuint> subInds; // sub name -> sub index
+	SubroutinesBase() {}
+
+	GLint program_id;
+	std::vector<ShaderSubroutines> shaderSubs;
+
+	std::map<std::string, std::pair<uint8_t, size_t>> uniIndices; // uniName -> (shader index, uniform location)
+	std::map <std::pair<uint8_t, std::string>, GLuint> subInds; // (shader index, subroutine name) -> subroutine index
 };
+
+template<typename Shaders_T>
+class Subroutines : public SubroutinesBase
+{
+protected:
+public:
+	using SubroutinesBase::shaderSubs;
+	Subroutines() = delete;
+	Subroutines(GLint program);
+	void RenderUI() {}
+};
+
+
+template<typename Shaders_T>
+class SubroutinesEditor : public Subroutines<Shaders_T>
+{
+public:
+	SubroutinesEditor(GLint program) : Subroutines(program){}
+	using SubroutinesBase::RenderUI;
+};
+
+#include "Subroutines.inl"

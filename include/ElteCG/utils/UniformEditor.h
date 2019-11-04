@@ -18,7 +18,7 @@ private:
 	std::unordered_map<GLint, UniformData> loc2data;
 	std::vector<GLint> loc_order;
 public:
-	UniformEditor(GLuint program_id) : Base(program_id) {}
+	UniformEditor(GLuint program_id, SubroutinesBase& sub) : Base(program_id, sub) {}
 	void Render(const std::string &program_name = "");
 	bool Compile();
 	template<typename ValType>

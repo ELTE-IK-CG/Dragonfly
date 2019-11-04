@@ -92,6 +92,7 @@
   <ItemGroup>
     <None Include="..\include\ElteCG\utils\Program.inl" />
     <None Include="..\include\ElteCG\utils\Shader.inl" />
+    <None Include="..\include\ElteCG\utils\Subroutines.inl" />
     <None Include="..\include\ElteCG\utils\Texture.inl" />
     <None Include="..\include\ElteCG\utils\Uniforms.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />

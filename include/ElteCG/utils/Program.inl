@@ -44,13 +44,14 @@ protected:
 	class InvalidState;	//fwd decl
 protected:
 	Uniform_T uniforms;
-	ProgramBase(): uniforms(program_id){}
+	ProgramBase(SubroutinesBase& sub): uniforms(program_id, sub){}
 	ValidState	 valid_state   = ValidState(*this);		//	for the << trick with uniforms
 	InvalidState invalid_state = InvalidState(*this);	//	only the first use binds
 #ifdef _DEBUG
 	bool  ended_with_valid_state = true;
 #endif // _DEBUG
 	inline void startUniformSetupOperator_SetNewName(const std::string& str) { invalid_state.new_name = str; };
+	GLuint GetProgramID()const { return program_id; } // TODO, Program needs this, how to do it simpler?
 };
 
 // ========================= Helper classes ==============================
@@ -236,10 +237,11 @@ template<typename S, typename U, typename R>
 	{}
 
 template<typename S, typename U, typename R>
-	Program<S, U, R>::Program(const std::string& name)	: ProgramBase<U>::ProgramBase(),
+	Program<S, U, R>::Program(const std::string& name)	: ProgramBase<U>::ProgramBase(subroutines),
 		  comp(GL_COMPUTE_SHADER),
 		  frag(GL_FRAGMENT_SHADER), vert(GL_VERTEX_SHADER), geom(GL_GEOMETRY_SHADER), tesc(GL_TESS_CONTROL_SHADER), tese(GL_TESS_EVALUATION_SHADER),
-		  program_name(name)
+		  program_name(name),
+		  subroutines(this->GetProgramID())
 	{}
 
 template<typename S, typename U, typename R>

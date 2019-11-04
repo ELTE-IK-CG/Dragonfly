@@ -3,6 +3,8 @@
 #include <string>
 #include <deque>
 
+#include "Subroutines.h"
+
 struct _CompShader { const char* path; };
 struct _FragShader { const char* path; };
 struct _VertShader { const char* path; };
@@ -35,9 +37,6 @@ struct Shaders<Compute_t, NoShader, NoShader, NoShader, NoShader>
 	using TesC = NoShader;
 	using TesE = NoShader;
 };
-
-template<typename Shaders_t>
-struct Subroutines {}; //todo include
 
 template<
 	typename Shaders_T,
@@ -82,6 +81,7 @@ protected:
 	Comp_t	comp;
 	Frag_t	frag;	Vert_t vert;	Geom_t geom;	TesC_t tesc;	TesE_t tese;
 	std::string program_name;
+	Subroutines_T subroutines;
 };
 
 #include "Program.inl"
