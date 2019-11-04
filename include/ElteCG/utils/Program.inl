@@ -78,11 +78,12 @@ struct NoShader {
 	constexpr GLuint getID() const { return 0; }
 	constexpr const char* GetErrors() const { return ""; }
 	constexpr bool Compile() { return true; }
-	constexpr void Render() {}
+	void Render(std::string program_name = "default") {}
 	constexpr void Update() {}
 };
 
 static typename ProgramLowLevelBase::LinkType LinkProgram, CompileProgram;
+static typename SetSubroutinesType SetSubroutines; // TODO remove this if possible
 
 constexpr _CompShader operator"" _comp(const char* str, size_t len) { return _CompShader{ str }; }
 constexpr _FragShader operator"" _frag(const char* str, size_t len) { return _FragShader{ str }; }
@@ -306,6 +307,10 @@ inline bool	Program<S, U, R>::Link()
 	}
 	if (!this->uniforms.Compile()) {
 		this->error_msg += "\n Weird error with uniforms. Uniforms class did not Compile.\n";
+		return false;
+	}
+	if (!this->subroutines.Compile()) {
+		this->error_msg += "\n Weird error with subroutines. Subroutines class did not Compile.\n";
 		return false;
 	}
 	GL_CHECK;

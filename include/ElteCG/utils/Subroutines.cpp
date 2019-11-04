@@ -28,7 +28,7 @@ void ShaderSubroutines::Compile()
 	for (GLint ind = 0; ind < num; ++ind) {
 		glGetActiveSubroutineName(program, shadertype, ind, NAME_LENGTH, nullptr, buff);
 		std::stringstream ss;
-		ss << ind << " " << buff;
+		ss << buff;
 		subNames.push_back(ss.str());
 	}
 
@@ -61,11 +61,11 @@ void ShaderSubroutines::Compile()
 	}
 }
 
-bool ShaderSubroutines::RenderUI()
+void ShaderSubroutines::RenderUI()
 {
-	if (ImGui::Begin("Subroutines", &uiIsOpen))
-	{
-		for (const auto& x : subNames) 
+	ImGui::PushID(shadertype);
+	if (ImGui::CollapsingHeader("shader stage ???")) { // TODO write shader type
+		for (const auto& x : subNames)
 		{
 			ImGui::Text("%s", x.c_str());
 		}
@@ -84,8 +84,7 @@ bool ShaderSubroutines::RenderUI()
 			ImGui::PopID();
 		}
 	}
-	ImGui::End();
-	return uiIsOpen;
+	ImGui::PopID();
 }
 
 bool ShaderSubroutines::SubroutineSelector(const std::vector<GLint>& compatibleSubs, GLuint& subIndex)
@@ -164,7 +163,7 @@ bool SubroutinesBase::SetSubroutine(const std::string & uniform, const std::stri
 	GLuint subInd = subIt->second;
 
 	const auto& compatible = shaderSubs[shaderInd].uniforms[uniIndex].compatibleSubs;
-	if (std::find(compatible.begin(), compatible.end(), subInd) == compatible.end()) {
+	if (std::find(compatible.begin(), compatible.end(), subInd) == compatible.end()) { // TODO binary_search, are they in order?
 		return false;
 	}
 	GLint uniLoc = shaderSubs[shaderInd].uniforms[uniIndex].loc;
@@ -185,8 +184,11 @@ bool SubroutinesBase::HasUniform(const std::string & uniform) const
 	return uniIndices.find(uniform) != uniIndices.end();
 }
 
-void SubroutinesBase::RenderUI()
+void SubroutinesBase::Render(const std::string& program_name)
 {
-	for (auto& sub : shaderSubs)
-		sub.RenderUI();
+	if(ImGui::Begin(program_name.c_str())) {
+		for (auto& sub : shaderSubs)
+			sub.RenderUI();
+	} ImGui::End();
+
 }

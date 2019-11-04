@@ -20,7 +20,7 @@ public:
 			glUniformSubroutinesuiv(shadertype, static_cast<GLsizei>(indices.size()), &indices[0]);
 	}
 
-	bool RenderUI();
+	void RenderUI();
 protected:
 	struct SubUniform {
 		std::string name;
@@ -35,8 +35,6 @@ protected:
 	std::vector<SubUniform> uniforms;
 	std::vector<std::string> subNames;  // sub index -> sub name
 	std::vector<GLuint> indices;   // uniName location -> currently set sub index
-
-	bool uiIsOpen;
 
 	ShaderSubroutines(GLuint program, GLenum shadertype);
 
@@ -55,7 +53,7 @@ public:
 	// HasUnifrom: is a particular subroutine uniform present in the program
 	bool HasUniform(const std::string& uniform) const;
 
-	void RenderUI();
+	void Render(const std::string& program_name);
 protected:
 	SubroutinesBase() {}
 
@@ -69,12 +67,10 @@ protected:
 template<typename Shaders_T>
 class Subroutines : public SubroutinesBase
 {
-protected:
 public:
-	using SubroutinesBase::shaderSubs;
 	Subroutines() = delete;
 	Subroutines(GLint program);
-	void RenderUI() {}
+	void Render(const std::string& program_name) {}
 };
 
 
@@ -82,8 +78,8 @@ template<typename Shaders_T>
 class SubroutinesEditor : public Subroutines<Shaders_T>
 {
 public:
-	SubroutinesEditor(GLint program) : Subroutines(program){}
-	using SubroutinesBase::RenderUI;
+	SubroutinesEditor(GLint program) : Subroutines<Shaders_T>(program){}
+	using SubroutinesBase::Render;
 };
 
 #include "Subroutines.inl"

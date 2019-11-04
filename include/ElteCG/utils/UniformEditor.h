@@ -25,6 +25,7 @@ public:
 	inline void SetUniform(std::string&& str, ValType& val);
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, const ValType& val);
+	inline void SetUniform(std::string&& str, const char* val);
 };
 
 template<typename ValType>
@@ -59,4 +60,16 @@ inline void UniformEditor::SetUniform(std::string&& str, ValType& val)
 	//d.input_var = &val;
 	d.variant = val;
 	SetUni(loc, val);
+}
+
+
+template<>
+inline void UniformEditor::SetUniform<>(std::string&& str, const std::string& val)
+{
+	Base::SetUniform(std::move(str), val);
+}
+
+inline void UniformEditor::SetUniform(std::string&& str, const char* val)
+{
+	Base::SetUniform(std::move(str), val);
 }

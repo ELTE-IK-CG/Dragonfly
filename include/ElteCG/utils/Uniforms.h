@@ -33,6 +33,7 @@ public:
 	Uniforms() = delete;
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, ValType&& val);
+	void SetUniform(std::string && uniform, const char * subroutine);
 	//Do this on shader program compilation.
 	bool Compile();
 

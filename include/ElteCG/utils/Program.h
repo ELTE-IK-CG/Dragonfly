@@ -5,6 +5,8 @@
 
 #include "Subroutines.h"
 
+struct SetSubroutinesType {}; // TODO remove if possible
+
 struct _CompShader { const char* path; };
 struct _FragShader { const char* path; };
 struct _VertShader { const char* path; };
@@ -48,6 +50,7 @@ class Program :
 	class LoadState;	//fwd decl
 	LoadState load_state = LoadState(*this);
 
+protected:
 	using Comp_t = typename Shaders_T::Comp;
 	using Frag_t = typename Shaders_T::Frag;
 	using Vert_t = typename Shaders_T::Vert;
@@ -72,8 +75,13 @@ public:
 	inline LoadState& operator << (const _GeomShader& s){ return (this->load_state << s); }
 	inline LoadState& operator << (const _TescShader& s){ return (this->load_state << s); }
 	inline LoadState& operator << (const _TeseShader& s){ return (this->load_state << s); }
-	inline LoadState& operator << (const typename LoadState::LinkType link) { return (this->load_state << link); }
 	//Compile shaders and Link the program
+	inline LoadState& operator << (const typename LoadState::LinkType link) { return (this->load_state << link); }
+
+
+	//Set subroutines on GPU, has to be called before every draw, TODO remove function and call SetSubroutines automatically on rendering
+	inline Program& operator << (const SetSubroutinesType& set) { subroutines.SetSubroutines(); return *this; }
+
 
 	// This will render and update shaders. Only use it with the base program
 	void Render() {}

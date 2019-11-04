@@ -4,7 +4,7 @@
 #include <ImGui/imgui.h>
 
 
-template<typename S, typename U, typename R>
+template<typename S, typename U, typename R = Subroutines<S>>
 class ProgramEditor : public Program<S, U, R> {
 	using Base = Program<S, U, R>;
 public:
@@ -26,16 +26,28 @@ inline void ProgramEditor<S, U, R>::Render()
 			this->Link();
 		}
 		if (ImGui::BeginTabBar("ProgramTabBar", 0)) {
-			if (ImGui::BeginTabItem("Fragment editor")) {
-				tab = 0;
-				ImGui::EndTabItem();
+			if constexpr (std::is_same_v<typename Base::Frag_t, NoShader>) {
+				if (ImGui::BeginTabItem("Compute shader editor")) {
+					tab = 0;
+					ImGui::EndTabItem();
+				}
 			}
-			if (ImGui::BeginTabItem("Vertex editor")) {
-				tab = 1;
-				ImGui::EndTabItem();
+			else {
+				if (ImGui::BeginTabItem("Fragment editor")) {
+					tab = 1;
+					ImGui::EndTabItem();
+				}
+				if (ImGui::BeginTabItem("Vertex editor")) {
+					tab = 2;
+					ImGui::EndTabItem();
+				}
 			}
 			if (ImGui::BeginTabItem("Uniform editor")) {
-				tab = 2;
+				tab = 3;
+				ImGui::EndTabItem();
+			}
+			if (ImGui::BeginTabItem("Subroutine editor")) {
+				tab = 4;
 				ImGui::EndTabItem();
 			}
 			ImGui::EndTabBar();
@@ -44,11 +56,15 @@ inline void ProgramEditor<S, U, R>::Render()
 
 	switch (tab) {
 	case(0):
-		this->fragcomp.Render(this->program_name);	this->fragcomp.Update(); break;
+		this->comp.Render(this->program_name);	this->comp.Update(); break;
 	case(1):
-		this->vert.Render(this->program_name);		this->vert.Update(); break;
+		this->frag.Render(this->program_name);	this->frag.Update(); break;
 	case(2):
+		this->vert.Render(this->program_name);		this->vert.Update(); break;
+	case(3):
 		this->uniforms.Render(this->program_name); break;
+	case(4):
+		this->subroutines.Render(this->program_name); break;
 	default:
 		break;
 	}
