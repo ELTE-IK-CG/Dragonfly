@@ -66,6 +66,12 @@ bool App::Init(int width, int height) {
 
 	testField[1_levelAll];
 
+	testTexArray.InitTexture(512, 512, 2);
+	testTexArray[0] = "Assets/xpos.png";
+	testTexArray[1] = "Assets/ypos.png";
+
+	testAlias = testTexArray.MakeView<TextureType::TEX_2D>(1_layer);
+
 	auto x = 0_levelAll & 0_layerAll;
 	auto y = 0_level >> ALL & 0_layer >> ALL;
 	auto z = 0_level >> 2 & 0_layer >> 3;

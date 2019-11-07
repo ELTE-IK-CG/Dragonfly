@@ -9,8 +9,8 @@ uniform sampler3D testField;
 
 void main()
 {
-    fs_out_col = texture(testTexture, vs_out_col.xy)*0.01;
-	fs_out_col += texture(testField, vec3(vs_out_col.xy, gCameraPos.z));
+    fs_out_col = 0.8*texture(testTexture, vs_out_col.xy);
+	fs_out_col += 0.2*texture(testField, vec3(vs_out_col.xy, gCameraPos.z));
     fs_out_col += vs_out_col;
 }
 

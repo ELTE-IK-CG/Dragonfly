@@ -68,4 +68,6 @@ private:
 	Texture2D<> testAlias;
 
 	Texture3D<float> testField;
+
+	Texture2DArray<> testTexArray;
 };
