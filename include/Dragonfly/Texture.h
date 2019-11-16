@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <ElteCG/define.h>
-#include <ElteCG/ogl/texture_helper.h>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <SDL/SDL_image.h>
+#include "config.h"
+#include "detail/texture_helper.h"
 
 enum class TextureType : decltype(GL_TEXTURE_1D)
 {
@@ -239,4 +239,4 @@ using Texture3D = Texture<TextureType::TEX_3D, InternalFormat>;
 template<typename InternalFormat = glm::u8vec3>
 using TextureCube = Texture<TextureType::TEX_CUBE_MAP, InternalFormat>;
 
-#include "Texture.inl"
+#include "detail/Texture.inl"

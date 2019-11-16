@@ -1,6 +1,6 @@
 #pragma once
-#include "Program.h"
-#include <eltecg/define.h>
+#include "../config.h"
+#include "../Program.h"
 
 // ========================= Program Base Classes ==============================
 

@@ -1,9 +1,9 @@
 #pragma once
-#include <eltecg/define.h>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <variant>
 #include <string>
+#include "../config.h"
 
 class UniformLowLevelBase
 {

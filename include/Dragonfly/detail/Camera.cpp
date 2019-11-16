@@ -1,9 +1,9 @@
 #include <iostream>
-#include "Camera.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <math.h>
 #include <chrono>
+#include <math.h>
 #include <imgui/imgui.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include "../Camera.h"
 
 int Camera::CamCount_ = 0; //static variable
 

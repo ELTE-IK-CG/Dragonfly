@@ -1,7 +1,5 @@
 #pragma once
-#include "Uniforms.h"
-
-
+#include "Uniform.h"
 
 class UniformEditor : public Uniforms {
 	using Base = Uniforms;

@@ -9,15 +9,9 @@
 
 
 //Dragonfly Runtime
-#include "ElteCG/Utils/Camera.h"
-#include "ElteCG/utils/ShaderEditor.h"
-#include "ElteCG/utils/Shader.h"
-#include "ElteCG/utils/Program.h"
-#include "ElteCG/utils/UniformEditor.h"
-#include "ElteCG/utils/ProgramEditor.h"
-#include "ElteCG/ogl/buffer.h"
-#include "ElteCG/ogl/vao.h"
-#include <ElteCG/utils/Texture.h>
+#include <Dragonfly/editor.h>
+#include <Dragonfly/detail/buffer.h>
+#include <Dragonfly/detail/vao.h>
 
 class App {
 

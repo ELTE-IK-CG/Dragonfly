@@ -83,7 +83,7 @@ GLuint eltecg::ogl::helper::getBaseFormat(GLuint internalFormat)
 		return GL_DEPTH_COMPONENT;
 	case GL_STENCIL_INDEX1:		case GL_STENCIL_INDEX4:			case GL_STENCIL_INDEX8:
 	case GL_STENCIL_INDEX16:
-		return GL_STENCIL_COMPONENT; //??  Missing from website. R: shouldn't this be GL_STENCIL_INDEX ?
+		return GL_STENCIL_INDEX;
 	case GL_DEPTH24_STENCIL8:	case GL_DEPTH32F_STENCIL8:
 		return GL_DEPTH_STENCIL;
 	case GL_R8:					case GL_R8_SNORM:				case GL_R16:

@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include <regex>
-#include <eltecg/define.h>
+#include "../config.h"
 
 #include "ShaderEditor.h"
 

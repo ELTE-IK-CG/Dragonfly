@@ -1,5 +1,5 @@
 #pragma once
-#include "Uniforms.h"
+#include "Uniform.h"
 #include <typeinfo>
 #include <iostream>
 

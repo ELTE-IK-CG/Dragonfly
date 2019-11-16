@@ -1,4 +1,4 @@
-#include "Texture.h"
+#include "../Texture.h"
 
 int detail::invert_image(int pitch, int height, void* image_pixels)
 {

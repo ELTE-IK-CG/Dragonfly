@@ -71,6 +71,7 @@ void SFile::Assign(const std::string & code_){
 	path = folder = filename = extension = error_msg = "";
 	folder_depth_level = 0;
 }
+
 // ========================= Shader ==============================
 
 #include "Shader.inl"

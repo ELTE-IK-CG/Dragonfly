@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <GL/glew.h>
-#include <eltecg/define.h>
+#include "../config.h"
 
 //	1. Choose a file loader:		[DONE]
 //		SFile,						Storage and interface between a file and memory copy

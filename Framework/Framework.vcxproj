@@ -15,20 +15,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\ElteCG\debug.cpp" />
-    <ClCompile Include="..\include\ElteCG\ogl\texture_helper.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\utils\Camera.cpp" />
-    <ClCompile Include="..\include\ElteCG\utils\Program.cpp" />
-    <ClCompile Include="..\include\ElteCG\utils\Shader.cpp" />
-    <ClCompile Include="..\include\ElteCG\utils\ShaderEditor.cpp" />
-    <ClCompile Include="..\include\ElteCG\utils\Texture.cpp" />
-    <ClCompile Include="..\include\ElteCG\utils\UniformEditor.cpp" />
-    <ClCompile Include="..\include\ElteCG\utils\Uniforms.cpp" />
-    <ClCompile Include="..\include\ElteCG\utils\UniformTypes.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Camera.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Program.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Shader.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\ShaderEditor.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Texture.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\texture_helper.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\UniformEditor.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\UniformTypes.cpp" />
     <ClCompile Include="..\include\ImGui-addons\auto\auto.cpp" />
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.cpp" />
@@ -44,28 +40,22 @@
     <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\ElteCG\config.h" />
-    <ClInclude Include="..\include\ElteCG\debug.h" />
-    <ClInclude Include="..\include\ElteCG\define.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\buffer.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\object.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\program.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\sampler.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\shader.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\static_helper.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\texture.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\texture2D.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\texture_helper.h" />
-    <ClInclude Include="..\include\ElteCG\ogl\vao.h" />
-    <ClInclude Include="..\include\ElteCG\utils\Camera.h" />
-    <ClInclude Include="..\include\ElteCG\utils\Program.h" />
-    <ClInclude Include="..\include\ElteCG\utils\ProgramEditor.h" />
-    <ClInclude Include="..\include\ElteCG\utils\Shader.h" />
-    <ClInclude Include="..\include\ElteCG\utils\ShaderEditor.h" />
-    <ClInclude Include="..\include\ElteCG\utils\Texture.h" />
-    <ClInclude Include="..\include\ElteCG\utils\UniformEditor.h" />
-    <ClInclude Include="..\include\ElteCG\utils\Uniforms.h" />
-    <ClInclude Include="..\include\ElteCG\utils\UniformTypes.hpp" />
+    <ClInclude Include="..\include\Dragonfly\Camera.h" />
+    <ClInclude Include="..\include\Dragonfly\config.h" />
+    <ClInclude Include="..\include\Dragonfly\core.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\object.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Shader.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\ShaderEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\texture_helper.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\UniformEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\UniformTypes.hpp" />
+    <ClInclude Include="..\include\Dragonfly\detail\vao.h" />
+    <ClInclude Include="..\include\Dragonfly\editor.h" />
+    <ClInclude Include="..\include\Dragonfly\Program.h" />
+    <ClInclude Include="..\include\Dragonfly\ProgramEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\Texture.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\auto.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\core.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\impl_base.h" />
@@ -88,10 +78,10 @@
     <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\include\ElteCG\utils\Program.inl" />
-    <None Include="..\include\ElteCG\utils\Shader.inl" />
-    <None Include="..\include\ElteCG\utils\Texture.inl" />
-    <None Include="..\include\ElteCG\utils\Uniforms.inl" />
+    <None Include="..\include\Dragonfly\detail\Program.inl" />
+    <None Include="..\include\Dragonfly\detail\Shader.inl" />
+    <None Include="..\include\Dragonfly\detail\Texture.inl" />
+    <None Include="..\include\Dragonfly\detail\Uniform.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl" />

@@ -1,4 +1,4 @@
-#include "Uniforms.h"
+#include "Uniform.h"
 
 bool Uniforms::Compile()
 {

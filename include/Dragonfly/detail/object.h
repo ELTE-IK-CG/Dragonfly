@@ -1,5 +1,5 @@
 #pragma once
-#include "../define.h"
+#include "../config.h"
 //#include "static_helper.h"
 #include <GL/glew.h>
 

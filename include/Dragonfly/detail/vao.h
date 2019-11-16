@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <typeinfo>
-#include <ElteCG/utils/UniformTypes.hpp> //glm -> ogl type conversion ... TODO refactor
+#include "UniformTypes.hpp" //glm -> ogl type conversion ... TODO refactor
 
 //namespace for opengl classes
 namespace eltecg { namespace ogl {

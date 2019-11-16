@@ -50,4 +50,4 @@ protected:
 	std::string program_name;
 };
 
-#include "Program.inl"
+#include "detail/Program.inl"

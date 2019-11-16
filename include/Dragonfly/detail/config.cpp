@@ -1,7 +1,8 @@
 #if defined(_DEBUG) || defined(GPU_DEBUG)
 
-#include "define.h"
-#include "debug.h"
+//used to be debug.cpp
+
+#include "..\config.h"
 #include <stdio.h>
 #include <GL/glew.h>
 

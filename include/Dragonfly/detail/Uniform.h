@@ -1,7 +1,7 @@
 #pragma once
-#include "Program.h"
+#include "../Program.h"
 #include "UniformTypes.hpp"
-#include "Texture.h"
+#include "../Texture.h"
 
 #include <unordered_map>
 #include <glm/glm.hpp>
@@ -42,4 +42,4 @@ public:
 
 using GreedyUniforms [[deprecated("Use the \"Uniforms\" class instead.")]] = Uniforms;
 
-#include "Uniforms.inl"
+#include "Uniform.inl"
