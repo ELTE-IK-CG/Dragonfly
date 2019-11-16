@@ -39,7 +39,7 @@ private:
 	float col_intensity = 0.15f;
 
 	ProgramEditor<UniformEditor, ShaderEditor<SFile>,	   ShaderEditor<SFile>			> program  = "Side-Prog";
-	ProgramEditor<UniformEditor, ShaderEditor<SFileEditor>, ShaderEditor<SFileEditor>	> program2 = "Main-Prog";
+	ProgramEditor<UniformEditor, ShaderEditor<FileEditor>, ShaderEditor<FileEditor>	> program2 = "Main-Prog";
 		
 
 	eltecg::ogl::ArrayBuffer MyVBO;

@@ -55,7 +55,7 @@ protected:
 
 // ========================= Helper classes ==============================
 
-class SFile;	class SFileEditor;
+class SFile;	class FileEditor;
 template<typename File> class Shader;
 template<typename File> class ShaderEditor;
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 #include "Shader.h"
 
 inline const char* shader2str(GLenum type);
@@ -55,7 +56,7 @@ bool Shader<File_t>::Compile(){
 		const std::string &code = shaders[i].GetCode();
 		this->source_strs[2 * i + 2] = code.c_str();
 		this->source_lens[2 * i + 2] = (GLint)code.length();
-		ver_num = std::max(ver_num, this->shaders[i].GetVersionNumber());
+		ver_num = ver_num > this->shaders[i].GetVersionNumber() ? ver_num : this->shaders[i].GetVersionNumber();
 	}
 	this->version_str = "#version " + std::to_string(ver_num) + '\n';
 	this->source_strs[0] = this->version_str.c_str();

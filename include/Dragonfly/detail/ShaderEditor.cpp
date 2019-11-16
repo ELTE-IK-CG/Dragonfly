@@ -1,82 +1,15 @@
 #include <filesystem>
 #include <algorithm>
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <regex>
 #include "../config.h"
-
+#include "Shader.h"
+#include "Shader.inl"
 #include "ShaderEditor.h"
 
-// ========================= File ==============================
-
-void SFileEditor::CreateEditor() const{
-	frames_unseen = 0;
-	if (!editor) {
-		editor = std::make_unique<TextEditor>();
-		editor->SetLanguageDefinition(TextEditor::LanguageDefinition::GLSL());
-		editor->SetShowWhitespaces(false);
-		auto palette = TextEditor::GetDarkPalette();
-		palette[(int)TextEditor::PaletteIndex::Punctuation] = ImGui::ColorConvertFloat4ToU32({ 1,1,0.5,1 });
-		editor->SetPalette(palette);
-		editor->SetText(code);
-		editor->SetErrorMarkers(error_markers);
-	}
-}
-
-void SFileEditor::SetErrorMarkers(const TextEditor::ErrorMarkers & errm) {
-	//CreateEditor();
-	error_markers = errm;
-	if(editor) editor->SetErrorMarkers(error_markers);
-}
-
-void SFileEditor::Render()
-{
-	std::string winname = "File Editor [" + path + ']';
-	ImGui::PushID(winname.c_str());
-	if (ImGui::CollapsingHeader(winname.c_str(), ImGuiTreeNodeFlags_None)) {
-		CreateEditor();//only if needed!
-		//ImVec2 region = ImGui::GetContentRegionMax();
-		if (ImGui::BeginChild("Buttons", { 0, (error_msg.empty() ? 20.f : 40.f) + 15 }))
-		{
-			ImVec2 region = ImGui::GetContentRegionAvail();
-			if (ImGui::Button("Save", { region.x*0.49f, 16.f + region.y*0.05f })) Save();
-			ImGui::SameLine();
-			if (ImGui::Button("Load", { region.x*0.49f, 16.f + region.y*0.05f })) { Load(); editor->SetText(code); }
-			if (!error_msg.empty()) {
-				ImGui::PushStyleColor(ImGuiCol_Text, { 1,0.5f,0.5f,1 });
-				ImGui::TextUnformatted(error_msg.c_str(), error_msg.c_str() + error_msg.length());
-				ImGui::PopStyleColor();
-			}
-
-		}		ImGui::EndChild();
-		editor->SetReadOnly(false); editor->SetHandleKeyboardInputs(true); editor->SetHandleMouseInputs(true);
-		editor->Render(winname.c_str(), {0,450}, false);
-		if (editor->IsTextChanged()) {
-			code = editor->GetText();
-			dirty = true;
-		}
-	}
-	ImGui::PopID();
-}
-
-inline void SFileEditor::ViewFile() const {
-	CreateEditor();
-	ImGui::BeginTooltip();
-	editor->SetReadOnly(true); editor->SetHandleKeyboardInputs(false); editor->SetHandleMouseInputs(false);
-	ImGui::TextColored({ 0.5,0.5,1.f,1 }, path.c_str());
-	ImGui::Separator();
-	editor->GetTotalLines();
-	editor->SetImGuiChildIgnored(true);
-	std::string winname = "File Editor [" + path + ']';
-	editor->Render(winname.c_str(), { 0,0 }, false);
-	editor->SetImGuiChildIgnored(false);
-	ImGui::EndTooltip();
-}
-
-// ========================= Shader ==============================
-
-#include "Shader.inl"
+#include "File.h"
+#include "FileEditor.h" // todo fix File template classes
 
 template<typename File_t>
 ShaderEditor<File_t>::ShaderEditor(GLenum type, const std::string &directory_, const std::string &name_) : Base(type), directory(directory_), name(name_) {
@@ -346,7 +279,7 @@ void ShaderEditor<File_t>::renderErrorWindow() {
 
 template <typename File_t>
 void setMarkersImpl(File_t& sfile, const TextEditor::ErrorMarkers &markers) {}//do nothing
-template<> void setMarkersImpl<SFileEditor>(SFileEditor& sfile, const TextEditor::ErrorMarkers &markers) {
+template<> void setMarkersImpl<FileEditor>(FileEditor& sfile, const TextEditor::ErrorMarkers &markers) {
 	sfile.SetErrorMarkers(markers);
 }
 
@@ -385,7 +318,7 @@ void ShaderEditor<File_t>::onCompile() {
 	};
 	TextEditor::ErrorMarkers gen_markers;
 	std::vector<TextEditor::ErrorMarkers> file_markers;
-	if constexpr (std::is_same_v<SFileEditor, File_t>) file_markers.resize(this->shaders.size());
+	if constexpr (std::is_same_v<FileEditor, File_t>) file_markers.resize(this->shaders.size());
 
 	auto addError = [&](const std::string& errline) -> void {
 		ErrorLine err = parseError(errline);
@@ -421,7 +354,7 @@ void ShaderEditor<File_t>::onCompile() {
 				err.line - total_lines_to_src + 1:
 				line_numbers[which_source]-1; //last line number of that previous file.
 
-			if constexpr (std::is_same_v<SFileEditor, File_t>) if (err.type == ErrorLine::Type::ERROR) file_markers[file_id].emplace(err.line, err.message);
+			if constexpr (std::is_same_v<FileEditor, File_t>) if (err.type == ErrorLine::Type::ERROR) file_markers[file_id].emplace(err.line, err.message);
 		}
 		error_handling.parsed_errors.emplace_back(err);
 	};
@@ -443,11 +376,12 @@ void ShaderEditor<File_t>::onCompile() {
 		}
 	}
 	error_handling.generated.SetErrorMarkers(gen_markers);
-	if constexpr (std::is_same_v<SFileEditor, File_t>) for (int i = 0; i < this->shaders.size(); ++i) setMarkersImpl(this->shaders[i], file_markers[i]);
+	if constexpr (std::is_same_v<FileEditor, File_t>) for (int i = 0; i < this->shaders.size(); ++i) setMarkersImpl(this->shaders[i], file_markers[i]);
 }
 
 
 // ========================= File_t specializations ==============================
+// todo cleanup this mess
 
 template<> void hoverFileImp(const SFile & file){
 	ImGui::BeginTooltip();	ImGui::TextColored({ 0.5,0.5,1,1 }, file.GetPath().c_str());
@@ -455,14 +389,14 @@ template<> void hoverFileImp(const SFile & file){
 	ImGui::TextUnformatted(file.GetCode().c_str(), file.GetCode().c_str() + file.GetCode().size());
 	ImGui::EndTooltip();
 }
-template<> void hoverFileImp(const SFileEditor & file){	file.ViewFile();}
+template<> void hoverFileImp(const FileEditor & file){	file.ViewFile();}
 
 template<typename File_t>
 void ShaderEditor<File_t>::hoverPath(const std::string & path) {
 	if (++hover.frames < 12) {
 		ImGui::BeginTooltip();	ImGui::TextColored({ 0.5,0.5,1,1 }, path.c_str());	ImGui::EndTooltip();
 	} else if (hover.frames == 12 || path != hover.file->GetPath())
-		hover.file = std::make_unique<SFileEditor>(path);
+		hover.file = std::make_unique<FileEditor>(path);
 
 	if (hover.frames >= 12) hoverFileImp(*hover.file);
 }
@@ -480,7 +414,7 @@ template<> void ShaderEditor<SFile>::renderShaderFiles(){
 
 
 //dont dock next to each other, but rather below
-template<> void ShaderEditor<SFileEditor>::renderShaderFiles() {
+template<> void ShaderEditor<FileEditor>::renderShaderFiles() {
 	for (auto& sh : shaders) {
 			sh.Render();
 		}
@@ -488,6 +422,6 @@ template<> void ShaderEditor<SFileEditor>::renderShaderFiles() {
 
 
 
-template class Shader<SFileEditor>;
+template class Shader<FileEditor>;
 template class ShaderEditor<SFile>;
-template class ShaderEditor<SFileEditor>;
+template class ShaderEditor<FileEditor>;

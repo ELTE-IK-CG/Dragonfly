@@ -99,6 +99,12 @@
     <ClCompile Include="..\include\Dragonfly\detail\UniformTypes.cpp">
       <Filter>Dragonfly\detail</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\File.cpp">
+      <Filter>Dragonfly\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\FileEditor.cpp">
+      <Filter>Dragonfly\detail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -208,6 +214,12 @@
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\Texture.h">
       <Filter>Dragonfly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\File.h">
+      <Filter>Dragonfly\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\FileEditor.h">
+      <Filter>Dragonfly\detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
