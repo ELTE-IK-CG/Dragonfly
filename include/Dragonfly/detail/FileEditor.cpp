@@ -4,6 +4,8 @@
 #include "../config.h"
 #include "FileEditor.h"
 
+using namespace df;
+
 void FileEditor::CreateEditor() const{
 	frames_unseen = 0;
 	if (!editor) {

@@ -4,6 +4,9 @@
 
 // ========================= Program Base Classes ==============================
 
+namespace df
+{
+
 class ProgramLowLevelBase
 {
 protected:
@@ -164,6 +167,7 @@ private:
 	std::deque<const char*> shader_list;
 };
 
+
 template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
 inline typename Program<U, FC, V, G, TC, TE>::LoadState& Program<U, FC, V, G, TC, TE>::LoadState::operator<<(const _CompShader & s){
 	static_assert(std::is_same_v<V, NoShader>, "Cannot add a compute shader when a vertex shader type is present.");
@@ -307,4 +311,4 @@ inline bool	Program<U, FC, V, G, TC, TE>::Link()
 	return true;
 }
 
-
+} //namespace df

@@ -5,6 +5,8 @@
 #include <string>
 #include <iostream>
 
+using namespace df;
+
 SFile::SFile(const std::string &path_){
 	SetLocation(path_);
 	Load();

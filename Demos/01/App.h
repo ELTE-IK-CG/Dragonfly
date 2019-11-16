@@ -38,28 +38,28 @@ private:
 	int canvas_height=480;
 	float col_intensity = 0.15f;
 
-	ProgramEditor<UniformEditor, ShaderEditor<SFile>,	   ShaderEditor<SFile>			> program  = "Side-Prog";
-	ProgramEditor<UniformEditor, ShaderEditor<FileEditor>, ShaderEditor<FileEditor>	> program2 = "Main-Prog";
+	df::ProgramEditor<df::UniformEditor, df::ShaderEditor<df::SFile>,	   df::ShaderEditor<df::SFile>		> program  = "Side-Prog";
+	df::ProgramEditor<df::UniformEditor, df::ShaderEditor<df::FileEditor>, df::ShaderEditor<df::FileEditor>	> program2 = "Main-Prog";
 		
 
 	eltecg::ogl::ArrayBuffer MyVBO;
 	eltecg::ogl::VertexArray MyVAO;
 
-	Camera cam;
-	Camera cam2 = Camera("CameraWithName");
+	df::Camera cam;
+	df::Camera cam2 = df::Camera("CameraWithName");
 
 	void InitShaders();
 
 	void InitGL();
 
-	Texture2D<> testTex = Texture2D<>("Assets/scales.jpg");
-	Texture2D<> testTex2;
-	Texture2D<> testTex3;
+	df::Texture2D<> testTex = df::Texture2D<>("Assets/scales.jpg");
+	df::Texture2D<> testTex2;
+	df::Texture2D<> testTex3;
 
-	TextureCube<> testCubemap = TextureCube<>("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
-	TextureCube<> testCubemap2;
+	df::TextureCube<> testCubemap = df::TextureCube<>("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
+	df::TextureCube<> testCubemap2;
 
-	Texture2D<> testAlias;
+	df::Texture2D<> testAlias;
 
-	Texture3D<float> testField;
+	df::Texture3D<float> testField;
 };

@@ -1,6 +1,6 @@
 #include "../Texture.h"
 
-int detail::invert_image(int pitch, int height, void* image_pixels)
+int df::detail::invert_image(int pitch, int height, void* image_pixels)
 {
 	int index;
 	void* temp_row;

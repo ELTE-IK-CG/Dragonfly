@@ -1,6 +1,8 @@
 #include "Program.inl"
 #include <vector>
 
+using namespace df;
+
 
 GLuint ProgramLowLevelBase::bound_program_id = 0;
 

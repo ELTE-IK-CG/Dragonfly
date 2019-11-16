@@ -1,6 +1,9 @@
 #pragma once
 #include "../Texture.h"
 
+namespace df
+{
+
 // TextureBase
 
 template<TextureType TexType, typename InternalFormat>
@@ -417,3 +420,5 @@ Texture<TextureType::TEX_CUBE_MAP, InternalFormat> Texture<TextureType::TEX_CUBE
 {
 	return MakeView(levels);
 }
+
+} //namespace df

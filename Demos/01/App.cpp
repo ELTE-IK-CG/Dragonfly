@@ -8,6 +8,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform2.hpp>
 
+using namespace df;
 
 bool App::Init(int width, int height) {
 

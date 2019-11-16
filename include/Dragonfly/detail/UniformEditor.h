@@ -1,8 +1,11 @@
 #pragma once
 #include "Uniform.h"
 
-class UniformEditor : public Uniforms {
-	using Base = Uniforms;
+namespace df
+{
+
+class UniformEditor : public df::Uniforms {
+	using Base = df::Uniforms;
 private:
 	class UniformData : OpenGL_BaseType{
 		friend class UniformEditor;
@@ -25,8 +28,10 @@ public:
 	inline void SetUniform(std::string&& str, const ValType& val);
 };
 
+} //namespace df
+
 template<typename ValType>
-inline void UniformEditor::SetUniform(std::string&& str, const ValType& val)
+inline void df::UniformEditor::SetUniform(std::string&& str, const ValType& val)
 {
 
 	//static_assert(is_list_member<ValType, valid_types>(), "Invalid type in SetUniform: wrong type given to program with << operator (like a string), or implementation may be missing.");
@@ -55,7 +60,7 @@ inline void UniformEditor::SetUniform(std::string&& str, const ValType& val)
 }
 
 template<typename ValType>
-inline void UniformEditor::SetUniform(std::string&& str, ValType& val)
+inline void df::UniformEditor::SetUniform(std::string&& str, ValType& val)
 {
 	using VT = std::remove_reference_t<std::remove_cv_t<ValType>>;
 	static_assert(is_list_member<ValType, valid_types>() || std::is_base_of_v<TextureLowLevelBase, VT>, "Invalid type. TODO fix otherwise.");
@@ -78,3 +83,4 @@ inline void UniformEditor::SetUniform(std::string&& str, ValType& val)
 		SetUni(loc, val);
 	}
 }
+

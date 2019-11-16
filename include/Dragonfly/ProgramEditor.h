@@ -3,6 +3,8 @@
 #include "Program.h"
 #include <ImGui/imgui.h>
 
+namespace df
+{
 
 template< typename U, typename FC, typename V = NoShader, typename G = NoShader, typename TC = NoShader, typename TE = NoShader>
 class ProgramEditor : public Program<U, FC, V, G, TC, TE> {
@@ -101,3 +103,5 @@ inline ShaderProgramEditorVGTF ShaderProgramEditor(const std::string& name, cons
 	return prog;
 }
 */
+
+} // namespace df

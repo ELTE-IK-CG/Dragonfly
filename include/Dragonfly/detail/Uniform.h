@@ -1,11 +1,13 @@
 #pragma once
 #include "../Program.h"
 #include "UniformTypes.hpp"
-#include "../Texture.h"
 
 #include <unordered_map>
 #include <glm/glm.hpp>
 #include <map>
+
+namespace df
+{
 
 class Uniforms : public UniformLowLevelBase {
 	friend class ProgramBase<Uniforms>;
@@ -40,6 +42,9 @@ public:
 };
 
 
-using GreedyUniforms [[deprecated("Use the \"Uniforms\" class instead.")]] = Uniforms;
+//using GreedyUniforms [[deprecated("Use the \"Uniform\" class instead.")]] = Uniforms;
+
+} //namespace df
+
 
 #include "Uniform.inl"

@@ -1,5 +1,7 @@
 #include "Uniform.h"
 
+using namespace df;
+
 bool Uniforms::Compile()
 {
 	GLint uni_num = 0, uni_max_name_len = 0;

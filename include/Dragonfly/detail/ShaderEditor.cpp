@@ -11,6 +11,8 @@
 #include "File.h"
 #include "FileEditor.h" // todo fix File template classes
 
+using namespace df;
+
 template<typename File_t>
 ShaderEditor<File_t>::ShaderEditor(GLenum type, const std::string &directory_, const std::string &name_) : Base(type), directory(directory_), name(name_) {
 	for (const auto &dir : std::filesystem::recursive_directory_iterator(directory_)) {

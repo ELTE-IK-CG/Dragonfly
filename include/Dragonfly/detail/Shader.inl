@@ -2,7 +2,10 @@
 #include <type_traits>
 #include "Shader.h"
 
-inline const char* shader2str(GLenum type);
+namespace df
+{
+
+//inline const char* shader2str(GLenum type);
 
 
 class ShaderLowLevelBase
@@ -38,11 +41,13 @@ protected:
 	ShaderBase(GLenum type) : ShaderLowLevelBase::ShaderLowLevelBase(type){}
 }; //this means we can have the low level class declaration after the Shader class
 
-template<typename File_t> Shader<File_t>::Shader(GLenum type) : ShaderBase<File_t>::ShaderBase(type){}
-template<typename File_t> Shader<File_t>::~Shader(){}
+} //namespace df
+
+template<typename File_t> df::Shader<File_t>::Shader(GLenum type) : df::ShaderBase<File_t>::ShaderBase(type){}
+template<typename File_t> df::Shader<File_t>::~Shader(){}
 
 template<typename File_t>
-bool Shader<File_t>::Compile(){
+bool df::Shader<File_t>::Compile(){
 	this->source_strs.resize(2*shaders.size() + 1);
 	this->source_lens.resize(2*shaders.size() + 1);
 	extra_lines.resize(shaders.size());
@@ -65,25 +70,25 @@ bool Shader<File_t>::Compile(){
 }
 
 template<typename File_t>
-Shader<File_t>& Shader<File_t>::operator <<(File_t &&sfile){
+df::Shader<File_t>& df::Shader<File_t>::operator <<(File_t &&sfile){
 	shaders.emplace_back(std::move(sfile));
 	return *this;
 }
 template<typename File_t>
-Shader<File_t>& Shader<File_t>::operator <<(const std::string& path){
+df::Shader<File_t>& df::Shader<File_t>::operator <<(const std::string& path){
 	shaders.emplace_back(path);
 	return *this;
 }
 
 template<typename File_t>
-void Shader<File_t>::PopShader() {
+void df::Shader<File_t>::PopShader() {
 	shaders.pop_back();
 }
 template<typename File_t>
-void Shader<File_t>::EraseShader(size_t idx) {
+void df::Shader<File_t>::EraseShader(size_t idx) {
 	ASSERT(idx < shaders.size() && idx >= 0,"Invalid index");	shaders.erase(shaders.begin() + idx);
 }
 
-template<typename File_t> void Shader<File_t>::Update() {
+template<typename File_t> void df::Shader<File_t>::Update() {
 	for (auto& s : this->shaders) s.Update();
 }

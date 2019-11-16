@@ -3,6 +3,9 @@
 #include <string>
 #include <deque>
 
+namespace df
+{
+
 struct _CompShader { const char* path; };
 struct _FragShader { const char* path; };
 struct _VertShader { const char* path; };
@@ -49,5 +52,7 @@ protected:
 	FragComp_t	fragcomp;	Vert_t vert;	Geom_t geom;	TesC_t tesc;	TesE_t tese;
 	std::string program_name;
 };
+
+} //namespace df
 
 #include "detail/Program.inl"

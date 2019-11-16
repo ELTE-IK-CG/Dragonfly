@@ -2,6 +2,8 @@
 #include "Shader.inl"
 #include "File.h"
 
+using namespace df;
+
 template class Shader<SFile>;
 
 const char* shader2str(GLenum type){

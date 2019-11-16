@@ -2,6 +2,9 @@
 #include "File.h"
 #include <ImGui-addons/imgui_text_editor/TextEditor.h>
 
+namespace df
+{
+
 class FileEditor : public SFile {
 public:
 	struct ErrorLine {
@@ -46,3 +49,5 @@ public:
 	// Renders a tooltip window. Best used with ImGui::IsItemHoweverd()
 	void ViewFile() const;
 };
+
+} //namespace df

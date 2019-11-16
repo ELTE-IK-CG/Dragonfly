@@ -7,6 +7,9 @@
 #include "config.h"
 #include "detail/texture_helper.h"
 
+namespace df
+{
+
 enum class TextureType : decltype(GL_TEXTURE_1D)
 {
 	TEX_1D = GL_TEXTURE_1D,							TEX_2D = GL_TEXTURE_2D,					TEX_3D = GL_TEXTURE_3D,
@@ -238,5 +241,8 @@ template<typename InternalFormat = glm::u8vec3>
 using Texture3D = Texture<TextureType::TEX_3D, InternalFormat>;
 template<typename InternalFormat = glm::u8vec3>
 using TextureCube = Texture<TextureType::TEX_CUBE_MAP, InternalFormat>;
+
+} //namespace df
+
 
 #include "detail/Texture.inl"

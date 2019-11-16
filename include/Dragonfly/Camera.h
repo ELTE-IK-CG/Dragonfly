@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <string>
 
+namespace df
+{
+
 class Camera
 {
 	static int CamCount_;
@@ -83,4 +86,6 @@ private:
 
 	std::string name_ = "";
 };
-	
+
+} //namespace df
+

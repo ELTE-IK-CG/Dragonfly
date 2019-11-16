@@ -16,6 +16,8 @@
 //
 //	3. Choose a Program class:		[DONE]  TODO: explain
 
+namespace df
+{
 
 template<typename File_t> class ShaderBase;
 
@@ -51,5 +53,7 @@ public:
 	//This class doesn't (really) implement these features:
 	void Render(std::string name = "") {}	void Update();
 };
+
+} //namespace df
 
 #include "Shader.inl"

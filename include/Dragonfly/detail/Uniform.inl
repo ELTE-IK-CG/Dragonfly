@@ -1,9 +1,10 @@
 #pragma once
-#include "Uniform.h"
 #include <typeinfo>
-#include <iostream>
+//#include <iostream>
+#include "Uniform.h"
+#include "../Texture.h"
 
-inline GLuint Uniforms::GetUniformLocation(const std::string& str) const {
+inline GLuint df::Uniforms::GetUniformLocation(const std::string& str) const {
 	if (auto it = locations.find(str); it != locations.end()) {
 		return it->second.loc;
 	}
@@ -14,7 +15,7 @@ inline GLuint Uniforms::GetUniformLocation(const std::string& str) const {
 }
 
 template<typename ValType>
-inline void Uniforms::SetUniform(std::string&& str, ValType&& val)
+inline void df::Uniforms::SetUniform(std::string&& str, ValType&& val)
 {
 	ASSERT(!locations.empty(), "Shader program doesn't have any uniforms compiled.");
 	auto it = locations.find(str);
@@ -29,7 +30,7 @@ inline void Uniforms::SetUniform(std::string&& str, ValType&& val)
 	WARNING(typeid(ValType).hash_code() != it->second.cpu_type, ("The uniform \"" + str + "\" of type \"" + typeid(ValType).name() + "\" was initialized with a different type. Compare the calling << operator to the first one with this name.").c_str());
 
 	using NakedValType = std::remove_reference_t<std::remove_cv_t<ValType>>;
-	if constexpr (std::is_base_of_v<TextureLowLevelBase, NakedValType>) {
+	if constexpr (std::is_base_of_v<df::TextureLowLevelBase, NakedValType>) {
 		auto tex_it = texLoc2sampler.find(it->second.loc);
 		//ASSERT(tex_it != texLoc2sampler.end(), ("Texture sampler \"" + str + "\" not found of type \"Texture<" + typeid(InternalFormat).name() + ">\". This error should not occur.").c_str());
 		//TODO ASSERT TYPE CHECK
@@ -39,7 +40,7 @@ inline void Uniforms::SetUniform(std::string&& str, ValType&& val)
 	else {
 		ASSERT(getOpenGLType<ValType>() == it->second.gpu_type, ("The uniform \"" + str + "\" of type \"" + typeid(ValType).name() + "\" had a different type in the shader.").c_str());
 		ASSERT(texLoc2sampler.find(it->second.loc) == texLoc2sampler.end(), ("The uniform \"" + str + "\" of type \"" + typeid(ValType).name() + "\" is supposed to be a texture.").c_str());
-		SetUni(it->second.loc, val); // Regular uniforms
+		this->SetUni(it->second.loc, val); // Regular uniforms
 	}
 
 }

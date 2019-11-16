@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <iostream>
 
+using namespace df;
+
 IMGUI_AUTO_DEFINE_INLINE(template<>, UniformLowLevelBase::uni_hash_type, ImGui::Text("%s%u", (name.empty() ? "" : name + "=").c_str(), var.h);)
 
 void UniformEditor::Render(const std::string &program_name){

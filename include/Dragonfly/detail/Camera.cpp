@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../Camera.h"
 
+using namespace df;
+
 int Camera::CamCount_ = 0; //static variable
 
 bool Camera::Update()

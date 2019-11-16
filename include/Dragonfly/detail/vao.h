@@ -99,7 +99,7 @@ inline void VertexArray::addVBOrec()
 		using attib_t = as_array_type_t<Type_head>;
 		using base_t = std::remove_pointer_t<std::remove_all_extents_t<attib_t>>;
 
-		constexpr GLenum	ogl_base_t = getOpenGLType<base_t>();
+		constexpr GLenum	ogl_base_t = df::getOpenGLType<base_t>();
 		constexpr GLboolean integral = is_integral_t_v<Type_head>;
 		constexpr GLint		components = std::extent_v<attib_t> > std::extent_v<Type_head> ? std::extent_v<attib_t> : std::extent_v<Type_head>;
 

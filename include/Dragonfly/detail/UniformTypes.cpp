@@ -1,5 +1,7 @@
 #include "UniformTypes.hpp"
 
+using namespace df;
+
 OpenGL_BaseType::ValueType OpenGL_BaseType::GetCppTypeFromOpenGlType(GLenum type)
 {
 	switch (type)
@@ -178,7 +180,7 @@ std::string OpenGL_BaseType::GetTypeNameFromOpenGlType(GLenum type)
 	}
 }
 
-bool isOpenGLTextureType(GLenum type)
+bool df::isOpenGLTextureType(GLenum type)
 {
 	switch (type)
 	{

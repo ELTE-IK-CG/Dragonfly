@@ -3,6 +3,9 @@
 #include "FileEditor.h"
 #include <ImGui-addons/imgui_text_editor/TextEditor.h>
 
+namespace df
+{
+
 template<typename File_t>
 class ShaderEditor : public Shader<File_t>{
 	static_assert(std::is_base_of_v<SFile, File_t>,"File_t must be derived from SFile");
@@ -56,3 +59,5 @@ public:
 	//Gathers source code from added shaders and compiles (does not reload shaders)
 	bool Compile();
 };
+
+} //namespace df

@@ -16,6 +16,8 @@
 //
 //	3. Choose a Program class:		[DONE]  TODO: explain
 
+namespace df
+{
 
 class SFile {
 private:
@@ -61,3 +63,5 @@ public:
 	//This class doesn't implement these features:
 	void Render(std::string name = "") {} void Update() {} void Open() {} void Close() {} void ViewFile(){}
 };
+
+} //namespace df
