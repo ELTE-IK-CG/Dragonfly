@@ -22,6 +22,7 @@
     <ClCompile Include="..\include\Dragonfly\detail\Program.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Shader.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\ShaderEditor.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Subroutines.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Texture.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\texture_helper.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Uniform.cpp" />
@@ -51,6 +52,8 @@
     <ClInclude Include="..\include\Dragonfly\detail\object.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader.h" />
     <ClInclude Include="..\include\Dragonfly\detail\ShaderEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Shaders.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Subroutines.h" />
     <ClInclude Include="..\include\Dragonfly\detail\texture_helper.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform.h" />
     <ClInclude Include="..\include\Dragonfly\detail\UniformEditor.h" />
@@ -85,6 +88,7 @@
   <ItemGroup>
     <None Include="..\include\Dragonfly\detail\Program.inl" />
     <None Include="..\include\Dragonfly\detail\Shader.inl" />
+    <None Include="..\include\Dragonfly\detail\Subroutines.inl" />
     <None Include="..\include\Dragonfly\detail\Texture.inl" />
     <None Include="..\include\Dragonfly\detail\Uniform.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />

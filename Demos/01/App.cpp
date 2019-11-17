@@ -146,6 +146,9 @@ void App::Render() {
 	program << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
 	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam2.GetEye();
 	program << "testTexture" << testAlias << "testField" << testField;
+	program << SetSubroutines;
+	program2 << SetSubroutines;
+	MyVAO.bindVertexArray();
 
 	program << demoVao;
 
@@ -165,6 +168,8 @@ void App::Render() {
 void App::KeyboardDown(SDL_KeyboardEvent& key) {
 	cam.KeyboardDown(key);
 	cam2.KeyboardDown(key);
+	if (key.keysym.sym == SDLK_1) program2 << "calcColor" << "vertColor";
+	if (key.keysym.sym == SDLK_2) program2 << "calcColor" << "textureColor";
 }
 
 void App::KeyboardUp(SDL_KeyboardEvent& key) {

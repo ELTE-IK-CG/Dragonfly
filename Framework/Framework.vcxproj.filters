@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="ImGui-Addons">
@@ -103,6 +103,9 @@
       <Filter>Dragonfly\detail</Filter>
     </ClCompile>
     <ClCompile Include="..\include\Dragonfly\detail\FileEditor.cpp">
+      <Filter>Dragonfly\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Subroutines.cpp">
       <Filter>Dragonfly\detail</Filter>
     </ClCompile>
   </ItemGroup>
@@ -221,6 +224,12 @@
     <ClInclude Include="..\include\Dragonfly\detail\FileEditor.h">
       <Filter>Dragonfly\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Subroutines.h">
+      <Filter>Dragonfly\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shaders.h">
+      <Filter>Dragonfly\detail</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\Dragonfly\Vao.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
@@ -245,6 +254,9 @@
       <Filter>Dragonfly\detail</Filter>
     </None>
     <None Include="..\include\Dragonfly\detail\Uniform.inl">
+      <Filter>Dragonfly\detail</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Subroutines.inl">
       <Filter>Dragonfly\detail</Filter>
     </None>
   </ItemGroup>

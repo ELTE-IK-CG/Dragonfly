@@ -1,14 +1,15 @@
 #pragma once
 #include <string>
 #include "Program.h"
+#include "detail/Shaders.h"
 #include <ImGui/imgui.h>
 
 namespace df
 {
 
-template< typename U, typename FC, typename V = NoShader, typename G = NoShader, typename TC = NoShader, typename TE = NoShader>
-class ProgramEditor : public Program<U, FC, V, G, TC, TE> {
-	using Base = Program<U, FC, V, G, TC, TE>;
+template<typename S, typename U, typename R = SubroutinesEditor<S>>
+class ProgramEditor : public Program<S, U, R> {
+	using Base = Program<S, U, R>;
 public:
 	ProgramEditor(const std::string& name) : Base(name) {}
 	ProgramEditor(const char* name) : Base(name) {}
@@ -16,8 +17,8 @@ public:
 	void Render();
 };
 
-template<typename U, typename FC, typename V, typename G, typename TC, typename TE>
-inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
+template<typename S, typename U, typename R>
+inline void ProgramEditor<S, U, R>::Render()
 {
 	this->bind();
 	int tab = -1;
@@ -29,16 +30,28 @@ inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 			this->Link();
 		}
 		if (ImGui::BeginTabBar("ProgramTabBar", 0)) {
-			if (ImGui::BeginTabItem("Fragment editor")) {
-				tab = 0;
-				ImGui::EndTabItem();
+			if constexpr (std::is_same_v<typename Base::Frag_t, NoShader>) {
+				if (ImGui::BeginTabItem("Compute shader editor")) {
+					tab = 0;
+					ImGui::EndTabItem();
+				}
 			}
-			if (ImGui::BeginTabItem("Vertex editor")) {
-				tab = 1;
-				ImGui::EndTabItem();
+			else {
+				if (ImGui::BeginTabItem("Fragment editor")) {
+					tab = 1;
+					ImGui::EndTabItem();
+				}
+				if (ImGui::BeginTabItem("Vertex editor")) {
+					tab = 2;
+					ImGui::EndTabItem();
+				}
 			}
 			if (ImGui::BeginTabItem("Uniform editor")) {
-				tab = 2;
+				tab = 3;
+				ImGui::EndTabItem();
+			}
+			if (ImGui::BeginTabItem("Subroutine editor")) {
+				tab = 4;
 				ImGui::EndTabItem();
 			}
 			ImGui::EndTabBar();
@@ -47,11 +60,15 @@ inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 
 	switch (tab) {
 	case(0):
-		this->fragcomp.Render(this->program_name);	this->fragcomp.Update(); break;
+		this->comp.Render(this->program_name);	this->comp.Update(); break;
 	case(1):
-		this->vert.Render(this->program_name);		this->vert.Update(); break;
+		this->frag.Render(this->program_name);	this->frag.Update(); break;
 	case(2):
+		this->vert.Render(this->program_name);		this->vert.Update(); break;
+	case(3):
 		this->uniforms.Render(this->program_name); break;
+	case(4):
+		this->subroutines.Render(this->program_name); break;
 	default:
 		break;
 	}
@@ -63,11 +80,11 @@ inline void ProgramEditor<U, FC, V, G, TC, TE>::Render()
 
 class UniformEditor;
 
-using ShaderProgramEditorVF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader, NoShader>;
-using ShaderProgramEditorVGF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader>;
-using ShaderProgramEditorVTF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, ShaderEditor<SFile>, ShaderEditor<SFile>>;
-using ShaderProgramEditorVGTF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>>;
-using ComputeProgramEditor = ProgramEditor<UniformEditor, ShaderEditor<SFile>, NoShader, NoShader, NoShader, NoShader>;
+using ShaderProgramEditorVF = ProgramEditor<ShaderEditorVF, UniformEditor>;
+using ShaderProgramEditorVGF = ProgramEditor<ShaderEditorVGF, UniformEditor>;
+using ShaderProgramEditorVTF = ProgramEditor<ShaderEditorVTF, UniformEditor>;
+using ShaderProgramEditorVGTF = ProgramEditor<ShaderEditorVGTF, UniformEditor>;
+using ComputeProgramEditor = ProgramEditor<ShaderEditorCompute, UniformEditor>;
 
 /*
 inline ComputeProgramEditor ComputeProgramEditor(const std::string& name, const std::string& comp)
