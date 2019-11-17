@@ -190,6 +190,5 @@ int main(int argc, char* args[]) {
 	ImGui_ImplSDL2_Shutdown();
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(win);
-
 	return 0;
 }

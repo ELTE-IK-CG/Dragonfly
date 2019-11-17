@@ -108,6 +108,9 @@
     <ClCompile Include="..\include\Dragonfly\detail\Subroutines.cpp">
       <Filter>Dragonfly\detail</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\Sample.cpp">
+      <Filter>Dragonfly\detail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -231,6 +234,9 @@
       <Filter>Dragonfly\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\Vao.h">
+      <Filter>Dragonfly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\Sample.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
   </ItemGroup>

@@ -28,6 +28,7 @@
     <ClCompile Include="..\include\Dragonfly\detail\Uniform.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\UniformEditor.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\UniformTypes.cpp" />
+    <ClCompile Include="..\include\Dragonfly\Sample.cpp" />
     <ClCompile Include="..\include\ImGui-addons\auto\auto.cpp" />
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="..\include\Dragonfly\editor.h" />
     <ClInclude Include="..\include\Dragonfly\Program.h" />
     <ClInclude Include="..\include\Dragonfly\ProgramEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\Sample.h" />
     <ClInclude Include="..\include\Dragonfly\Texture.h" />
     <ClInclude Include="..\include\Dragonfly\Vao.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\auto.h" />
