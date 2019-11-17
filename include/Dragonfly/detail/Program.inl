@@ -105,13 +105,13 @@ inline void ProgramLowLevelBase::draw(const VaoBase& vao)
 {	//Ugly as shit. todo todo todo...
 	this->bind();
 	glBindVertexArray(vao._id);
-	if (vao._ibo_type != 0)
+	if (vao._ibo_type == 0)
 	{
-		glDrawElements(vao._mode, vao._count, vao._ibo_type, nullptr);
+		glDrawArrays(vao._mode, vao._first, vao._count);
 	}
 	else
 	{
-		glDrawArrays(vao._mode, vao._first, vao._count);
+		glDrawElements(vao._mode, vao._count, vao._ibo_type, nullptr);
 	}
 }
 

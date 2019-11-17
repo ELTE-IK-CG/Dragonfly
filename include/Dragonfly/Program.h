@@ -51,7 +51,8 @@ public:
 	typename ProgramBase<Uni_T>::InvalidState& operator << (const std::string &str);
 
 	//For rendering
-	inline Program& operator << (const VaoBase& vao) { this->draw(vao); return *this; }
+	inline Program& operator << (const VaoBase& vao) { *this << SetSubroutinesType(); this->draw(vao); return *this;
+}
 
 	//For adding shader files. Same types will concatenate.
 	inline LoadState& operator << (const _CompShader& s){ return (this->load_state << s); }

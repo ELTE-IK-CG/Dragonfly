@@ -12,7 +12,7 @@ public:
 	GLenum _mode;
 	GLenum _count;
 	GLenum _ibo_type = 0;
-	GLsizei _first;
+	GLsizei _first = 0;
 };
 
 class VaoWrapper : public VaoBase {

@@ -26,7 +26,7 @@ Sample::Sample(const char* name, int width, int height, int vsync)
 	SDL_GL_SetSwapInterval(vsync);
 
 	GLenum error = glewInit();
-	ASSERT(error != GLEW_OK, "Unable to initialize GLEW");
+	ASSERT(error == GLEW_OK, "Unable to initialize GLEW");
 	int v_ma = -1, v_mi = -1;
 	glGetIntegerv(GL_MAJOR_VERSION, &v_ma);
 	glGetIntegerv(GL_MINOR_VERSION, &v_mi);
@@ -50,6 +50,9 @@ Sample::Sample(const char* name, int width, int height, int vsync)
 	ImGui_ImplSDL2_InitForOpenGL(win, context);
 	ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
+	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 }
 
 Sample::~Sample()

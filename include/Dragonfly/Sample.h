@@ -36,7 +36,7 @@ protected:
 			priority = pF.first;
 		}
 	}
-	static void callResizeHandlers(std::vector<Callback_Resize> handlers, int w, int h)
+	static void callResizeHandlers(std::vector<Callback_Resize>& handlers, int w, int h)
 	{
 		for (auto& pF : handlers)
 		{
@@ -110,7 +110,7 @@ public:
 		SDL_Event ev;
 		int canvas_width, canvas_height;
 		SDL_GL_GetDrawableSize(win, &canvas_width, &canvas_height);
-		callEventHandlers(_resize, canvas_width, canvas_height);
+		callResizeHandlers(_resize, canvas_width, canvas_height);
 		while (!quit)
 		{
 			while (SDL_PollEvent(&ev))
@@ -122,7 +122,7 @@ public:
 				case SDL_MOUSEBUTTONDOWN:	callEventHandlers(_mouseup, ev.button);			break;
 				case SDL_MOUSEBUTTONUP:		callEventHandlers(_mousedown, ev.button);		break;
 				case SDL_MOUSEMOTION:		callEventHandlers(_mousemove, ev.motion);		break;
-				case SDL_MOUSEWHEEL:		callEventHandlers(_mousemove, ev.wheel);		break;
+				case SDL_MOUSEWHEEL:		callEventHandlers(_mousewheel, ev.wheel);		break;
 				case SDL_WINDOWEVENT:
 					if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED && mainWindowID == ev.window.windowID)
 					{
