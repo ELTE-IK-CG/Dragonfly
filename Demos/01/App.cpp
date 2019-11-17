@@ -1,14 +1,14 @@
-#include "app.h"
+#include "App.h"
 
 #include <iostream>
+#include <cstddef> // offsetof
 
 // glm
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform2.hpp>
 
-// offsetof
-#include <cstddef>
+using namespace df;
 
 bool App::Init(int width, int height) {
 

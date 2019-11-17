@@ -9,15 +9,10 @@
 
 
 //Dragonfly Runtime
-#include "ElteCG/Utils/Camera.h"
-#include "ElteCG/utils/ShaderEditor.h"
-#include "ElteCG/utils/Shader.h"
-#include "ElteCG/utils/Program.h"
-#include "ElteCG/utils/UniformEditor.h"
-#include "ElteCG/utils/ProgramEditor.h"
-#include "ElteCG/ogl/buffer.h"
-#include "ElteCG/ogl/vao.h"
-#include <ElteCG/utils/Texture.h>
+#include <Dragonfly/editor.h>
+#include <Dragonfly/detail/buffer.h>
+#include <Dragonfly/detail/vao.h>
+#include <Dragonfly/Camera.h>
 
 class App {
 
@@ -44,29 +39,29 @@ private:
 	int canvas_height=480;
 	float col_intensity = 0.15f;
 	
-	ShaderProgramEditorVF program = "Side-Prog";
-	ShaderProgramEditorVF program2 = "Main-Prog";
+	df::ShaderProgramEditorVF program = "Side-Prog";
+	df::ShaderProgramEditorVF program2 = "Main-Prog";
 	//ShaderProgramVF program = "Side-Prog";
 	//ShaderProgramVF program2 = "Main-Prog";
 
 	eltecg::ogl::ArrayBuffer MyVBO;
 	eltecg::ogl::VertexArray MyVAO;
 
-	Camera cam;
-	Camera cam2 = Camera("CameraWithName");
+	df::Camera cam;
+	df::Camera cam2 = df::Camera("CameraWithName");
 
 	void InitShaders();
 
 	void InitGL();
 
-	Texture2D<> testTex = Texture2D<>("Assets/scales.jpg");
-	Texture2D<> testTex2;
-	Texture2D<> testTex3;
+	df::Texture2D<> testTex = df::Texture2D<>("Assets/scales.jpg");
+	df::Texture2D<> testTex2;
+	df::Texture2D<> testTex3;
 
-	TextureCube<> testCubemap = TextureCube<>("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
-	TextureCube<> testCubemap2;
+	df::TextureCube<> testCubemap = df::TextureCube<>("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
+	df::TextureCube<> testCubemap2;
 
-	Texture2D<> testAlias;
+	df::Texture2D<> testAlias;
 
-	Texture3D<float> testField;
+	df::Texture3D<float> testField;
 };
