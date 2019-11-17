@@ -239,6 +239,9 @@
     <ClInclude Include="..\include\Dragonfly\Sample.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\ImGuiHandler.h">
+      <Filter>Dragonfly\detail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl">

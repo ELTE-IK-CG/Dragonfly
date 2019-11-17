@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -50,6 +50,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File.h" />
     <ClInclude Include="..\include\Dragonfly\detail\FileEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\ImGuiHandler.h" />
     <ClInclude Include="..\include\Dragonfly\detail\object.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader.h" />
     <ClInclude Include="..\include\Dragonfly\detail\ShaderEditor.h" />
