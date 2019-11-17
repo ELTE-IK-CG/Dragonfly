@@ -10,6 +10,8 @@
 #include <ImGui-addons/impl/imgui_impl_opengl3.h>
 #include "detail/EventHandlerTraits.h"
 
+#include <iostream>
+
 class Sample
 {
 protected:
@@ -54,9 +56,9 @@ public:
 	void Quit() { quit = true; }
 
 	template<typename F>
-	void AddKeyDown(F&& f, int priority = 0){_keydown.emplace(-priority, Callback_KeyBoard(f));	}
+	void AddKeyDown(F&& f, int priority = 0) { _keydown.emplace(-priority, Callback_KeyBoard(f)); }
 	template<typename F>
-	void AddKeyUp(F&& f, int priority = 0){	_keyup.emplace(-priority, Callback_KeyBoard(f));	}
+	void AddKeyUp(F&& f, int priority = 0){	_keyup.emplace(-priority, Callback_KeyBoard(f)); }
 
 	template<typename F>
 	void AddMouseDown(F&& f, int priority = 0) { _mousedown.emplace(-priority, Callback_MouseButton(f)); }
@@ -81,27 +83,93 @@ public:
 	void AddHandlerClass(C& c, int priority = 0) 
 	{
 		using namespace std::placeholders;
-		if constexpr (df::has_HandleKeyDown<C, SDL_KeyboardEvent>()) {
+		if constexpr (df::has_static_HandleKeyDown<C, SDL_KeyboardEvent>()) {
+			std::cout << "HandleKeyDown static\n";
+			_keydown.emplace(-priority, Callback_KeyBoard(&C::HandleKeyDown));
+		}
+		else if constexpr (df::has_HandleKeyDown<C, SDL_KeyboardEvent>()) {
+			std::cout << "HandleKeyDown\n";
 			_keydown.emplace(-priority, std::bind(&C::HandleKeyDown, &c, _1));
 		}
-		if constexpr (df::has_HandleKeyUp<C, SDL_KeyboardEvent>()) {
+		if constexpr (df::has_static_HandleKeyUp<C, SDL_KeyboardEvent>()) {
+			std::cout << "HandleKeyUp static\n";
+			_keyup.emplace(-priority, Callback_KeyBoard(&C::HandleKeyUp));
+		}
+		else if constexpr (df::has_HandleKeyUp<C, SDL_KeyboardEvent>()) {
+			std::cout << "HandleKeyUp\n";
 			_keyup.emplace(-priority, std::bind(&C::HandleKeyUp, &c, _1));
 		}
-		if constexpr (df::has_HandleMouseUp<C, SDL_MouseButtonEvent>()) {
+		if constexpr (df::has_static_HandleMouseUp<C, SDL_MouseButtonEvent>()) {
+			std::cout << "HandleMouseUp static\n";
+			_mouseup.emplace(-priority, &C::HandleMouseUp);
+		}
+		else if constexpr (df::has_HandleMouseUp<C, SDL_MouseButtonEvent>()) {
+			std::cout << "HandleMouseUp\n";
 			_mouseup.emplace(-priority, std::bind(&C::HandleMouseUp, &c, _1));
 		}
-		if constexpr (df::has_HandleMouseDown<C, SDL_MouseButtonEvent>()) {
+		if constexpr (df::has_static_HandleMouseDown<C, SDL_MouseButtonEvent>()) {
+			std::cout << "HandleMouseDown static\n";
+			_mousedown.emplace(-priority, &C::HandleMouseDown);
+		}
+		else if constexpr (df::has_HandleMouseDown<C, SDL_MouseButtonEvent>()) {
+			std::cout << "HandleMouseDown\n";
 			_mousedown.emplace(-priority, std::bind(&C::HandleMouseDown, &c, _1));
 		}
-		if constexpr (df::has_HandleMouseMotion<C, SDL_MouseMotionEvent>()) {
-			Callback_MouseMotion fun = std::bind(&C::HandleMouseMotion, &c, _1);
+		if constexpr (df::has_static_HandleMouseMotion<C, SDL_MouseMotionEvent>()) {
+			std::cout << "HandleMouseMotion static\n";
+			_mousemove.emplace(-priority, &C::HandleMouseMotion);
+		}
+		else if constexpr (df::has_HandleMouseMotion<C, SDL_MouseMotionEvent>()) {
+			std::cout << "HandleMouseMotion\n";
 			_mousemove.emplace(-priority, std::bind(&C::HandleMouseMotion, &c, _1));
 		}
-		if constexpr (df::has_HandleMouseWheel<C, SDL_MouseWheelEvent>()) {
+		if constexpr (df::has_static_HandleMouseWheel<C, SDL_MouseWheelEvent>()) {
+			std::cout << "HandleMouseWheel static\n";
+			_mousewheel.emplace(-priority, &C::HandleMouseWheel);
+		}
+		else if constexpr (df::has_HandleMouseWheel<C, SDL_MouseWheelEvent>()) {
+			std::cout << "HandleMouseWheel\n";
 			_mousewheel.emplace(-priority, std::bind(&C::HandleMouseWheel, &c, _1));
 		}
-		if constexpr (df::has_HandleResize<C, int, int>()) {
+		if constexpr (df::has_static_HandleResize<C, int, int>()) {
+			std::cout << "HandleResize static\n";
+			_resize.emplace_back(&C::HandleResize);
+		}
+		else if constexpr (df::has_HandleResize<C, int, int>()) {
+			std::cout << "HandleResize\n";
 			_resize.emplace_back(std::bind(&C::HandleResize, &c, _1, _2));
+		}
+	}
+	template<typename C>
+	void AddStaticHandlerClass(int priority = 0)
+	{
+		if constexpr (df::has_static_HandleKeyDown<C, SDL_KeyboardEvent>()) {
+			std::cout << "HandleKeyDown static\n";
+			_keydown.emplace(-priority, &C::HandleKeyDown);
+		}
+		if constexpr (df::has_static_HandleKeyUp<C, SDL_KeyboardEvent>()) {
+			std::cout << "HandleKeyUp static\n";
+			_keyup.emplace(-priority, &C::HandleKeyUp);
+		}
+		if constexpr (df::has_static_HandleMouseUp<C, SDL_MouseButtonEvent>()) {
+			std::cout << "HandleMouseUp static\n";
+			_mouseup.emplace(-priority, &C::HandleMouseUp);
+		}
+		if constexpr (df::has_static_HandleMouseDown<C, SDL_MouseButtonEvent>()) {
+			std::cout << "HandleMouseDown static\n";
+			_mousedown.emplace(-priority, &C::HandleMouseDown);
+		}
+		if constexpr (df::has_static_HandleMouseMotion<C, SDL_MouseMotionEvent>()) {
+			std::cout << "HandleMouseMotion static\n";
+			_mousemove.emplace(-priority, &C::HandleMouseMotion);
+		}
+		if constexpr (df::has_static_HandleMouseWheel<C, SDL_MouseWheelEvent>()) {
+			std::cout << "HandleMouseWheel static\n";
+			_mousewheel.emplace(-priority, &C::HandleMouseWheel);
+		}
+		if constexpr (df::has_static_HandleResize<C, int, int>()) {
+			std::cout << "HandleResize static\n";
+			_resize.emplace_back(&C::HandleResize);
 		}
 	}
 
