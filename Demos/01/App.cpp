@@ -13,6 +13,8 @@ using namespace df;
 bool App::Init(int width, int height) {
 
 	MyVAO.addVBO<glm::vec2>(MyVBO);
+	
+	//demoVao = df::VaoWrapper((GLuint)MyVAO, GL_TRIANGLE_STRIP, 3,0u);
 
 	InitShaders();
 	InitGL();
@@ -144,9 +146,11 @@ void App::Render() {
 	program << "col_intensity" << col_intensity << "gCameraPos" << cam.GetEye();
 	program2 << "col_intensity" << col_intensity << "gCameraPos" << cam2.GetEye();
 	program << "testTexture" << testAlias << "testField" << testField;
-	MyVAO.bindVertexArray();
 
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
+	program << demoVao;
+
+	//MyVAO.bindVertexArray();
+	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
 	GL_CHECK;
 
 	cam.RenderUI();

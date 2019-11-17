@@ -12,13 +12,13 @@ class Object
 public:
 	//1. Encapsulated data types
 	//friend class details::StaticHelper;
+	operator GLuint () const { return object_id; }
 protected:
 	//2. Functions
 	Object() = default;
 	~Object() = default;
 	
 	//conversion operator
-	operator GLuint () const { return object_id; }
 protected:
 	//3. Variables
 	GLuint object_id = 0;

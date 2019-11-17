@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -60,6 +60,7 @@
     <ClInclude Include="..\include\Dragonfly\Program.h" />
     <ClInclude Include="..\include\Dragonfly\ProgramEditor.h" />
     <ClInclude Include="..\include\Dragonfly\Texture.h" />
+    <ClInclude Include="..\include\Dragonfly\Vao.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\auto.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\core.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\impl_base.h" />
@@ -165,6 +166,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>GPU_DEBUG;_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

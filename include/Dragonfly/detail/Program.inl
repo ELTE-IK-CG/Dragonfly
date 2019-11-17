@@ -33,6 +33,9 @@ protected:
 	void attachShader(const Shader_t &sh) {
 		if (sh.getID() != 0) glAttachShader(program_id, sh.getID());
 	}
+
+	void draw(const VaoBase& vao);
+
 public:
 	struct LinkType {};	//contains nothing at all
 	const std::string& getErrors() const;
@@ -95,6 +98,21 @@ constexpr _TeseShader operator"" _tese(const char* str, size_t len) { return _Te
 constexpr _FragShader operator"" _fs  (const char* str, size_t len) { return _FragShader{ str }; }
 constexpr _VertShader operator"" _vs  (const char* str, size_t len) { return _VertShader{ str }; }
 
+// ProgramLowLevelBase
+
+inline void ProgramLowLevelBase::draw(const VaoBase& vao)
+{	//Ugly as shit. todo todo todo...
+	this->bind();
+	glBindVertexArray(vao._id);
+	if (vao._ibo_type != 0)
+	{
+		glDrawElements(vao._mode, vao._count, vao._ibo_type, nullptr);
+	}
+	else
+	{
+		glDrawArrays(vao._mode, vao._first, vao._count);
+	}
+}
 
 // ========================= Program Input States ==============================
 

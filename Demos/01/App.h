@@ -44,6 +44,7 @@ private:
 
 	eltecg::ogl::ArrayBuffer MyVBO;
 	eltecg::ogl::VertexArray MyVAO;
+	df::VaoWrapper demoVao = df::VaoWrapper((GLuint)MyVAO, GL_TRIANGLE_STRIP, 3, 0u);
 
 	df::Camera cam;
 	df::Camera cam2 = df::Camera("CameraWithName");

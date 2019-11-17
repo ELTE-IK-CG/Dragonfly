@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <string>
 #include <deque>
+#include "Vao.h"
 
 namespace df
 {
@@ -24,6 +25,7 @@ template<
 class Program :
 	protected ProgramBase<Uni_T>
 {	//static_assert(std::is_base_of_v<FragComp_t, Shader<SFile>>, "Must have a proper fragment/compute shader type set");
+	using ThisClass = Program<Uni_T, FragComp_t, Vert_t, Geom_t, TesC_t, TesE_t>;
 	class LoadState;	//fwd decl
 	LoadState load_state = LoadState(*this);
 public:
@@ -36,6 +38,10 @@ public:
 	
 	//For pushing uniforms
 	typename ProgramBase<Uni_T>::InvalidState& operator << (const std::string &str);
+
+	//For rendering
+	inline ThisClass& operator << (const VaoBase& vao) { this->draw(vao); return *this; }
+
 	//For adding shader files. Same types will concatenate.
 	inline LoadState& operator << (const _CompShader& s){ return (this->load_state << s); }
 	inline LoadState& operator << (const _FragShader& s){ return (this->load_state << s); }
