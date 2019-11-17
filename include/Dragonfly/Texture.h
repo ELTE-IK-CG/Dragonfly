@@ -35,12 +35,15 @@ namespace detail
 // TODO namespace
 static const GLuint ALL = -1; // Mipmap level / array layer
 
+struct TexLevelsAndLayers;
+
 // Texture Mipmap levels
 struct TexLevels {
 	GLuint min;
 	GLuint num;
 
 	constexpr TexLevels operator>> (GLuint numLelvels) { return TexLevels{ this->min, numLelvels }; }
+	constexpr operator TexLevelsAndLayers();
 };
 constexpr TexLevels operator"" _level(unsigned long long int minLevel) { return TexLevels{ static_cast<GLuint>(minLevel), 1 }; }
 constexpr TexLevels operator"" _levelAll(unsigned long long int minLevel) { return TexLevels{ static_cast<GLuint>(minLevel), ALL }; }
@@ -51,6 +54,7 @@ struct TexLayers {
 	GLuint num;
 
 	constexpr TexLayers operator>> (GLuint numLayers) { return TexLayers{ this->min, numLayers }; }
+	constexpr operator TexLevelsAndLayers();
 };
 constexpr TexLayers operator"" _layer(unsigned long long int minLevel) { return TexLayers{ static_cast<GLuint>(minLevel), 1 }; }
 constexpr TexLayers operator"" _layerAll(unsigned long long int minLevel) { return TexLayers{ static_cast<GLuint>(minLevel), ALL }; }
@@ -61,6 +65,9 @@ struct TexLevelsAndLayers {
 };
 constexpr TexLevelsAndLayers operator& (TexLevels levels, TexLayers layers) { return { levels, layers }; }
 constexpr TexLevelsAndLayers operator& (TexLayers layers, TexLevels levels) { return { levels, layers }; }
+
+inline constexpr TexLevels::operator TexLevelsAndLayers() { return { *this, {0, ALL} }; }
+inline constexpr TexLayers::operator TexLevelsAndLayers() { return { {0, ALL}, *this }; }
 
 
 class TextureLowLevelBase {
@@ -167,6 +174,40 @@ public:
 };
 
 template<typename InternalFormat>
+class Texture<TextureType::TEX_2D_ARRAY, InternalFormat> : public TextureBase<TextureType::TEX_2D_ARRAY, InternalFormat>
+{
+	using Base = TextureBase<TextureType::TEX_2D_ARRAY, InternalFormat>;
+
+	template<TextureType TT, typename IF>
+	friend class TextureBase;
+
+public:
+	Texture() {}
+	Texture(GLuint width, GLuint height, GLuint numLayers, GLuint numLevels = ALL);
+	~Texture() {}
+
+	Texture(const Texture&) = delete;
+	Texture(Texture&& _o) : Base(std::move(_o)) {}
+
+	Texture& operator= (const Texture&) = delete;
+	Texture& operator= (Texture&& _o);
+
+	template<typename Format>
+	Texture& operator= (const std::vector<Format>& data);
+
+	void InitTexture(GLuint width, GLuint height, GLuint numLayers, GLuint numLevels = ALL);
+
+	template<typename Format>
+	Texture& LoadData(const std::vector<Format>& data, bool genMipmap = true);
+
+	template<TextureType NewTexType = TextureType::TEX_2D_ARRAY, typename NewInternalFormat = InternalFormat>
+	Texture<NewTexType, NewInternalFormat> MakeView(TexLevelsAndLayers levelsAndLayers = 0_levelAll & 0_layerAll);
+
+	Texture operator[] (TexLevelsAndLayers levelsAndLayers);
+	Texture<TextureType::TEX_2D, InternalFormat> operator[] (GLuint layer);
+};
+
+template<typename InternalFormat>
 class Texture<TextureType::TEX_3D, InternalFormat> : public TextureBase<TextureType::TEX_3D, InternalFormat>
 {
 	using Base = TextureBase<TextureType::TEX_3D, InternalFormat>;
@@ -237,6 +278,8 @@ public:
 
 template<typename InternalFormat = glm::u8vec3>
 using Texture2D = Texture<TextureType::TEX_2D, InternalFormat>;
+template<typename InternalFormat = glm::u8vec3>
+using Texture2DArray = Texture<TextureType::TEX_2D_ARRAY, InternalFormat>;
 template<typename InternalFormat = glm::u8vec3>
 using Texture3D = Texture<TextureType::TEX_3D, InternalFormat>;
 template<typename InternalFormat = glm::u8vec3>
