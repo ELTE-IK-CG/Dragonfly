@@ -2,11 +2,13 @@
 #include <functional>
 #include <algorithm>
 #include <map>
+#include <vector>
 #include <SDL/SDL.h>
 #include "config.h"
 #include <ImGui/imgui.h>
 #include <ImGui-addons/impl/imgui_impl_sdl.h>
 #include <ImGui-addons/impl/imgui_impl_opengl3.h>
+#include "detail/EventHandlerTraits.h"
 
 class Sample
 {
@@ -15,16 +17,16 @@ protected:
 	using Callback_MouseButton	= std::function<bool(const SDL_MouseButtonEvent&)>;
 	using Callback_MouseMotion	= std::function<bool(const SDL_MouseMotionEvent&)>;
 	using Callback_MouseWheel	= std::function<bool(const SDL_MouseWheelEvent&)>;
-	using Callback_Resize		= std::function<bool(const SDL_WindowEvent&)>;
+	using Callback_Resize		= std::function<void(int, int)>;
 
 	std::multimap<int, Callback_KeyBoard>		_keydown,	_keyup;
 	std::multimap<int, Callback_MouseButton>	_mousedown,	_mouseup;
 	std::multimap<int, Callback_MouseMotion>	_mousemove;
 	std::multimap<int, Callback_MouseWheel>		_mousewheel;
-	std::multimap<int, Callback_Resize>			_resize;
+	std::vector<Callback_Resize>				_resize;
 
 	template<typename F,typename E>
-	inline void callEventHandlers(std::multimap<int, F>& queue, E&&arg)
+	static void callEventHandlers(std::multimap<int, F>& queue, E&&arg)
 	{
 		bool wastrue = false;	int priority;
 		for (auto& pF : queue)
@@ -32,6 +34,13 @@ protected:
 			if (wastrue && pF.first > priority) break;
 			wastrue |= pF.second(arg);
 			priority = pF.first;
+		}
+	}
+	static void callResizeHandlers(std::vector<Callback_Resize> handlers, int w, int h)
+	{
+		for (auto& pF : handlers)
+		{
+			pF(w, h);
 		}
 	}
 	bool quit = false;
@@ -42,7 +51,7 @@ public:
 	Sample(const char* name = "OpenGL Sample", int width = 720, int height = 480, int vsync = -1);
 	~Sample();
 
-	inline void Quit() { quit = true; }
+	void Quit() { quit = true; }
 
 	template<typename F>
 	void AddKeyDown(F&& f, int priority = 0){_keydown.emplace(-priority, Callback_KeyBoard(f));	}
@@ -57,9 +66,45 @@ public:
 	void AddMouseMotion(F&& f, int priority = 0) { _mousemove.emplace(-priority, Callback_MouseMotion(f)); }
 	template<typename F>
 	void AddMouseWheel(F&& f, int priority = 0) { _mousewheel.emplace(-priority, Callback_MouseMotion(f)); }
+	template<typename F>
+	void AddResize(F&& f) { _resize.emplace(Callback_Resize(f)); }
+
+	// The following member functions will be added as handler functions form the handler class (if it has them):
+	// HandleKeyUp(const SDL_KeyboardEvent&)
+	// HandleKeyDown(const SDL_KeyboardEvent&)
+	// HandleMouseUp(const SDL_MouseButtonEvent&)
+	// HandleMouseDown(const SDL_MouseButtonEvent&)
+	// HandleMouseMotion(const SDL_MouseMotionEvent&)
+	// HandleMouseWheel(const SDL_MouseWheelEvent&)
+	// HandleResize(int, int)
+	template<typename C>
+	void AddHandlerClass(C&& c, int priority = 0) 
+	{
+		if constexpr (df::has_HandleKeyDown<C, SDL_KeyboardEvent>()) {
+			AddKeyDown(c.HandleKeyDown, priority);
+		}
+		if constexpr (df::has_HandleKeyUp<C, SDL_KeyboardEvent>()) {
+			AddKeyDown(c.HandleKeyUp, priority);
+		}
+		if constexpr (df::has_HandleMouseUp<C, SDL_MouseButtonEvent>()) {
+			AddKeyDown(c.HandleMouseUp, priority);
+		}
+		if constexpr (df::has_HandleMouseDown<C, SDL_MouseButtonEvent>()) {
+			AddKeyDown(c.HandleMouseDown, priority);
+		}
+		if constexpr (df::has_HandleMouseMotion<C, SDL_MouseMotionEvent>()) {
+			AddKeyDown(c.HandleMouseMotion, priority);
+		}
+		if constexpr (df::has_HandleMouseWheel<C, SDL_MouseWheelEvent>()) {
+			AddKeyDown(c.HandleMouseWheel, priority);
+		}
+		if constexpr (df::has_HandleResize<C, int, int>()) {
+			AddResize(c.HandleResize);
+		}
+	}
 
 	template<typename F>
-	inline void Run(F&& RenderFunc)
+	void Run(F&& RenderFunc)
 	{
 		quit = false;
 		SDL_Event ev;
@@ -82,7 +127,7 @@ public:
 					if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED && mainWindowID == ev.window.windowID)
 					{
 						SDL_GL_GetDrawableSize(win, &ev.window.data1, &ev.window.data2);
-						callEventHandlers(_resize, ev.window);
+						callResizeHandlers(_resize, ev.window.data1, ev.window.data2);
 						glViewport(0, 0, ev.window.data1, ev.window.data2); //are we sure?
 					}
 					else if (ev.window.event == SDL_WINDOWEVENT_CLOSE && mainWindowID == ev.window.windowID)
