@@ -1,4 +1,3 @@
-#include <iostream>
 #include <chrono>
 #include <math.h>
 #include <imgui/imgui.h>
@@ -116,7 +115,7 @@ bool Camera::RenderUI()
 }
 
 
-bool Camera::KeyboardDown(SDL_KeyboardEvent& key)
+bool Camera::HandleKeyDown(const SDL_KeyboardEvent& key)
 {
 	switch ( key.keysym.sym )
 	{
@@ -134,7 +133,7 @@ bool Camera::KeyboardDown(SDL_KeyboardEvent& key)
 	return goFrwd_ != 0 || goRght_ != 0;
 }
 
-bool Camera::KeyboardUp(SDL_KeyboardEvent& key)
+bool Camera::HandleKeyUp(const SDL_KeyboardEvent& key)
 {
 	float current_speed = moveSpeed_;
 	switch ( key.keysym.sym )
@@ -150,7 +149,7 @@ bool Camera::KeyboardUp(SDL_KeyboardEvent& key)
 	return goFrwd_ == 0 || goRght_ == 0;
 }
 
-bool Camera::MouseMove(SDL_MouseMotionEvent& mouse)
+bool Camera::HandleMouseMotion(const SDL_MouseMotionEvent& mouse)
 {
 	if ( mouse.state & SDL_BUTTON_LMASK ) {
 		u_ += mouse.xrel / 128.0f;
@@ -160,7 +159,7 @@ bool Camera::MouseMove(SDL_MouseMotionEvent& mouse)
 	}
 	return false;
 }
-bool Camera::MouseWheel(SDL_MouseWheelEvent& wheel)
+bool Camera::HandleMouseWheel(const SDL_MouseWheelEvent& wheel)
 {
 	if (wheel.y == 1) {
 		moveSpeed_ *= 1.25f;

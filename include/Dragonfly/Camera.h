@@ -50,13 +50,13 @@ public:
 	// Returns pixel coordinates (could be optimized to be even faster, but who cares)
 	inline glm::vec2 GetProjection(const glm::vec3& pos) const { glm::vec4 v = viewProjMatrix_ * glm::vec4(pos, 1);  return (0.5f * glm::vec2(v.x, -v.y) / v.w + 0.5f) * resolution_; }
 
-	bool KeyboardDown(SDL_KeyboardEvent& key);
-	bool KeyboardUp(SDL_KeyboardEvent& key);
-	bool MouseMove(SDL_MouseMotionEvent& mouse);
-	bool MouseWheel(SDL_MouseWheelEvent& wheel);
+	bool HandleKeyDown(const SDL_KeyboardEvent& key);
+	bool HandleKeyUp(const SDL_KeyboardEvent& key);
+	bool HandleMouseMotion(const SDL_MouseMotionEvent& mouse);
+	bool HandleMouseWheel(const SDL_MouseWheelEvent& wheel);
+	void HandleResize(int w, int h) { this->Resize(glm::vec2(w,h)); }
 
 	inline Camera& Resize(glm::vec2 resolution) { resolution_ = resolution; proj_changed = true; return *this; }
-	inline Camera& Resize(int width, int height) { return Resize(glm::vec2(width, height)); }
 	inline Camera& Resize(float width, float height) { return Resize(glm::vec2(width, height)); }
 
 private:

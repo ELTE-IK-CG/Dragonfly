@@ -7,4 +7,6 @@
 	#include "detail/ShaderEditor.h" //todo: File.h...
 	#include "detail/UniformEditor.h"
 
-//#include "Camera.h" //todo: editor stb
+#include "Camera.h" //todo: editor stb
+#include <Dragonfly/Sample.h>
+#include <Dragonfly/detail/ImGuiHandler.h>

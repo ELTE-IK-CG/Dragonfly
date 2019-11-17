@@ -78,28 +78,30 @@ public:
 	// HandleMouseWheel(const SDL_MouseWheelEvent&)
 	// HandleResize(int, int)
 	template<typename C>
-	void AddHandlerClass(C&& c, int priority = 0) 
+	void AddHandlerClass(C& c, int priority = 0) 
 	{
+		using namespace std::placeholders;
 		if constexpr (df::has_HandleKeyDown<C, SDL_KeyboardEvent>()) {
-			AddKeyDown(c.HandleKeyDown, priority);
+			_keydown.emplace(-priority, std::bind(&C::HandleKeyDown, &c, _1));
 		}
 		if constexpr (df::has_HandleKeyUp<C, SDL_KeyboardEvent>()) {
-			AddKeyDown(c.HandleKeyUp, priority);
+			_keyup.emplace(-priority, std::bind(&C::HandleKeyUp, &c, _1));
 		}
 		if constexpr (df::has_HandleMouseUp<C, SDL_MouseButtonEvent>()) {
-			AddKeyDown(c.HandleMouseUp, priority);
+			_mouseup.emplace(-priority, std::bind(&C::HandleMouseUp, &c, _1));
 		}
 		if constexpr (df::has_HandleMouseDown<C, SDL_MouseButtonEvent>()) {
-			AddKeyDown(c.HandleMouseDown, priority);
+			_mousedown.emplace(-priority, std::bind(&C::HandleMouseDown, &c, _1));
 		}
 		if constexpr (df::has_HandleMouseMotion<C, SDL_MouseMotionEvent>()) {
-			AddKeyDown(c.HandleMouseMotion, priority);
+			Callback_MouseMotion fun = std::bind(&C::HandleMouseMotion, &c, _1);
+			_mousemove.emplace(-priority, std::bind(&C::HandleMouseMotion, &c, _1));
 		}
 		if constexpr (df::has_HandleMouseWheel<C, SDL_MouseWheelEvent>()) {
-			AddKeyDown(c.HandleMouseWheel, priority);
+			_mousewheel.emplace(-priority, std::bind(&C::HandleMouseWheel, &c, _1));
 		}
 		if constexpr (df::has_HandleResize<C, int, int>()) {
-			AddResize(c.HandleResize);
+			_resize.emplace_back(std::bind(&C::HandleResize, &c, _1, _2));
 		}
 	}
 
@@ -115,6 +117,7 @@ public:
 		{
 			while (SDL_PollEvent(&ev))
 			{
+				ImGui_ImplSDL2_ProcessEvent(&ev);
 				switch (ev.type)
 				{
 				case SDL_KEYUP:				callEventHandlers(_keyup, ev.key);				break;

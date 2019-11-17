@@ -6,22 +6,23 @@ namespace df
 {
 
 class ImGuiHandler {
-	static bool HandleKeyUp(const SDL_KeyboardEvent&) {
+public:
+	bool HandleKeyUp(const SDL_KeyboardEvent&) {
 		return ImGui::GetIO().WantCaptureKeyboard;
 	}
-	static bool HandleKeyDown(const SDL_KeyboardEvent&) {
+	bool HandleKeyDown(const SDL_KeyboardEvent&) {
 		return ImGui::GetIO().WantCaptureKeyboard;
 	}
-	static bool HandleMouseUp(const SDL_MouseButtonEvent&) {
+	 bool HandleMouseUp(const SDL_MouseButtonEvent&) {
 		return ImGui::GetIO().WantCaptureMouse;
 	}
-	static bool HandleMouseDown(const SDL_MouseButtonEvent&) {
+	 bool HandleMouseDown(const SDL_MouseButtonEvent&) {
 		return ImGui::GetIO().WantCaptureMouse;
 	}
-	static bool HandleMouseMotion(const SDL_MouseMotionEvent&) {
+	 bool HandleMouseMotion(const SDL_MouseMotionEvent&) {
 		return ImGui::GetIO().WantCaptureMouse;
 	}
-	static bool HandleMouseWheel(const SDL_MouseWheelEvent&) {
+	 bool HandleMouseWheel(const SDL_MouseWheelEvent&) {
 		return ImGui::GetIO().WantCaptureMouse;
 	}
 };
