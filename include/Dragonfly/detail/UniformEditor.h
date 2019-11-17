@@ -19,13 +19,14 @@ private:
 	std::unordered_map<GLint, UniformData> loc2data;
 	std::vector<GLint> loc_order;
 public:
-	UniformEditor(GLuint program_id) : Base(program_id) {}
+	UniformEditor(GLuint program_id, SubroutinesBase& sub) : Base(program_id, sub) {}
 	void Render(const std::string &program_name = "");
 	bool Compile();
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, ValType& val);
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, const ValType& val);
+	inline void SetUniform(std::string&& str, const char* val);
 };
 
 } //namespace df
@@ -84,3 +85,13 @@ inline void df::UniformEditor::SetUniform(std::string&& str, ValType& val)
 	}
 }
 
+template<>
+inline void df::UniformEditor::SetUniform<>(std::string&& str, const std::string& val)
+{
+	Base::SetUniform(std::move(str), val);
+}
+
+inline void df::UniformEditor::SetUniform(std::string&& str, const char* val)
+{
+	Base::SetUniform(std::move(str), val);
+}

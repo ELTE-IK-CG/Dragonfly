@@ -12,6 +12,7 @@
 #include <Dragonfly/editor.h>
 #include <Dragonfly/detail/buffer.h>
 #include <Dragonfly/detail/vao.h>
+#include <Dragonfly/Camera.h>
 
 class App {
 
@@ -37,10 +38,11 @@ private:
 	int canvas_width=720;
 	int canvas_height=480;
 	float col_intensity = 0.15f;
-
-	df::ProgramEditor<df::UniformEditor, df::ShaderEditor<df::SFile>,	   df::ShaderEditor<df::SFile>		> program  = "Side-Prog";
-	df::ProgramEditor<df::UniformEditor, df::ShaderEditor<df::FileEditor>, df::ShaderEditor<df::FileEditor>	> program2 = "Main-Prog";
-		
+	
+	df::ShaderProgramEditorVF program = "Side-Prog";
+	df::ShaderProgramEditorVF program2 = "Main-Prog";
+	//ShaderProgramVF program = "Side-Prog";
+	//ShaderProgramVF program2 = "Main-Prog";
 
 	eltecg::ogl::ArrayBuffer MyVBO;
 	eltecg::ogl::VertexArray MyVAO;

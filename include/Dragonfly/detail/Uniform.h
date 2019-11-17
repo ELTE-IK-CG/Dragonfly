@@ -28,12 +28,14 @@ protected:
 	std::unordered_map<std::string, Values> locations;
 	std::unordered_map<uint16_t, uint8_t> texLoc2sampler;
 	std::vector<uint16_t> sampler2texLoc;
-	Uniforms(GLuint program_id) : program_id(program_id) {}
+	SubroutinesBase& subroutines;
+	Uniforms(GLuint program_id, SubroutinesBase& sub) : program_id(program_id), subroutines(sub) {}
 	GLuint GetUniformLocation(const std::string& str) const;
 public:
 	Uniforms() = delete;
 	template<typename ValType>
 	inline void SetUniform(std::string&& str, ValType&& val);
+	void SetUniform(std::string && uniform, const char * subroutine);
 	//Do this on shader program compilation.
 	bool Compile();
 
