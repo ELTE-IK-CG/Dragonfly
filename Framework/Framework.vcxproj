@@ -63,6 +63,7 @@
     <ClInclude Include="..\include\ElteCG\utils\ProgramEditor.h" />
     <ClInclude Include="..\include\ElteCG\utils\Shader.h" />
     <ClInclude Include="..\include\ElteCG\utils\ShaderEditor.h" />
+    <ClInclude Include="..\include\ElteCG\utils\Shaders.h" />
     <ClInclude Include="..\include\ElteCG\utils\Subroutines.h" />
     <ClInclude Include="..\include\ElteCG\utils\Texture.h" />
     <ClInclude Include="..\include\ElteCG\utils\UniformEditor.h" />

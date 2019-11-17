@@ -236,6 +236,9 @@
     <ClInclude Include="..\include\ElteCG\utils\Subroutines.h">
       <Filter>ElteCG\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\ElteCG\utils\Shaders.h">
+      <Filter>ElteCG\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\ElteCG\utils\Program.inl">

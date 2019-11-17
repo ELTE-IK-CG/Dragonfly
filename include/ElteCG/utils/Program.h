@@ -3,6 +3,7 @@
 #include <string>
 #include <deque>
 
+#include "Shaders.h"
 #include "Subroutines.h"
 
 struct SetSubroutinesType {}; // TODO remove if possible
@@ -14,31 +15,8 @@ struct _GeomShader { const char* path; };
 struct _TescShader { const char* path; };
 struct _TeseShader { const char* path; };
 
-struct NoShader;	//use this class to indicate left-out shader stages
 class ProgramLowLevelBase;
 template<typename Uniform_T> class ProgramBase;
-
-template<typename FragComp_t, typename Vert_t = NoShader, typename Geom_t = NoShader, typename TesC_t = NoShader, typename TesE_t = NoShader>
-struct Shaders
-{
-	using Comp = NoShader;
-	using Frag = FragComp_t;
-	using Vert = Vert_t;
-	using Geom = Geom_t;
-	using TesC = TesC_t;
-	using TesE = TesE_t;
-};
-
-template<typename Compute_t>
-struct Shaders<Compute_t, NoShader, NoShader, NoShader, NoShader>
-{
-	using Comp = Compute_t;
-	using Frag = NoShader;
-	using Vert = NoShader;
-	using Geom = NoShader;
-	using TesC = NoShader;
-	using TesE = NoShader;
-};
 
 template<
 	typename Shaders_T,
@@ -91,5 +69,13 @@ protected:
 	std::string program_name;
 	Subroutines_T subroutines;
 };
+
+class Uniforms;
+
+using ShaderProgramVF = Program<ShaderVF, Uniforms>;
+using ShaderProgramVGF = Program<ShaderVGF, Uniforms>;
+using ShaderProgramVTF = Program<ShaderVTF, Uniforms>;
+using ShaderProgramVGTF = Program<ShaderVGTF, Uniforms>;
+using ComputeProgram = Program<ShaderCompute, Uniforms>;
 
 #include "Program.inl"

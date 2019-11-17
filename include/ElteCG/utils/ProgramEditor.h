@@ -3,8 +3,12 @@
 #include "Program.h"
 #include <ImGui/imgui.h>
 
+#include "Shaders.h"
 
-template<typename S, typename U, typename R = Subroutines<S>>
+template<typename Shaders_T>
+class SubroutinesEditor;
+
+template<typename S, typename U, typename R = SubroutinesEditor<S>>
 class ProgramEditor : public Program<S, U, R> {
 	using Base = Program<S, U, R>;
 public:
@@ -73,12 +77,14 @@ inline void ProgramEditor<S, U, R>::Render()
 	this->tesc.Render();		this->tesc.Update();
 	this->tese.Render();		this->tese.Update();	
 }
-/*
-using ShaderProgramEditorVF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader, NoShader>;
-using ShaderProgramEditorVGF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, NoShader>;
-using ShaderProgramEditorVTF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, NoShader, ShaderEditor<SFile>, ShaderEditor<SFile>>;
-using ShaderProgramEditorVGTF = ProgramEditor<UniformEditor, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>, ShaderEditor<SFile>>;
-using ComputeProgramEditor = ProgramEditor<UniformEditor, ShaderEditor<SFile>, NoShader, NoShader, NoShader, NoShader>;*/
+
+class UniformEditor;
+
+using ShaderProgramEditorVF = ProgramEditor<ShaderEditorVF, UniformEditor>;
+using ShaderProgramEditorVGF = ProgramEditor<ShaderEditorVGF, UniformEditor>;
+using ShaderProgramEditorVTF = ProgramEditor<ShaderEditorVTF, UniformEditor>;
+using ShaderProgramEditorVGTF = ProgramEditor<ShaderEditorVGTF, UniformEditor>;
+using ComputeProgramEditor = ProgramEditor<ShaderEditorCompute, UniformEditor>;
 
 /*
 inline ComputeProgramEditor ComputeProgramEditor(const std::string& name, const std::string& comp)
