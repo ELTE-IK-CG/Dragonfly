@@ -21,6 +21,7 @@ public:
 template<typename S, typename U, typename R>
 inline void ProgramEditor<S, U, R>::Render()
 {
+	this->bind();
 	int tab = -1;
 	ImGui::SetNextWindowSize({ 600,400 }, ImGuiCond_FirstUseEver);
 	if (ImGui::Begin(this->program_name.c_str()))

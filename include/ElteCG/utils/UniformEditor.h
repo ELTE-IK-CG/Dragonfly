@@ -41,25 +41,45 @@ inline void UniformEditor::SetUniform(std::string&& str, const ValType& val)
 	}
 	UniformData& d = it->second;
 	if (d.ignore_input) return; //input ignored haha
-	ASSERT(std::holds_alternative<std::remove_cv_t<std::remove_reference_t<ValType>>>(d.variant), ("The uniform \""+ d.name + "\" had a different type before.").c_str());
-	d.variant = val;
-	//d.input_var = nullptr;
-	SetUni(loc, val);
+	using VT = std::remove_reference_t<std::remove_cv_t<ValType>>;
+	if constexpr (std::is_base_of_v<TextureLowLevelBase, VT>) {
+		auto tex_it = texLoc2sampler.find(it->second.loc);
+		val.bind(tex_it->second);
+		GLint smapler = static_cast<GLint>(tex_it->second);
+		d.variant = smapler;
+		glUniform1i(loc, smapler); //same as SetUni
+	}
+	else {
+		ASSERT(std::holds_alternative<std::remove_cv_t<std::remove_reference_t<ValType>>>(d.variant), ("The uniform \"" + d.name + "\" had a different type before.").c_str());
+		d.variant = val;
+		//d.input_var = nullptr;
+		SetUni(loc, val);
+	}
 }
 
 template<typename ValType>
 inline void UniformEditor::SetUniform(std::string&& str, ValType& val)
 {
-	static_assert(is_list_member<ValType, valid_types>(), "Invalid type. TODO fix otherwise.");
+	using VT = std::remove_reference_t<std::remove_cv_t<ValType>>;
+	static_assert(is_list_member<ValType, valid_types>() || std::is_base_of_v<TextureLowLevelBase, VT>, "Invalid type. TODO fix otherwise.");
 	GLuint loc = GetUniformLocation(str);
 	auto it = loc2data.find(loc);
 	ASSERT(it != loc2data.end(), "This location was not stored.");
 	UniformData& d = it->second;
 	if (d.ignore_input) return; //input ignored haha
-	ASSERT(std::holds_alternative<std::remove_cv_t<std::remove_reference_t<ValType>>>(d.variant), ("The uniform \"" + d.name + "\" had a different type before.").c_str());
-	//d.input_var = &val;
-	d.variant = val;
-	SetUni(loc, val);
+	if constexpr (std::is_base_of_v<TextureLowLevelBase, VT>) {
+		auto tex_it = texLoc2sampler.find(it->second.loc);
+		val.bind(tex_it->second);
+		GLint smapler = static_cast<GLint>(tex_it->second);
+		d.variant = smapler;
+		glUniform1i(loc, smapler); //same as SetUni
+	}
+	else {
+		ASSERT(std::holds_alternative<std::remove_cv_t<std::remove_reference_t<ValType>>>(d.variant), ("The uniform \"" + d.name + "\" had a different type before.").c_str());
+		//d.input_var = &val;
+		d.variant = val;
+		SetUni(loc, val);
+	}
 }
 
 

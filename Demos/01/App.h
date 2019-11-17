@@ -44,10 +44,10 @@ private:
 	int canvas_height=480;
 	float col_intensity = 0.15f;
 	
-	//ShaderProgramEditorVF program = "Side-Prog";
-	//ShaderProgramEditorVF program2 = "Main-Prog";
-	ShaderProgramVF program = "Side-Prog";
-	ShaderProgramVF program2 = "Main-Prog";
+	ShaderProgramEditorVF program = "Side-Prog";
+	ShaderProgramEditorVF program2 = "Main-Prog";
+	//ShaderProgramVF program = "Side-Prog";
+	//ShaderProgramVF program2 = "Main-Prog";
 
 	eltecg::ogl::ArrayBuffer MyVBO;
 	eltecg::ogl::VertexArray MyVAO;
@@ -61,9 +61,12 @@ private:
 
 	Texture2D<> testTex = Texture2D<>("Assets/scales.jpg");
 	Texture2D<> testTex2;
+	Texture2D<> testTex3;
 
 	TextureCube<> testCubemap = TextureCube<>("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
 	TextureCube<> testCubemap2;
 
 	Texture2D<> testAlias;
+
+	Texture3D<float> testField;
 };
