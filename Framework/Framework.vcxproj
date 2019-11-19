@@ -15,20 +15,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\Dragonfly\detail\Camera.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\File.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\FileEditor.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\Program.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\Shader.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\ShaderEditor.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\Subroutines.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\Texture.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\texture_helper.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\Uniform.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\UniformEditor.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\UniformTypes.cpp" />
-    <ClCompile Include="..\include\Dragonfly\Sample.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\File\File.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\File\FileEditor.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Program\Program.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\Shader.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderEditor.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Texture\Texture.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Traits\texture_helper.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Traits\UniformTypes.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\Subroutines.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\Uniform.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\UniformEditor.cpp" />
     <ClCompile Include="..\include\ImGui-addons\auto\auto.cpp" />
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.cpp" />
@@ -48,18 +48,19 @@
     <ClInclude Include="..\include\Dragonfly\config.h" />
     <ClInclude Include="..\include\Dragonfly\core.h" />
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\File.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\FileEditor.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\ImGuiHandler.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\File\File.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\object.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\Shader.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\ShaderEditor.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\Shaders.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\Subroutines.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\texture_helper.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\Uniform.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\UniformEditor.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\UniformTypes.hpp" />
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\Shader.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\Shaders.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\EventHandlerTraits.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\texture_helper.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\UniformTypes.hpp" />
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\Subroutines.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\Uniform.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\UniformEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\vao.h" />
     <ClInclude Include="..\include\Dragonfly\editor.h" />
     <ClInclude Include="..\include\Dragonfly\Program.h" />
@@ -89,11 +90,11 @@
     <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\include\Dragonfly\detail\Program.inl" />
-    <None Include="..\include\Dragonfly\detail\Shader.inl" />
-    <None Include="..\include\Dragonfly\detail\Subroutines.inl" />
-    <None Include="..\include\Dragonfly\detail\Texture.inl" />
-    <None Include="..\include\Dragonfly\detail\Uniform.inl" />
+    <None Include="..\include\Dragonfly\detail\Program\Program.inl" />
+    <None Include="..\include\Dragonfly\detail\Shader\Shader.inl" />
+    <None Include="..\include\Dragonfly\detail\Texture\Texture.inl" />
+    <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl" />
+    <None Include="..\include\Dragonfly\detail\Uniform\Uniform.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl" />

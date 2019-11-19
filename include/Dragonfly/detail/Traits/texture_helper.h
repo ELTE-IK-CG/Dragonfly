@@ -1,5 +1,5 @@
 #pragma once
-#include "object.h"
+#include "../object.h"
 #include <glm/fwd.hpp>
 #include <cstdint>
 

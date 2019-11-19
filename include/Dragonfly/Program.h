@@ -4,8 +4,8 @@
 #include <deque>
 #include "Vao.h"
 
-#include "detail/Shaders.h"
-#include "detail/Subroutines.h"
+#include "detail/Shader/Shaders.h"
+#include "detail/Uniform/Subroutines.h"
 
 namespace df
 {
@@ -86,4 +86,4 @@ using ComputeProgram = Program<ShaderCompute, Uniforms>;
 
 } //namespace df
 
-#include "detail/Program.inl"
+#include "detail/Program/Program.inl"

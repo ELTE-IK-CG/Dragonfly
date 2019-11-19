@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "Program.h"
-#include "detail/Shaders.h"
+#include "detail/Shader/Shaders.h"
 #include <ImGui/imgui.h>
 
 namespace df

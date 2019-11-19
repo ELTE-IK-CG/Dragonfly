@@ -1,6 +1,6 @@
 #pragma once
-#include "../config.h"
-#include "../Program.h"
+#include "../../config.h"
+#include "../../Program.h"
 
 // ========================= Program Base Classes ==============================
 

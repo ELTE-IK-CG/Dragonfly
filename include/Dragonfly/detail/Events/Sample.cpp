@@ -1,6 +1,6 @@
 #include <string>
 #include <GL/glew.h>
-#include "Sample.h"
+#include "../../Sample.h"
 
 Sample::Sample(const char* name, int width, int height, int vsync)
 {

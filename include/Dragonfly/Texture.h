@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <SDL/SDL_image.h>
 #include "config.h"
-#include "detail/texture_helper.h"
+#include "detail/Traits/texture_helper.h"
 
 namespace df
 {
@@ -288,4 +288,4 @@ using TextureCube = Texture<TextureType::TEX_CUBE_MAP, InternalFormat>;
 } //namespace df
 
 
-#include "detail/Texture.inl"
+#include "detail/Texture/Texture.inl"

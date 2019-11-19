@@ -28,6 +28,27 @@
     <Filter Include="Dragonfly\detail">
       <UniqueIdentifier>{9d3c18a5-3231-4b7e-820d-8f7dbe10c669}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dragonfly\detail\Events">
+      <UniqueIdentifier>{7ab20ea1-6127-42ca-bab0-c13f44059ffa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\File">
+      <UniqueIdentifier>{fa6f4bbe-e609-4dbb-af16-6a671b6a02b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Program">
+      <UniqueIdentifier>{517709f9-b393-41eb-84b3-803244af1bea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Shader">
+      <UniqueIdentifier>{d86689f9-d4ab-4d2d-8310-57fc824082e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Texture">
+      <UniqueIdentifier>{81dc2289-3f35-4c5e-93c0-91350dc9ea31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Uniform">
+      <UniqueIdentifier>{f5379c19-e958-4c3b-b697-642ff08b2117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Traits">
+      <UniqueIdentifier>{04457bb4-f955-4722-9d80-f181a4a11b2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp">
@@ -69,46 +90,46 @@
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp">
       <Filter>ImGui-Addons\STD lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\Camera.cpp">
-      <Filter>Dragonfly\detail</Filter>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\File\File.cpp">
+      <Filter>Dragonfly\detail\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\File\FileEditor.cpp">
+      <Filter>Dragonfly\detail\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Traits\texture_helper.cpp">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Traits\UniformTypes.cpp">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\Subroutines.cpp">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\Uniform.cpp">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\UniformEditor.cpp">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Texture\Texture.cpp">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Program\Program.cpp">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\Shader.cpp">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderEditor.cpp">
+      <Filter>Dragonfly\detail\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\Program.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\Shader.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\ShaderEditor.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\Texture.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\texture_helper.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\Uniform.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\UniformEditor.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\UniformTypes.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\File.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\FileEditor.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\Subroutines.cpp">
-      <Filter>Dragonfly\detail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\Sample.cpp">
       <Filter>Dragonfly\detail</Filter>
     </ClCompile>
   </ItemGroup>
@@ -173,28 +194,46 @@
     <ClInclude Include="..\include\ImGui-addons\cpp\imgui_stdlib.h">
       <Filter>ImGui-Addons\STD lib</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\File\File.h">
+      <Filter>Dragonfly\detail\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h">
+      <Filter>Dragonfly\detail\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\EventHandlerTraits.h">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\texture_helper.h">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\UniformTypes.hpp">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\Subroutines.h">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\Uniform.h">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\UniformEditor.h">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\Shader.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\Shaders.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h">
       <Filter>Dragonfly\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\object.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\Shader.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\ShaderEditor.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\texture_helper.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\Uniform.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\UniformEditor.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\UniformTypes.hpp">
       <Filter>Dragonfly\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\vao.h">
@@ -218,29 +257,14 @@
     <ClInclude Include="..\include\Dragonfly\ProgramEditor.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\Texture.h">
-      <Filter>Dragonfly</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\File.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\FileEditor.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\Subroutines.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\Shaders.h">
-      <Filter>Dragonfly\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\Vao.h">
-      <Filter>Dragonfly</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\Dragonfly\Sample.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\ImGuiHandler.h">
-      <Filter>Dragonfly\detail</Filter>
+    <ClInclude Include="..\include\Dragonfly\Texture.h">
+      <Filter>Dragonfly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\Vao.h">
+      <Filter>Dragonfly</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -253,20 +277,20 @@
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl">
       <Filter>ImGui-Addons\Node Editor</Filter>
     </None>
-    <None Include="..\include\Dragonfly\detail\Program.inl">
-      <Filter>Dragonfly\detail</Filter>
+    <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl">
+      <Filter>Dragonfly\detail\Uniform</Filter>
     </None>
-    <None Include="..\include\Dragonfly\detail\Shader.inl">
-      <Filter>Dragonfly\detail</Filter>
+    <None Include="..\include\Dragonfly\detail\Uniform\Uniform.inl">
+      <Filter>Dragonfly\detail\Uniform</Filter>
     </None>
-    <None Include="..\include\Dragonfly\detail\Texture.inl">
-      <Filter>Dragonfly\detail</Filter>
+    <None Include="..\include\Dragonfly\detail\Texture\Texture.inl">
+      <Filter>Dragonfly\detail\Texture</Filter>
     </None>
-    <None Include="..\include\Dragonfly\detail\Uniform.inl">
-      <Filter>Dragonfly\detail</Filter>
+    <None Include="..\include\Dragonfly\detail\Program\Program.inl">
+      <Filter>Dragonfly\detail\Program</Filter>
     </None>
-    <None Include="..\include\Dragonfly\detail\Subroutines.inl">
-      <Filter>Dragonfly\detail</Filter>
+    <None Include="..\include\Dragonfly\detail\Shader\Shader.inl">
+      <Filter>Dragonfly\detail\Shader</Filter>
     </None>
   </ItemGroup>
 </Project>

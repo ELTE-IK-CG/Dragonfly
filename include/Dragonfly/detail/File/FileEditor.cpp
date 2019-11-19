@@ -1,7 +1,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include "../config.h"
+#include "../../config.h"
 #include "FileEditor.h"
 
 using namespace df;

@@ -1,6 +1,6 @@
 #pragma once
-#include "../Program.h"
-#include "UniformTypes.hpp"
+#include "../../Program.h"
+#include "../Traits/UniformTypes.hpp"
 
 #include <unordered_map>
 #include <glm/glm.hpp>

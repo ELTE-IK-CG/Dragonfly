@@ -3,13 +3,13 @@
 #include <fstream>
 #include <string>
 #include <regex>
-#include "../config.h"
+#include "../../config.h"
 #include "Shader.h"
 #include "Shader.inl"
 #include "ShaderEditor.h"
 
-#include "File.h"
-#include "FileEditor.h" // todo fix File template classes
+#include "../File/File.h"
+#include "../File/FileEditor.h" // todo fix File template classes
 
 using namespace df;
 

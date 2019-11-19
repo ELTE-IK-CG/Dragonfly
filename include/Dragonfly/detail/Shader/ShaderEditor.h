@@ -1,6 +1,6 @@
 #pragma once
 #include "Shader.h"
-#include "FileEditor.h"
+#include "../File/FileEditor.h"
 #include <ImGui-addons/imgui_text_editor/TextEditor.h>
 
 namespace df

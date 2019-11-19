@@ -8,7 +8,7 @@
 #include <ImGui/imgui.h>
 #include <ImGui-addons/impl/imgui_impl_sdl.h>
 #include <ImGui-addons/impl/imgui_impl_opengl3.h>
-#include "detail/EventHandlerTraits.h"
+#include "detail/Traits/EventHandlerTraits.h"
 
 #include <iostream>
 
