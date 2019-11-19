@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -55,6 +55,12 @@
     <ClInclude Include="..\include\Dragonfly\detail\Shader\Shader.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\Shaders.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture1D.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture2D.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture2DArray.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture3D.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\TextureCube.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\EventHandlerTraits.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\texture_helper.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\UniformTypes.hpp" />
@@ -66,7 +72,6 @@
     <ClInclude Include="..\include\Dragonfly\Program.h" />
     <ClInclude Include="..\include\Dragonfly\ProgramEditor.h" />
     <ClInclude Include="..\include\Dragonfly\Sample.h" />
-    <ClInclude Include="..\include\Dragonfly\Texture.h" />
     <ClInclude Include="..\include\Dragonfly\Vao.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\auto.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\core.h" />
@@ -92,7 +97,6 @@
   <ItemGroup>
     <None Include="..\include\Dragonfly\detail\Program\Program.inl" />
     <None Include="..\include\Dragonfly\detail\Shader\Shader.inl" />
-    <None Include="..\include\Dragonfly\detail\Texture\Texture.inl" />
     <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl" />
     <None Include="..\include\Dragonfly\detail\Uniform\Uniform.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />

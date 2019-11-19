@@ -2,7 +2,7 @@
 #include <typeinfo>
 //#include <iostream>
 #include "Uniform.h"
-#include "../../Texture.h"
+#include "../Texture/Texture.h"
 
 inline GLuint df::Uniforms::GetUniformLocation(const std::string& str) const {
 	if (auto it = locations.find(str); it != locations.end()) {

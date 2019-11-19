@@ -260,11 +260,26 @@
     <ClInclude Include="..\include\Dragonfly\Sample.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\Texture.h">
-      <Filter>Dragonfly</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\Dragonfly\Vao.h">
       <Filter>Dragonfly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture1D.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture2DArray.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture3D.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture2D.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\TextureCube.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -282,9 +297,6 @@
     </None>
     <None Include="..\include\Dragonfly\detail\Uniform\Uniform.inl">
       <Filter>Dragonfly\detail\Uniform</Filter>
-    </None>
-    <None Include="..\include\Dragonfly\detail\Texture\Texture.inl">
-      <Filter>Dragonfly\detail\Texture</Filter>
     </None>
     <None Include="..\include\Dragonfly\detail\Program\Program.inl">
       <Filter>Dragonfly\detail\Program</Filter>

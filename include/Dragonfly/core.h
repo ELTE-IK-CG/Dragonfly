@@ -6,4 +6,6 @@
 	#include "detail/Shader/Shaders.h"
 	#include "detail/Uniform/Uniform.h"
 
-#include "Texture.h" //todo: split
+#include "detail/Texture/Texture.h"
+	#include "detail/Texture/Texture2D.h"
+	#include "detail/Texture/TextureCube.h"
