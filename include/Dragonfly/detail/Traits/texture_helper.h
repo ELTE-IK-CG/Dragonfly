@@ -25,7 +25,7 @@ namespace eltecg { namespace ogl { namespace helper {
 /****************************************************************************
  *						Helper types										*/
 
-	template<typename T> struct integral {}; //for integral formats
+	template<typename T> struct integral { T t; }; //for integral formats
 
 	//dummys: (ieee half float library is coming soon...)
 	struct half  { uint16_t dummy[1]; };

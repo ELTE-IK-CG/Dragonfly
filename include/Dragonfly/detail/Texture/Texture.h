@@ -104,6 +104,8 @@ protected:
 	Texture<NewTexType, NewInternalFormat> _MakeView(TexLevels levels, TexLayers layers);
 
 public:
+	using PixelFormat = InternalFormat;
+
 	void bind() const;
 	void bind(GLuint hwSamplerUnit) const;
 };
