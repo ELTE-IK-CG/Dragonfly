@@ -3,6 +3,8 @@
 //#include "static_helper.h"
 #include <GL/glew.h>
 
+#include <utility>
+
 //namespace for opengl base classes
 namespace eltecg { namespace ogl { namespace base {
 	
@@ -17,6 +19,15 @@ protected:
 	//2. Functions
 	Object() = default;
 	~Object() = default;
+
+	Object(const Object&) = delete;
+	Object& operator=(const Object&) = delete;
+
+	Object(Object&& o) : object_id(o.object_id) { o.object_id = 0; }
+	Object& operator=(Object&& o) {
+		std::swap(object_id, o.object_id);
+		return *this;
+	}
 	
 	//conversion operator
 protected:

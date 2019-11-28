@@ -54,6 +54,17 @@ public:
 	~Buffer();
 	//todo tidy
 
+	Buffer(const Buffer&) = delete;
+	Buffer& operator=(const Buffer&) = delete;
+
+	Buffer(Buffer&& o) : base::Object(std::move(o)), m_buffer_size(o.m_buffer_size) {}
+	Buffer& operator=(Buffer&& o) {
+		if (this == &o) return *this;
+		base::Object::operator=(std::move(o));
+		m_buffer_size = o.m_buffer_size;
+		return *this;
+	}
+
 	constexpr BufferType Type() const { return T_buffer_type; }
 	constexpr GLenum GLtype() const { return static_cast<GLenum>(T_buffer_type); }
 	
