@@ -94,11 +94,11 @@ Texture<TextureType::TEX_2D_ARRAY, InternalFormat>& Texture<TextureType::TEX_2D_
 		constexpr GLenum pxFormat = eltecg::ogl::helper::getInternalChannel<Format>();
 		constexpr GLenum pxType = eltecg::ogl::helper::getInternalBaseType<Format>();
 
-		ASSERT(this->_width * this->_height * this->_numLayers == data.size(), "Texture2DArray: trying to write a texture with the wrong amount of data");
-		if (this->_width * this->_height * this->_numLayers > data.size())
+		ASSERT(this->_width * this->_height * this->_layers == data.size(), "Texture2DArray: trying to write a texture with the wrong amount of data");
+		if (this->_width * this->_height * this->_layers > data.size())
 			return *this;
 
-		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, this->_width, this->_height, this->_numLayers, pxFormat, pxType, static_cast<const void*>(&data[0]));
+		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->_width, this->_height, this->_layers, pxFormat, pxType, static_cast<const void*>(&data[0]));
 
 		if (genMipmap)
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
