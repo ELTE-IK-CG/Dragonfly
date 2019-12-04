@@ -33,6 +33,8 @@ namespace eltecg { namespace ogl { namespace helper {
 	struct half3 { uint16_t dummy[3]; };
 	struct half4 { uint16_t dummy[4]; };
 
+	struct r11g11b10 { uint32_t dummy; };
+
 	//only 3 options and 24bit type doesnt exist anyway
 	struct depth16 { uint8_t dummy[2]; };
 	struct depth24 { uint8_t dummy[3]; };
@@ -96,6 +98,8 @@ DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(half, GL_R16F, GL_RED, 0) // THIS IS WRO
 DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(half2, GL_RG16F, GL_RG, 0)
 DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(half3, GL_RGB16F, GL_RGB, 0)
 DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(half4, GL_RGBA16F, GL_RGBA, 0)
+
+DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(r11g11b10, GL_R11F_G11F_B10F, GL_RGB, GL_UNSIGNED_INT_10F_11F_11F_REV)
 
 DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(float, GL_R32F, GL_RED, GL_FLOAT)
 DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(glm::vec1, GL_R32F, GL_RED, GL_FLOAT)
