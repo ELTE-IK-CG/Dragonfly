@@ -51,6 +51,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\File.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\object.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\Shader.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h" />

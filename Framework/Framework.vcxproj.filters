@@ -49,6 +49,9 @@
     <Filter Include="Dragonfly\detail\Traits">
       <UniqueIdentifier>{04457bb4-f955-4722-9d80-f181a4a11b2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dragonfly\detail\Framebuffer">
+      <UniqueIdentifier>{4f10f253-e305-4dd9-821a-a355c1ce301d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp">
@@ -280,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Texture\TextureCube.h">
       <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.h">
+      <Filter>Dragonfly\detail\Framebuffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

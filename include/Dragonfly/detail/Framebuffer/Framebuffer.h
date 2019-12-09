@@ -47,55 +47,55 @@ public:
 	}
 };
 
+
 namespace detail {
 
-	template<int depth_=-1, int stencil_=-1, int depthstencil_= -1>
-	struct FBO_compile_data{
-		constexpr int depth = depth_;			constexpr int stencil = stencil_;			constexpr int depthstencil = depthstencil_;
-		constexpr bool has_depth = depth != -1;	constexpr bool has_stencil = stencil != -1;	constexpr bool has_depthstencil = depthstencil != -1;
-	};
+	constexpr unsigned _none_ = std::numeric_limits<unsigned>::max();
+
+	template<unsigned depth_= _none_, unsigned stencil_ = _none_, unsigned depthstencil_ = _none_>
+	struct FBO_compile_data{static constexpr unsigned depth() { return depth_; }; static constexpr unsigned stencil() { return stencil_; } static constexpr unsigned depthstencil() { return depthstencil_; } };
+	namespace cg = eltecg::ogl::helper;
+
+	template<typename F> constexpr bool has_depth_v				= std::is_same_v<F, cg::depth16> || std::is_same_v<F, cg::depth24> || std::is_same_v<F, cg::depth32F>;
+	template<typename F> constexpr bool has_stencil_v			= std::is_same_v<F, cg::stencil1> || std::is_same_v<F, cg::stencil4> || std::is_same_v<F, cg::stencil8> || std::is_same_v<F, cg::stencil16>;
+	template<typename F> constexpr bool has_depthstencil_v		= std::is_same_v<F, cg::depth24stencil8> || std::is_same_v<F, cg::depth32Fstencil8 >;
+	template<typename F> constexpr bool is_color_attachement_v	= !has_depth_v<F> && !has_stencil_v<F> && !has_depthstencil_v<F>;
+	template<typename F> constexpr GLenum get_attachement_v		= has_depth_v<F> ? GL_DEPTH_ATTACHMENT : has_stencil_v<F> ? GL_STENCIL_ATTACHMENT : has_depthstencil_v<F> ? GL_DEPTH_STENCIL_ATTACHMENT : 0;
+
 }
 
 template<typename compile_data, typename ... Attachements>
 class FramebufferObject : public FrameBufferBase
 {
 private:
+	//namespace cg = eltecg::ogl::helper;
 	std::tuple<Attachements...> _attachements;
 	GLuint _id;
-	namespace cg = eltecg::ogl::helper;
 private:
-	FramebufferObject(GLuint id, std::tuple<Attachements...> &&attachements):_id(id), _attachements(attachements){}
 
 	void bind() { glBindFramebuffer(GL_FRAMEBUFFER, _id); }
 
-	/*template<typename new_compile_data, typename ... NewAttachements>
-	using CombinedFramebuffer_t = FramebufferObject<detail::FBO_compile_data<
-		compile_data::has_depth			| new_compile_data::has_depth,
-		compile_data::has_stencil		| new_compile_data::has_stencil,
-		compile_data::has_depthstencil	| new_compile_data::has_depthstencil
-	>, Attachements..., NewAttachements...>;*/
 
-	template<typename F>
-	using InternalFormat_AddT = detail::FBO_compile_data<
-		std::is_same_v<F, cg::depth16>			|| std::is_same_v<F, cg::depth32>		|| std::is_same_v<F, cg::depth32F>,
-		std::is_same_v<F, cg::stencil1>			|| std::is_same_v<F, cg::stencil4>		|| std::is_same_v<F, cg::stencil8>	|| std::is_same_v<F, cg::stencil16>,
-		std::is_same_v<F, cg::depth24stencil8>	|| std::is_same_v<F, cg::depth32Fstencil8>>;
+	template<typename F> using FBO_compile_data_add_InternalFormat = detail::FBO_compile_data<
+		detail::has_depth_v<F>        ? sizeof...(Attachements) : detail::_none_ ,
+		detail::has_stencil_v<F>      ? sizeof...(Attachements) : detail::_none_ ,
+		detail::has_depthstencil_v<F> ? sizeof...(Attachements) : detail::_none_ >;
+	template<typename F> using FramebufferObject_add_Texture2D    = FramebufferObject < FBO_compile_data_add_InternalFormat<F>, Attachements..., Texture2D<F>>;
+	template<typename F> using FramebufferObject_add_Renderbuffer = FramebufferObject < FBO_compile_data_add_InternalFormat<F>, Attachements..., Renderbuffer<F>>;
 
-	template<typename F>
-	using FramebufferObject_add_Texture2D = FramebufferObject < InternalFormat_AddT<F>, Attachements..., Texture2D<F>>;
-
-	template<typename F>
-	using FramebufferObject_add_Renderbuffer = FramebufferObject < InternalFormat_AddT<F>, Attachements..., Renderbuffer<F>>;
-	
-	constexpr int calc_tuple_idx(int i)
+	template<int idx>
+	static constexpr int calc_extra_spots_until()
 	{
-		//todo static assert
-		return i + (i > compile_data::depth ? +1 : 0) + (i > compile_data::stencil ? +1 : 0) + (i > compile_data::depthstencil ? +1 : 0);
+		static_assert(idx >= 0 && idx <= sizeof...(Attachements), "Index out of bounds here.");
+		return (idx > compile_data::depth() ? 1 : 0) + (idx > compile_data::stencil() ? 1 : 0) + (idx > compile_data::depthstencil() ? 1 : 0);
 	}
 
 public:
+	FramebufferObject(GLuint id, std::tuple<Attachements...> &&attachements):_id(id), _attachements(std::move(attachements)){}
 	FramebufferObject() { glCreateFramebuffers(1, &_id); }
-	~FramebufferObject() { if(id != 0) glDeleteFramebuffers(1, &_id); }
+	~FramebufferObject() { if(_id != 0) glDeleteFramebuffers(1, &_id); }
+	FramebufferObject(FramebufferObject&&) = default;
+	//FramebufferObject operator=(FramebufferObject&&) = default;
 
 	/*template<typename new_compile_data, typename ... NewAttachements>
 	CombinedFramebuffer_t< new_compile_data, NewAttachements...>
@@ -107,26 +107,38 @@ public:
 		return fbo;
 	}*/
 
+
 	template<typename InternalFormat>
 	FramebufferObject_add_Texture2D<InternalFormat> operator + (const Texture2D<InternalFormat> &tex)
 	{
-		FramebufferObject_add_Texture2D<InternalFormat> fbo(this->_id, std::tuple_cat(this->_attachements, std::make_tuple(tex));
-		this->bind();
-		
-		GLenum attachement = std::
+		static_assert(compile_data::depth()        == detail::_none_ || !detail::has_depth_v<InternalFormat>   && !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two depth textures."  );
+		static_assert(compile_data::stencil()      == detail::_none_ || !detail::has_stencil_v<InternalFormat> && !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two stencil textures.");
+		static_assert(compile_data::depthstencil() == detail::_none_ || !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two depth-stencil textures, that is just too much!");
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, )
+		FramebufferObject_add_Texture2D<InternalFormat> fbo(this->_id, std::tuple_cat(this->_attachements, std::make_tuple(tex)));
+		this->bind(); //same as fbo.bind() but available
+		
+		constexpr int idx = sizeof...(Attachements);
+		constexpr int index = idx - calc_extra_spots_until<idx>();
+		static_assert(index >= 0 && index <= sizeof...(Attachements), "Index out of bounds here.");
+		constexpr GLenum attachement = detail::is_color_attachement_v<InternalFormat> ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, tex.GetID(), 0);
 
 		this->_id = 0;
-		return fbo;
+		return std::move(fbo);
 	}
 
-	template<int i>
-	constexpr typename std::tuple_element<i, std::tuple<Attachements...>>& get() {		//static_assert()
-		static_assert(0 <= i && i < std::tuple_size_v<std::tuple<Attachements...>>, "FramebufferObject: the index is not within the tuple's range.")
-	 	return std::get<i>(_attachements);
+	template<int idx>
+	constexpr typename std::tuple_element<idx, std::tuple<Attachements...>>& get()
+	{
+		constexpr int index = idx + calc_extra_spots_until<idx>();
+		static_assert(index >= 0 && index < sizeof...(Attachements), "Index out of bounds here.");
+		return std::get< index >(_attachements);
 	}
 };
+
+using EmptyFBO = FramebufferObject<detail::FBO_compile_data<>>;
 
 template<typename ... ColorAttachements>
 using FBO = FramebufferObject<Renderbuffer<>, ColorAttachements...>;
