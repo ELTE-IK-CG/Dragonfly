@@ -102,7 +102,7 @@ protected:
 	TextureBase& operator= (TextureBase&& _o);
 
 	template<TextureType NewTexType, typename NewInternalFormat>
-	Texture<NewTexType, NewInternalFormat> _MakeView(TexLevels levels, TexLayers layers);
+	Texture<NewTexType, NewInternalFormat> _MakeView(TexLevels levels, TexLayers layers) const;
 
 public:
 	using PixelFormat = InternalFormat;
@@ -137,7 +137,8 @@ TextureBase<TexType, InternalFormat>& TextureBase<TexType, InternalFormat>::oper
 
 template<TextureType TexType, typename InternalFormat>
 template<TextureType NewTexType, typename NewInternalFormat>
-Texture<NewTexType, NewInternalFormat> TextureBase<TexType, InternalFormat>::_MakeView(TexLevels levels, TexLayers layers) {
+Texture<NewTexType, NewInternalFormat> TextureBase<TexType, InternalFormat>::_MakeView(TexLevels levels, TexLayers layers) const
+{
 	ASSERT(this->_hasStorage, "Texture: Cannot create a view from a texture that has no storage.");
 	ASSERT(levels.min < this->_levels && levels.min + levels.num <= this->_levels, "Texture: wrong mipmap level arguments");
 	ASSERT(layers.min < this->_layers && layers.min + layers.num <= this->_layers, "Texture: wrong array layer arguments");

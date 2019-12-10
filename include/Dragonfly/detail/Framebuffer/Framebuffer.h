@@ -19,12 +19,6 @@ class DefaultFramebuffer :public FrameBufferBase
 };
 
 
-template<int i>
-struct Ind
-{
-
-};
-
 
 template<typename InternalFormat = eltecg::ogl::helper::depth24>
 class Renderbuffer
@@ -69,12 +63,12 @@ class FramebufferObject : public FrameBufferBase
 {
 private:
 	//namespace cg = eltecg::ogl::helper;
-	std::tuple<const Attachements&...> _attachements;
+	std::tuple<Attachements...> _attachements;
 	GLuint _id;
+	GLuint _width = 0, _height = 0;
 private:
 
 	void bind() { glBindFramebuffer(GL_FRAMEBUFFER, _id); }
-
 
 	template<typename F> using FBO_compile_data_add_InternalFormat = detail::FBO_compile_data<
 		detail::has_depth_v<F>        ? sizeof...(Attachements) : detail::_none_ ,
@@ -91,21 +85,11 @@ private:
 	}
 
 public:
-	FramebufferObject(GLuint id, std::tuple<const Attachements&...> &&attachements):_id(id), _attachements(std::move(attachements)){}
+	FramebufferObject(GLuint id, std::tuple<Attachements...> &&attachements, GLuint width = 0, GLuint height = 0):_id(id), _attachements(std::move(attachements)), _width(width), _height(height){}
 	FramebufferObject() { glCreateFramebuffers(1, &_id); }
 	~FramebufferObject() { if(_id != 0) glDeleteFramebuffers(1, &_id); }
 	FramebufferObject(FramebufferObject&&) = default;
-	//FramebufferObject operator=(FramebufferObject&&) = default;
-
-	/*template<typename new_compile_data, typename ... NewAttachements>
-	CombinedFramebuffer_t< new_compile_data, NewAttachements...>
-		operator + (const FramebufferObject<NewAttachements...>& o)
-	{
-		CombinedFramebuffer_t< new_compile_data, NewAttachements...> fbo(this->_id);
-		fbo.attache_attachementsments = std::tuple_cat(this->_attachements, o._attachements);
-		_id = 0;
-		return fbo;
-	}*/
+	//FramebufferObject& operator=(FramebufferObject&&) = default;
 
 
 	template<typename InternalFormat>
@@ -115,7 +99,11 @@ public:
 		static_assert(compile_data::stencil()      == detail::_none_ || !detail::has_stencil_v<InternalFormat> && !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two stencil textures.");
 		static_assert(compile_data::depthstencil() == detail::_none_ || !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two depth-stencil textures, that is just too much!");
 
-		FramebufferObject_add_Texture2D<InternalFormat> fbo(this->_id, std::tuple_cat(this->_attachements, std::tie(tex)));
+		ASSERT((this->_width == 0 || tex.getWidth() == 0 || this->_width == tex.getWidth()) && (this->_height == 0 || tex.getHeight() == 0 || this->_height == tex.getHeight()), "Unmaching texture size in framebuffer object.");
+
+		int w = (this->_width  == 0 ? tex.getWidth()  : this->_width), h = (this->_height == 0 ? tex.getHeight() : this->_height);
+
+		FramebufferObject_add_Texture2D<InternalFormat> fbo(this->_id, std::tuple_cat(std::move(this->_attachements), std::make_tuple(tex.MakeView(0_level))), w, h);
 		this->bind(); //same as fbo.bind() but available
 		
 		constexpr int idx = sizeof...(Attachements);
@@ -126,7 +114,7 @@ public:
 		glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, tex.GetID(), 0);
 
 		this->_id = 0;
-		return std::move(fbo);
+		return fbo;
 	}
 
 	template<int idx>

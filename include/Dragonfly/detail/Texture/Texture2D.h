@@ -40,17 +40,15 @@ public:
 	Texture& operator= (Texture&& _o);
 
 	Texture& operator= (const std::string& file);
-	template<typename Format>
-	Texture& operator= (const std::vector<Format>& data);
+	template<typename Format> Texture& operator= (const std::vector<Format>& data);
 
 	void InitTexture(GLuint width, GLuint height, GLuint numLevels = ALL);
 
 	Texture& LoadFromFile(const std::string& file);
-	template<typename Format>
-	Texture& LoadData(const std::vector<Format>& data, bool genMipmap = true);
+	template<typename Format> Texture& LoadData(const std::vector<Format>& data, bool genMipmap = true);
 
 	template<TextureType NewTexType = TextureType::TEX_2D, typename NewInternalFormat = InternalFormat>
-	Texture<NewTexType, NewInternalFormat> MakeView(TexLevels levels = 0_levelAll);
+	Texture<NewTexType, NewInternalFormat> MakeView(TexLevels levels = 0_levelAll) const;
 
 	Texture operator[] (TexLevels levels);
 };
@@ -180,7 +178,7 @@ Texture<TextureType::TEX_2D, InternalFormat>& Texture<TextureType::TEX_2D, Inter
 
 template<typename InternalFormat>
 template<TextureType NewTexType, typename NewInternalFormat>
-Texture<NewTexType, NewInternalFormat> Texture<TextureType::TEX_2D, InternalFormat>::MakeView(TexLevels levels)
+Texture<NewTexType, NewInternalFormat> Texture<TextureType::TEX_2D, InternalFormat>::MakeView(TexLevels levels) const
 {
 	static_assert(NewTexType == TextureType::TEX_2D || NewTexType == TextureType::TEX_2D_ARRAY, "Texture2D: Incompatible view target.");
 	if (levels.num == ALL) levels.num = this->_levels - levels.min;
