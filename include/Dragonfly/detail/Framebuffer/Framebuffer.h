@@ -69,7 +69,7 @@ class FramebufferObject : public FrameBufferBase
 {
 private:
 	//namespace cg = eltecg::ogl::helper;
-	std::tuple<Attachements...> _attachements;
+	std::tuple<const Attachements&...> _attachements;
 	GLuint _id;
 private:
 
@@ -91,7 +91,7 @@ private:
 	}
 
 public:
-	FramebufferObject(GLuint id, std::tuple<Attachements...> &&attachements):_id(id), _attachements(std::move(attachements)){}
+	FramebufferObject(GLuint id, std::tuple<const Attachements&...> &&attachements):_id(id), _attachements(std::move(attachements)){}
 	FramebufferObject() { glCreateFramebuffers(1, &_id); }
 	~FramebufferObject() { if(_id != 0) glDeleteFramebuffers(1, &_id); }
 	FramebufferObject(FramebufferObject&&) = default;
@@ -115,7 +115,7 @@ public:
 		static_assert(compile_data::stencil()      == detail::_none_ || !detail::has_stencil_v<InternalFormat> && !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two stencil textures.");
 		static_assert(compile_data::depthstencil() == detail::_none_ || !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two depth-stencil textures, that is just too much!");
 
-		FramebufferObject_add_Texture2D<InternalFormat> fbo(this->_id, std::tuple_cat(this->_attachements, std::make_tuple(tex)));
+		FramebufferObject_add_Texture2D<InternalFormat> fbo(this->_id, std::tuple_cat(this->_attachements, std::tie(tex)));
 		this->bind(); //same as fbo.bind() but available
 		
 		constexpr int idx = sizeof...(Attachements);
