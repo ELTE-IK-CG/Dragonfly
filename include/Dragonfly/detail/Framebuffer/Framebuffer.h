@@ -4,6 +4,7 @@
 #include "../Texture/Texture.h"
 #include "../Texture/Texture2D.h"
 #include "../Texture/TextureCube.h"
+#include <iostream>
 
 namespace df
 {
@@ -89,32 +90,37 @@ public:
 	FramebufferObject() { glCreateFramebuffers(1, &_id); }
 	~FramebufferObject() { if(_id != 0) glDeleteFramebuffers(1, &_id); }
 	FramebufferObject(FramebufferObject&&) = default;
+
+	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>     && tex) : _attachements(std::make_tuple(std::move(tex))), _width(tex.getWidth()), _height(tex.getHeight()) { glCreateFramebuffers(1, &_id); }
+	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)){}
 	//FramebufferObject& operator=(FramebufferObject&&) = default;
-
-
-	template<typename InternalFormat>
-	FramebufferObject_add_Texture2D<InternalFormat> operator + (const Texture2D<InternalFormat> &tex)
+	
+	template<typename InternalFormat> FramebufferObject_add_Texture2D<InternalFormat> operator + (Texture2D<InternalFormat>&& tex) &&
 	{
 		static_assert(compile_data::depth()        == detail::_none_ || !detail::has_depth_v<InternalFormat>   && !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two depth textures."  );
 		static_assert(compile_data::stencil()      == detail::_none_ || !detail::has_stencil_v<InternalFormat> && !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two stencil textures.");
 		static_assert(compile_data::depthstencil() == detail::_none_ || !detail::has_depthstencil_v<InternalFormat>, "An FBO cannot have two depth-stencil textures, that is just too much!");
 
-		ASSERT((this->_width == 0 || tex.getWidth() == 0 || this->_width == tex.getWidth()) && (this->_height == 0 || tex.getHeight() == 0 || this->_height == tex.getHeight()), "Unmaching texture size in framebuffer object.");
-
-		int w = (this->_width  == 0 ? tex.getWidth()  : this->_width), h = (this->_height == 0 ? tex.getHeight() : this->_height);
-
-		FramebufferObject_add_Texture2D<InternalFormat> fbo(this->_id, std::tuple_cat(std::move(this->_attachements), std::make_tuple(tex.MakeView(0_level))), w, h);
-		this->bind(); //same as fbo.bind() but available
-		
 		constexpr int idx = sizeof...(Attachements);
 		constexpr int index = idx - calc_extra_spots_until<idx>();
 		static_assert(index >= 0 && index <= sizeof...(Attachements), "Index out of bounds here.");
 		constexpr GLenum attachement = detail::is_color_attachement_v<InternalFormat> ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, tex.GetID(), 0);
+		ASSERT((this->_width == 0 || tex.getWidth() == 0 || this->_width == tex.getWidth()) && (this->_height == 0 || tex.getHeight() == 0 || this->_height == tex.getHeight()), "Unmaching texture size in framebuffer object.");
+		int w = (this->_width  == 0 ? tex.getWidth()  : this->_width), h = (this->_height == 0 ? tex.getHeight() : this->_height);
+
+		this->bind();
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, tex.getID(), 0);
 
 		this->_id = 0;
-		return fbo;
+		std::cout << "w = " << w << " h = " << h << std::endl;
+		return FramebufferObject_add_Texture2D<InternalFormat>(this->_id, std::tuple_cat(std::move(this->_attachements), std::make_tuple(std::move(tex))), w, h);
+	}
+
+	template<typename InternalFormat>
+	FramebufferObject_add_Texture2D<InternalFormat> operator + (const Texture2D<InternalFormat> &tex) &&
+	{
+		return std::move(*this) + tex.MakeView(0_level);
 	}
 
 	template<int idx>
@@ -130,6 +136,18 @@ using EmptyFBO = FramebufferObject<detail::FBO_compile_data<>>;
 
 template<typename ... ColorAttachements>
 using FBO = FramebufferObject<Renderbuffer<>, ColorAttachements...>;
+
+template<typename InternalFormat>
+Texture<TextureType::TEX_2D, InternalFormat>::operator FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture<TextureType::TEX_2D, InternalFormat>>() &&
+{
+	return FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture<TextureType::TEX_2D, InternalFormat>>(std::move(*this));
+}
+
+template<typename InternalFormat>
+Texture<TextureType::TEX_2D, InternalFormat>::operator FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture<TextureType::TEX_2D, InternalFormat>>() const&
+{
+	return FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture<TextureType::TEX_2D, InternalFormat>>(*this);
+}
 
 }
 

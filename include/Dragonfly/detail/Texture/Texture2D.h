@@ -10,10 +10,14 @@
 
 namespace df
 {
-	namespace detail
-	{
-		int invert_image(int pitch, int height, void* image_pixels);
-	}
+namespace detail
+{
+	int invert_image(int pitch, int height, void* image_pixels);
+
+	template<unsigned depth_, unsigned stencil_, unsigned depthstencil_> struct FBO_compile_data;
+}
+
+template<typename compile_data, typename ... Attachements> class FramebufferObject; //FWD DECL
 
 template<typename InternalFormat>
 class Texture<TextureType::TEX_2D, InternalFormat> : public TextureBase<TextureType::TEX_2D, InternalFormat>
@@ -27,6 +31,9 @@ class Texture<TextureType::TEX_2D, InternalFormat> : public TextureBase<TextureT
 
 public:
 	bool invertYOnFileLoad = true;
+
+	operator FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture>() &&;
+	operator FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture>() const&;
 
 	Texture() {}
 	Texture(GLuint width, GLuint height, GLuint numLevels = ALL, bool invertImage = true);

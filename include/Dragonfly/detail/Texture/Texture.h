@@ -60,8 +60,17 @@ inline constexpr TexLayers::operator TexLevelsAndLayers() { return { {0, ALL}, *
 
 class TextureLowLevelBase {
 public:
-	operator GLuint() { return texture_id; }
-	GLuint GetID() const noexcept { return texture_id; }
+	// raw OpenGL name
+	GLuint getID() const { return texture_id; }
+	//	operator GLuint() const { return texture_id; }
+	// texture size
+	GLuint getWidth() const { return _width; }
+	GLuint getHeight() const { return _height; }
+	GLuint getDepth() const { return _depth; }
+	// mipmap levels
+	GLuint getLevels() const { return _levels; }
+	// array layers
+	GLuint getLayers() const { return _layers; }
 protected:
 	GLuint texture_id = 0;
 	GLuint _width = 0, _height = 0, _depth = 0;
