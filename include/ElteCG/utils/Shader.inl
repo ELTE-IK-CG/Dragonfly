@@ -3,6 +3,7 @@
 
 inline const char* shader2str(GLenum type);
 
+#undef max
 
 class ShaderLowLevelBase
 {

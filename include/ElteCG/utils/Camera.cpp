@@ -10,7 +10,7 @@ int Camera::CamCount_ = 0; //static variable
 bool Camera::Update()
 {
 	static std::chrono::high_resolution_clock::time_point last_measurement = std::chrono::high_resolution_clock::now();
-	deltaTime_ = static_cast<float>(static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - last_measurement).count())/1000000000.0);
+	deltaTime_ =static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - last_measurement).count())/1000000000.0;
 	last_measurement = std::chrono::high_resolution_clock::now();
 
 	if (uv_changed)
@@ -34,8 +34,8 @@ bool Camera::Update()
 
 	if (view_changed)
 	{
-		eye_ +=(goFrwd_*frwdDir_ + goRght_ * rghtDir_)*moveSpeed_*deltaTime_;
-		at_ += (goFrwd_*frwdDir_ + goRght_ * rghtDir_)*moveSpeed_*deltaTime_;
+		glm::vec3 dv = (goFrwd_ * frwdDir_ + goRght_ * rghtDir_) * moveSpeed_ * static_cast<float>(deltaTime_);
+		eye_ += dv;	at_ += dv;
 		viewMatrix_ = glm::lookAt(eye_, at_, up_);
 	}
 	if (proj_changed)
@@ -64,7 +64,7 @@ bool Camera::RenderUI()
 			if (ImGui::BeginChild(name_.c_str(), { 0,150 }, true)) {
 				float w = ImGui::GetContentRegionAvailWidth();
 
-				ImGui::Text("Measured delta T: %f seconds", this->deltaTime_);
+				ImGui::Text("Last frame times %f ms", 1000 * this->deltaTime_);
 
 				ImGui::PushItemWidth(0.9f * w);
 				look_changed |= ImGui::DragFloat3("Eye", &eye_.x, 0.4f);

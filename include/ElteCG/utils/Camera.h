@@ -56,6 +56,9 @@ public:
 	inline Camera& Resize(int width, int height) { return Resize(glm::vec2(width, height)); }
 	inline Camera& Resize(float width, float height) { return Resize(glm::vec2(width, height)); }
 
+	inline double GetLastFrameTime() const { return deltaTime_; }
+	inline glm::ivec2 GetSize() const { return glm::ivec2(resolution_); }
+
 private:
 	bool proj_changed = true, view_changed = true, uv_changed = false, look_changed = true;
 
@@ -79,7 +82,7 @@ private:
 	glm::mat4 viewProjMatrix_, viewProjInverse_;
 
 	bool isUiOpen_ = true;
-	float deltaTime_;
+	double deltaTime_;
 
 	std::string name_ = "";
 };
