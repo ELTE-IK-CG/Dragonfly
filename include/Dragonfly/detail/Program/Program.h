@@ -25,6 +25,8 @@ template<
 class Program :
 	protected ProgramBase<Uni_T>
 {
+	friend class FramebufferBase;
+
 	class LoadState;	//fwd decl
 	LoadState load_state = LoadState(*this);
 

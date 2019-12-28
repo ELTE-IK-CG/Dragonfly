@@ -64,10 +64,15 @@ public:
 
 	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>     && tex) : FramebufferBase(0, 0, 0, tex.getWidth(), tex.getHeight()), _attachements(std::make_tuple(std::move(tex))), _width(tex.getWidth()), _height(tex.getHeight()) { glCreateFramebuffers(1, &this->_id); }
 	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)){}
+	template<typename InternalFormat> FramebufferObject(Renderbuffer<InternalFormat>     && ren) : FramebufferBase(0, 0, 0, ren.getWidth(), ren.getHeight()), _attachements(std::make_tuple(std::move(ren))), _width(ren.getWidth()), _height(ren.getHeight()) { glCreateFramebuffers(1, &this->_id); }
+	template<typename InternalFormat> FramebufferObject(const Renderbuffer<InternalFormat>& ren) = delete;
 	//FramebufferObject& operator=(FramebufferObject&&) = default;
 	
 	template<typename InternalFormat> _add_Texture2D_t<InternalFormat> operator + (Texture2D<InternalFormat>&& tex) &&;
 	template<typename InternalFormat> _add_Texture2D_t<InternalFormat> operator + (const Texture2D<InternalFormat> &tex) &&	{ return std::move(*this) + tex.MakeView(0_level);}
+
+	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (Renderbuffer<InternalFormat>&& ren) &&;
+	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (const Renderbuffer<InternalFormat> &ren) && = delete;
 
 	template<int idx>
 	constexpr typename std::tuple_element<idx, std::tuple<Attachements...>>& get()
@@ -82,6 +87,15 @@ using EmptyFBO = FramebufferObject<detail::FBO_compile_data<>>;
 
 template<typename ... ColorAttachements>
 using FBO = FramebufferObject<Renderbuffer<depth24>, ColorAttachements...>;
+
+
+// tex + tex (for convenience)
+template<typename InternalFormat1, typename InternalFormat2>
+auto operator+ (const df::Texture2D<InternalFormat1>& tex1, const df::Texture2D<InternalFormat2>& tex2)
+{
+	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat1, 0>, Texture2D<InternalFormat1>>
+		(tex1.MakeView(0_level)) + tex2;
+}
 
 template<typename InternalFormat>
 Texture<TextureType::TEX_2D, InternalFormat>::operator FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture<TextureType::TEX_2D, InternalFormat>>() &&
@@ -111,9 +125,32 @@ inline FramebufferObject<compile_data, Attachements...>::_add_Texture2D_t<Intern
 	this->bind();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, (GLuint)tex, 0);
 
+	GLuint name = this->_id;
 	this->_id = 0;
 	std::cout << "w = " << w << " h = " << h << std::endl;
-	return _add_Texture2D_t<InternalFormat>(this->_id, std::tuple_cat(std::move(this->_attachements), std::make_tuple(std::move(tex))), w, h);
+	return _add_Texture2D_t<InternalFormat>(name, std::tuple_cat(std::move(this->_attachements), std::make_tuple(std::move(tex))), w, h);
+}
+
+template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
+inline FramebufferObject<compile_data, Attachements...>::_add_Renderbuffer_t<InternalFormat> FramebufferObject<compile_data, Attachements...>::operator+(Renderbuffer<InternalFormat>&& ren) &&
+{
+	compile_data::template static_addition_check<InternalFormat>();
+
+	constexpr int idx = sizeof...(Attachements);
+	constexpr int index = idx - calc_extra_spots_until<idx>();
+	static_assert(index >= 0 && index <= sizeof...(Attachements), "Index out of bounds here.");
+	constexpr GLenum attachement = detail::is_color_attachement_v<InternalFormat> ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
+
+	ASSERT((this->_width == 0 || ren.getWidth() == 0 || this->_width == ren.getWidth()) && (this->_height == 0 || ren.getHeight() == 0 || this->_height == ren.getHeight()), "Unmaching renderbuffer size in framebuffer object.");
+	int w = (this->_width == 0 ? ren.getWidth() : this->_width), h = (this->_height == 0 ? ren.getHeight() : this->_height);
+
+	this->bind();
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachement, GL_RENDERBUFFER, (GLuint)ren);
+
+	GLuint name = this->_id;
+	this->_id = 0;
+	std::cout << "w = " << w << " h = " << h << std::endl;
+	return _add_Renderbuffer_t<InternalFormat>(name, std::tuple_cat(std::move(this->_attachements), std::make_tuple(std::move(ren))), w, h);
 }
 
 }

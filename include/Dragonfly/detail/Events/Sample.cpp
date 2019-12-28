@@ -1,6 +1,7 @@
 #include <string>
 #include <GL/glew.h>
 #include "../../Sample.h"
+#include "../../detail/Framebuffer/FramebufferBase.h"
 
 Sample::Sample(const char* name, int width, int height, int vsync)
 {
@@ -53,6 +54,9 @@ Sample::Sample(const char* name, int width, int height, int vsync)
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+
+
+	df::Canvas = df::DefaultFramebuffer(width, height);
 }
 
 Sample::~Sample()
