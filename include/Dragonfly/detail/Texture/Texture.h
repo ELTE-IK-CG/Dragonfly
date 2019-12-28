@@ -58,8 +58,7 @@ inline constexpr TexLayers::operator TexLevelsAndLayers() { return { {0, ALL}, *
 class TextureLowLevelBase {
 public:
 	// raw OpenGL name
-	GLuint getID() const { return texture_id; }
-	//	operator GLuint() const { return texture_id; }
+	explicit operator GLuint() const{ return texture_id; }
 	// texture size
 	GLuint getWidth() const { return _width; }
 	GLuint getHeight() const { return _height; }

@@ -2,7 +2,7 @@
 
 #include "core.h"
 
-#include "ProgramEditor.h"
+#include "detail/Program/ProgramEditor.h"
 	#include "detail/File/FileEditor.h"
 	#include "detail/Shader/ShaderEditor.h" //todo: File.h...
 	#include "detail/Uniform/UniformEditor.h"

@@ -2,10 +2,10 @@
 #include <GL/glew.h>
 #include <string>
 #include <deque>
-#include "Vao.h"
-
-#include "detail/Shader/Shaders.h"
-#include "detail/Uniform/Subroutines.h"
+#include "../../Vao.h"
+#include "../Program/ProgramFwd.h"
+#include "../Shader/Shader.h"
+#include "../Uniform/Subroutines.h"
 
 namespace df
 {
@@ -18,16 +18,13 @@ struct _GeomShader { const char* path; };
 struct _TescShader { const char* path; };
 struct _TeseShader { const char* path; };
 
-class ProgramLowLevelBase;
-template<typename Uniform_T> class ProgramBase;
-
 template<
 	typename Shaders_T,
 	typename Uni_T,					// Class implementing setting uniforms and rendering them
-	typename Subroutines_T = Subroutines<Shaders_T>>
+	typename Subroutines_T>
 class Program :
 	protected ProgramBase<Uni_T>
-{	//static_assert(std::is_base_of_v<FragComp_t, Shader<SFile>>, "Must have a proper fragment/compute shader type set");
+{
 	class LoadState;	//fwd decl
 	LoadState load_state = LoadState(*this);
 
@@ -51,8 +48,8 @@ public:
 	typename ProgramBase<Uni_T>::InvalidState& operator << (const std::string &str);
 
 	//For rendering
-	inline Program& operator << (const VaoBase& vao) { *this << SetSubroutinesType(); this->draw(vao); return *this;
-}
+	inline Program& operator << (const VaoElements& vao);
+	inline Program& operator << (const VaoArrays& vao);
 
 	//For adding shader files. Same types will concatenate.
 	inline LoadState& operator << (const _CompShader& s){ return (this->load_state << s); }
@@ -76,14 +73,8 @@ protected:
 	Subroutines_T subroutines;
 };
 
-class Uniforms;
 
-using ShaderProgramVF = Program<ShaderVF, Uniforms>;
-using ShaderProgramVGF = Program<ShaderVGF, Uniforms>;
-using ShaderProgramVTF = Program<ShaderVTF, Uniforms>;
-using ShaderProgramVGTF = Program<ShaderVGTF, Uniforms>;
-using ComputeProgram = Program<ShaderCompute, Uniforms>;
 
 } //namespace df
 
-#include "detail/Program/Program.inl"
+#include "Program.inl"

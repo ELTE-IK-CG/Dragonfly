@@ -230,9 +230,6 @@
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h">
       <Filter>Dragonfly\detail\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\Shader\Shaders.h">
-      <Filter>Dragonfly\detail\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h">
       <Filter>Dragonfly\detail</Filter>
     </ClInclude>
@@ -252,12 +249,6 @@
       <Filter>Dragonfly</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\editor.h">
-      <Filter>Dragonfly</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\Program.h">
-      <Filter>Dragonfly</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\ProgramEditor.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\Sample.h">
@@ -293,6 +284,24 @@
     <ClInclude Include="..\include\Dragonfly\detail\Traits\InternalFormats.h">
       <Filter>Dragonfly\detail\Traits</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Program\Program.h">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Program\ProgramEditor.h">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Program\ProgramFwd.h">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Program\ProgramBase.h">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Framebuffer\FramebufferBase.h">
+      <Filter>Dragonfly\detail\Framebuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderFwd.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl">
@@ -315,6 +324,9 @@
     </None>
     <None Include="..\include\Dragonfly\detail\Shader\Shader.inl">
       <Filter>Dragonfly\detail\Shader</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Program\ProgramCompile.inl">
+      <Filter>Dragonfly\detail\Program</Filter>
     </None>
   </ItemGroup>
 </Project>

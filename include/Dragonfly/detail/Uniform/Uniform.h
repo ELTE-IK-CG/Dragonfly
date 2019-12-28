@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Program.h"
+#include "../Program/Program.h"
 #include "../Traits/UniformTypes.hpp"
 
 #include <unordered_map>

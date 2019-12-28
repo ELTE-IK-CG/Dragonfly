@@ -4,21 +4,12 @@
 #include "../Texture/Texture.h"
 #include "../Texture/Texture2D.h"
 #include "../Texture/TextureCube.h"
+#include "../Framebuffer/FramebufferBase.h"
 #include "../Renderbuffer/Renderbuffer.hpp"
 #include <iostream>
 
 namespace df
 {
-
-class FrameBufferBase
-{
-
-};
-
-class DefaultFramebuffer : public FrameBufferBase
-{
-
-};
 
 namespace detail
 {
@@ -36,21 +27,20 @@ namespace detail
 		static constexpr unsigned depthstencil() { return depthstencil_; }
 		template<typename F> static constexpr void static_addition_check()
 		{
-			static_assert(depth() == -1       || !has_depth_v<F>   && !has_depthstencil_v<F>, "An FBO cannot have two depth textures.");
-			static_assert(stencil() == -1     || !has_stencil_v<F> && !has_depthstencil_v<F>, "An FBO cannot have two stencil textures.");
-			static_assert(depthstencil() == -1|| !has_depthstencil_v<F>, "An FBO cannot have two depth-stencil textures, that is just too much!");
+			static_assert(depth() == -1        || !has_depth_v<F>   && !has_depthstencil_v<F>, "An FBO cannot have two depth textures.");
+			static_assert(stencil() == -1      || !has_stencil_v<F> && !has_depthstencil_v<F>, "An FBO cannot have two stencil textures.");
+			static_assert(depthstencil() == -1 || !has_depthstencil_v<F>, "An FBO cannot have two depth-stencil textures, that is just too much!");
 		}
 		template<typename F, unsigned size> using _add_InternalFormat_t = FBO_compile_data<has_depth_v<F> ? size : -1, has_stencil_v<F> ? size : -1, has_depthstencil_v<F> ? size : -1>;
 	};
 }
 
 template<typename compile_data, typename ... Attachements>
-class FramebufferObject : public FrameBufferBase
+class FramebufferObject : public FramebufferBase
 {
 private:
 	//namespace cg = eltecg::ogl::helper;
 	std::tuple<Attachements...> _attachements;
-	GLuint _id;
 	GLuint _width = 0, _height = 0;
 private:
 
@@ -67,12 +57,12 @@ private:
 	}
 
 public:
-	FramebufferObject(GLuint id, std::tuple<Attachements...> &&attachements, GLuint width = 0, GLuint height = 0):_id(id), _attachements(std::move(attachements)), _width(width), _height(height){}
+	FramebufferObject(GLuint id, std::tuple<Attachements...> &&attachements, GLuint width = 0, GLuint height = 0) : FramebufferBase(id, 0,0,width,height), _attachements(std::move(attachements)), _width(width), _height(height){}
 	FramebufferObject() { glCreateFramebuffers(1, &_id); }
 	~FramebufferObject() { if(_id != 0) glDeleteFramebuffers(1, &_id); }
 	FramebufferObject(FramebufferObject&&) = default;
 
-	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>     && tex) : _attachements(std::make_tuple(std::move(tex))), _width(tex.getWidth()), _height(tex.getHeight()) { glCreateFramebuffers(1, &_id); }
+	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>     && tex) : FramebufferBase(0, 0, 0, tex.getWidth(), tex.getHeight()), _attachements(std::make_tuple(std::move(tex))), _width(tex.getWidth()), _height(tex.getHeight()) { glCreateFramebuffers(1, &this->_id); }
 	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)){}
 	//FramebufferObject& operator=(FramebufferObject&&) = default;
 	
@@ -119,7 +109,7 @@ inline FramebufferObject<compile_data, Attachements...>::_add_Texture2D_t<Intern
 	int w = (this->_width == 0 ? tex.getWidth() : this->_width), h = (this->_height == 0 ? tex.getHeight() : this->_height);
 
 	this->bind();
-	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, tex.getID(), 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, (GLuint)tex, 0);
 
 	this->_id = 0;
 	std::cout << "w = " << w << " h = " << h << std::endl;
