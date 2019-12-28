@@ -3,65 +3,65 @@
 #include <glm/fwd.hpp>
 #include <cstdint>
 
-//namespace for opengl base classes
-namespace eltecg { namespace ogl { namespace helper {
+namespace df {
 	
-/****************************************************************************
- *						Texture helper functions							*	
- ****************************************************************************/
- 
- 
-	//Returns the most fitting internalFormat for the number of cannels and bytes per channel
-	//Whenever available, the floating point version is returned
-	GLuint getInternalFormat(int num_of_channels = 3, int bytes_per_channel = 8);
+template<typename T> struct integral { T t; }; //for integral formats
+
+//dummys: (ieee half float library is coming soon...)
+struct half  { uint16_t dummy[1]; };
+struct half2 { uint16_t dummy[2]; };
+struct half3 { uint16_t dummy[3]; };
+struct half4 { uint16_t dummy[4]; };
+
+struct r11g11b10 { uint32_t dummy; };
+
+//only 3 options and 24bit type doesnt exist anyway
+struct depth16 { uint8_t dummy[2]; };
+struct depth24 { uint8_t dummy[3]; };
+struct depth32F { float dummy; };
 	
-	//Returns base format for a given internalFormat
-	GLuint getBaseFormat(GLuint internalFormat);
+struct stencil1 {};
+struct stencil4 {};
+struct stencil8 { uint8_t dummy; };
+struct stencil16 { uint16_t dummy; };
+
+struct depth24stencil8 { uint8_t dummy[3]; uint8_t dummy2; };
+struct depth32Fstencil8 { float dummy; uint8_t dummy2; };
 	
-	//Returns base type for a given internalFormat
-	GLuint getBaseType(GLuint internalFormat);
-
-	
-/****************************************************************************
- *						Helper types										*/
-
-	template<typename T> struct integral { T t; }; //for integral formats
-
-	//dummys: (ieee half float library is coming soon...)
-	struct half  { uint16_t dummy[1]; };
-	struct half2 { uint16_t dummy[2]; };
-	struct half3 { uint16_t dummy[3]; };
-	struct half4 { uint16_t dummy[4]; };
-
-	struct r11g11b10 { uint32_t dummy; };
-
-	//only 3 options and 24bit type doesnt exist anyway
-	struct depth16 { uint8_t dummy[2]; };
-	struct depth24 { uint8_t dummy[3]; };
-	struct depth32F { float dummy; };
-	
-	struct stencil1 {};
-	struct stencil4 {};
-	struct stencil8 { uint8_t dummy; };
-	struct stencil16 { uint16_t dummy; };
-
-	struct depth24stencil8 { uint8_t dummy[3]; uint8_t dummy2; };
-	struct depth32Fstencil8 { float dummy; uint8_t dummy2; };
-	
-/****************************************************************************
- *						Choose format										*/
+namespace detail {
 
 template<typename T> struct _GetInternalFormat { 
-	static constexpr GLenum GetFormat() { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return 0; }
-	static constexpr GLenum GetChannel() { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return 0; }
-	static constexpr GLenum GetBaseType() { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return 0; }
+	static constexpr GLenum GetFormat()   { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return GL_INVALID_ENUM; }
+	static constexpr GLenum GetChannel()  { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return GL_INVALID_ENUM; }
+	static constexpr GLenum GetBaseType() { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return GL_INVALID_ENUM; }
 };
 
+/***** Format functions *****/
 
-#define DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(cpp_type, gl_type, gl_channel, gl_baseType) \
-	template<> struct _GetInternalFormat<cpp_type> { \
-		static constexpr GLenum GetFormat() { return gl_type; } \
-		static constexpr GLenum GetChannel() { return gl_channel; }\
+//Returns the OpenGL internal format for the corresponding C++ type (T)
+template<typename T> constexpr GLenum getInternalFormat() { return _GetInternalFormat< std::remove_cv_t<std::remove_reference_t<T>>>::GetFormat(); }
+
+//Returns the number of channels for template parameter T
+template<typename T> constexpr GLenum getInternalChannel() { return _GetInternalFormat< std::remove_cv_t<std::remove_reference_t<T>>>::GetChannel(); }
+
+//Returns OpenGL base type for template parameter T
+template<typename T> constexpr GLenum getInternalBaseType() { return _GetInternalFormat< std::remove_cv_t<std::remove_reference_t<T>>>::GetBaseType(); }
+
+//Returns the most fitting internalFormat for the number of cannels and bytes per channel. Whenever available, the floating point version is returned
+GLuint getInternalFormat(int num_of_channels = 3, int bytes_per_channel = 8);
+
+//Returns base format for a given internalFormat
+GLuint getBaseFormat(GLuint internalFormat);
+
+//Returns base type for a given internalFormat
+GLuint getBaseType(GLuint internalFormat);
+
+/***** Type definitions *****/
+
+#define DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(cpp_type, gl_type, gl_channel, gl_baseType)		\
+	template<> struct _GetInternalFormat<cpp_type> {											\
+		static constexpr GLenum GetFormat() { return gl_type; }									\
+		static constexpr GLenum GetChannel() { return gl_channel; }								\
 		static constexpr GLenum GetBaseType() { return gl_baseType; }	};
 
 //[0,1] normalized formats
@@ -162,8 +162,4 @@ DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION(depth32Fstencil8, GL_DEPTH32F_STENCIL8, 
 
 #undef DEFINE_CPP_TO_INERNAL_FORMAT_CONVERSION
 
-template<typename T> constexpr GLenum getInternalFormat() { return _GetInternalFormat< std::remove_cv_t<std::remove_reference_t<T>>>::GetFormat(); }
-template<typename T> constexpr GLenum getInternalChannel() { return _GetInternalFormat< std::remove_cv_t<std::remove_reference_t<T>>>::GetChannel(); }
-template<typename T> constexpr GLenum getInternalBaseType() { return _GetInternalFormat< std::remove_cv_t<std::remove_reference_t<T>>>::GetBaseType(); }
-
-} } } // namespace eltecg::ogl::helper
+} } // namespace df::detail

@@ -1,12 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <glm/glm.hpp>
-#include <GL/glew.h>
 #include <SDL/SDL_image.h>
 #include "../../config.h"
 #include "Texture.h"
-#include "../Traits/texture_helper.h"
 
 namespace df
 {
@@ -136,7 +133,7 @@ void Texture<TextureType::TEX_2D, InternalFormat>::InitTexture(GLuint width, GLu
 		this->_layers = 1;
 		ASSERT(width >= 1 && height >= 1 && numLevels >= 1 && numLevels <= log2(width > height ? width : height) + 1, "Texture2D: Invalid dimensions");
 		this->bind(); // todo named
-		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat>();
 		glTexStorage2D(GL_TEXTURE_2D, numLevels, iFormat, width, height);
 		this->_hasStorage = true;
 	}
@@ -168,8 +165,8 @@ Texture<TextureType::TEX_2D, InternalFormat>& Texture<TextureType::TEX_2D, Inter
 	if (this->_hasStorage) {
 		this->bind();
 
-		constexpr GLenum pxFormat = eltecg::ogl::helper::getInternalChannel<Format>();
-		constexpr GLenum pxType = eltecg::ogl::helper::getInternalBaseType<Format>();
+		constexpr GLenum pxFormat = detail::getInternalChannel<Format>();
+		constexpr GLenum pxType   = detail::getInternalBaseType<Format>();
 
 		ASSERT(this->_width * this->_height == data.size(), "Texture2D: trying to write a texture with the wrong amount of data");
 		if (this->_width * this->_height > data.size())

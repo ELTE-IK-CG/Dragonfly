@@ -4,6 +4,7 @@
 #include "../Texture/Texture.h"
 #include "../Texture/Texture2D.h"
 #include "../Texture/TextureCube.h"
+#include "../Renderbuffer/Renderbuffer.hpp"
 #include <iostream>
 
 namespace df
@@ -14,34 +15,10 @@ class FrameBufferBase
 
 };
 
-class DefaultFramebuffer :public FrameBufferBase
+class DefaultFramebuffer : public FrameBufferBase
 {
 
 };
-
-
-
-template<typename InternalFormat = eltecg::ogl::helper::depth24>
-class Renderbuffer
-{
-	GLuint _id;
-	bool inited = false;
-	
-	void bind() { glBindRenderbuffer(GL_RENDERBUFFER, _id); }
-public:
-	using PixelFormat = InternalFormat;
-	Renderbuffer() { glGenRenderbuffers(1, &_id); }
-	Renderbuffer(GLsizei w, GLsizei h) { glGenRenderbuffers(1, &_id); Init(w, h); }
-	~Renderbuffer() { glDeleteRenderbuffers(1, &_id); }
-	
-	void Init(GLsizei width, GLsizei height)
-	{
-		this->bind();
-		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
-		glRenderbufferStorage(GL_RENDERBUFFER, iFormat, width, height);
-	}
-};
-
 
 namespace detail {
 
@@ -49,11 +26,10 @@ namespace detail {
 
 	template<unsigned depth_= _none_, unsigned stencil_ = _none_, unsigned depthstencil_ = _none_>
 	struct FBO_compile_data{static constexpr unsigned depth() { return depth_; }; static constexpr unsigned stencil() { return stencil_; } static constexpr unsigned depthstencil() { return depthstencil_; } };
-	namespace cg = eltecg::ogl::helper;
 
-	template<typename F> constexpr bool has_depth_v				= std::is_same_v<F, cg::depth16> || std::is_same_v<F, cg::depth24> || std::is_same_v<F, cg::depth32F>;
-	template<typename F> constexpr bool has_stencil_v			= std::is_same_v<F, cg::stencil1> || std::is_same_v<F, cg::stencil4> || std::is_same_v<F, cg::stencil8> || std::is_same_v<F, cg::stencil16>;
-	template<typename F> constexpr bool has_depthstencil_v		= std::is_same_v<F, cg::depth24stencil8> || std::is_same_v<F, cg::depth32Fstencil8 >;
+	template<typename F> constexpr bool has_depth_v				= std::is_same_v<F, depth16> || std::is_same_v<F, depth24> || std::is_same_v<F, depth32F>;
+	template<typename F> constexpr bool has_stencil_v			= std::is_same_v<F, stencil1> || std::is_same_v<F, stencil4> || std::is_same_v<F, stencil8> || std::is_same_v<F, stencil16>;
+	template<typename F> constexpr bool has_depthstencil_v		= std::is_same_v<F, depth24stencil8> || std::is_same_v<F, depth32Fstencil8 >;
 	template<typename F> constexpr bool is_color_attachement_v	= !has_depth_v<F> && !has_stencil_v<F> && !has_depthstencil_v<F>;
 	template<typename F> constexpr GLenum get_attachement_v		= has_depth_v<F> ? GL_DEPTH_ATTACHMENT : has_stencil_v<F> ? GL_STENCIL_ATTACHMENT : has_depthstencil_v<F> ? GL_DEPTH_STENCIL_ATTACHMENT : 0;
 
@@ -135,7 +111,7 @@ public:
 using EmptyFBO = FramebufferObject<detail::FBO_compile_data<>>;
 
 template<typename ... ColorAttachements>
-using FBO = FramebufferObject<Renderbuffer<>, ColorAttachements...>;
+using FBO = FramebufferObject<Renderbuffer<depth24>, ColorAttachements...>;
 
 template<typename InternalFormat>
 Texture<TextureType::TEX_2D, InternalFormat>::operator FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture<TextureType::TEX_2D, InternalFormat>>() &&

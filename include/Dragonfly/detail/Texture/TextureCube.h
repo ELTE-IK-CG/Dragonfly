@@ -1,12 +1,7 @@
 #pragma once
-#include <string>
-#include <vector>
-#include <glm/glm.hpp>
-#include <GL/glew.h>
-#include <SDL/SDL_image.h>
 #include "../../config.h"
 #include "Texture.h"
-#include "../Traits/texture_helper.h"
+#include <SDL/SDL_image.h>
 
 namespace df
 {
@@ -155,7 +150,7 @@ void Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::InitTexture(GLuint size
 		this->_levels = numLevels;
 		this->_layers = 6;
 		this->bind();
-		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat>();
 		glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, iFormat, size, size);
 		this->_hasStorage = true;
 	}

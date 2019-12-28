@@ -1,11 +1,8 @@
 #pragma once
-#include <string>
-#include <vector>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
-#include <SDL/SDL_image.h>
 #include "../../config.h"
-#include "../Traits/texture_helper.h"
+#include "../Traits/InternalFormats.h"
 
 namespace df
 {
@@ -153,7 +150,7 @@ Texture<NewTexType, NewInternalFormat> TextureBase<TexType, InternalFormat>::_Ma
 	ASSERT(layers.min < this->_layers && layers.min + layers.num <= this->_layers, "Texture: wrong array layer arguments");
 	Texture<NewTexType, NewInternalFormat> view;
 	if (this->_hasStorage) {
-		constexpr GLenum iFormat = eltecg::ogl::helper::getInternalFormat<InternalFormat>();
+		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat>();
 		static_assert(sizeof(InternalFormat) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
 		glTextureView(view.texture_id, static_cast<GLenum>(NewTexType), this->texture_id, iFormat, levels.min, levels.num, layers.min, layers.num);
 		GL_CHECK;

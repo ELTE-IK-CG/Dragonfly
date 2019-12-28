@@ -24,7 +24,7 @@
     <ClCompile Include="..\include\Dragonfly\detail\Shader\Shader.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderEditor.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Texture\Texture.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\Traits\texture_helper.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Traits\InternalFormats.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Traits\UniformTypes.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Uniform\Subroutines.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Uniform\Uniform.cpp" />
@@ -53,6 +53,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\object.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Renderbuffer\Renderbuffer.hpp" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\Shader.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\Shaders.h" />
@@ -63,7 +64,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture3D.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Texture\TextureCube.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\EventHandlerTraits.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\Traits\texture_helper.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\InternalFormats.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\UniformTypes.hpp" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Subroutines.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Uniform.h" />
