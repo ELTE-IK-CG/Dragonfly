@@ -88,15 +88,34 @@ using EmptyFBO = FramebufferObject<detail::FBO_compile_data<>>;
 template<typename ... ColorAttachements>
 using FBO = FramebufferObject<Renderbuffer<depth24>, ColorAttachements...>;
 
-
-// tex + tex (for convenience)
-template<typename InternalFormat1, typename InternalFormat2>
-auto operator+ (const df::Texture2D<InternalFormat1>& tex1, const df::Texture2D<InternalFormat2>& tex2)
-{
-	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat1, 0>, Texture2D<InternalFormat1>>
-		(tex1.MakeView(0_level)) + tex2;
+//tex -> fbo
+template<typename InternalFormat>
+auto MakeFramebuffer(df::Texture2D<InternalFormat>&& tex) {
+	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Texture2D<InternalFormat>>(std::move(tex));
+}
+template<typename InternalFormat>
+auto MakeFramebuffer(const df::Texture2D<InternalFormat>& tex) {
+	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Texture2D<InternalFormat>>(tex.MakeView(0_level));
+}
+//ren -> fbo
+template<typename InternalFormat>
+auto MakeFramebuffer(df::Renderbuffer<InternalFormat>&& ren) {
+	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Renderbuffer<InternalFormat>>(std::move(ren));
 }
 
+// tex + tex (for convenience)
+template<typename F1, typename F2> auto operator+ (const Texture2D<F1>&  tex1, const Texture2D<F2>&  tex2) { return MakeFramebuffer(tex1)            + tex2; }
+template<typename F1, typename F2> auto operator+ (      Texture2D<F1>&& tex1, const Texture2D<F2>&  tex2) { return MakeFramebuffer(std::move(tex1)) + tex2; }
+template<typename F1, typename F2> auto operator+ (const Texture2D<F1>&  tex1,       Texture2D<F2>&& tex2) { return MakeFramebuffer(tex1)            + std::move(tex2); }
+template<typename F1, typename F2> auto operator+ (      Texture2D<F1>&& tex1,       Texture2D<F2>&& tex2) { return MakeFramebuffer(std::move(tex1)) + std::move(tex2); }
+// tex + ren
+template<typename F1, typename F2> auto operator+ (const Texture2D<F1>&  tex1,    Renderbuffer<F2>&& ren2) { return MakeFramebuffer(tex1)            + std::move(ren2); }
+template<typename F1, typename F2> auto operator+ (      Texture2D<F1>&& tex1,    Renderbuffer<F2>&& ren2) { return MakeFramebuffer(std::move(tex1)) + std::move(ren2); }
+// ren + tex
+template<typename F1, typename F2> auto operator+ (  Renderbuffer<F1>&&  ren1, const Texture2D<F2>&  tex2) { return MakeFramebuffer(std::move(ren1)) + tex2; }
+template<typename F1, typename F2> auto operator+ (  Renderbuffer<F1>&&  ren1,       Texture2D<F2>&& tex2) { return MakeFramebuffer(std::move(ren1)) + std::move(tex2); }
+// ren + ren
+template<typename F1, typename F2> auto operator+ (  Renderbuffer<F1>&&  ren1,    Renderbuffer<F2>&& ren2) { return MakeFramebuffer(std::move(ren1)) + std::move(ren2); }
 template<typename InternalFormat>
 Texture<TextureType::TEX_2D, InternalFormat>::operator FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture<TextureType::TEX_2D, InternalFormat>>() &&
 {
@@ -109,6 +128,7 @@ Texture<TextureType::TEX_2D, InternalFormat>::operator FramebufferObject<detail:
 	return FramebufferObject<detail::FBO_compile_data<-1, -1, -1>, Texture<TextureType::TEX_2D, InternalFormat>>(*this);
 }
 
+//fbo + tex
 template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
 inline FramebufferObject<compile_data, Attachements...>::_add_Texture2D_t<InternalFormat> FramebufferObject<compile_data, Attachements...>::operator+(Texture2D<InternalFormat>&& tex) &&
 {
@@ -131,6 +151,7 @@ inline FramebufferObject<compile_data, Attachements...>::_add_Texture2D_t<Intern
 	return _add_Texture2D_t<InternalFormat>(name, std::tuple_cat(std::move(this->_attachements), std::make_tuple(std::move(tex))), w, h);
 }
 
+//fbo + ren
 template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
 inline FramebufferObject<compile_data, Attachements...>::_add_Renderbuffer_t<InternalFormat> FramebufferObject<compile_data, Attachements...>::operator+(Renderbuffer<InternalFormat>&& ren) &&
 {
