@@ -35,6 +35,8 @@ template<typename T> struct _GetInternalFormat {
 	static constexpr GLenum GetChannel()  { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return GL_INVALID_ENUM; }
 	static constexpr GLenum GetBaseType() { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return GL_INVALID_ENUM; }
 };
+template <typename T> struct _is_integral_format : public std::false_type {};
+template <typename InternalFormat> struct _is_integral_format<integral< InternalFormat>> : public std::true_type{};
 
 /***** Format functions *****/
 
@@ -55,6 +57,9 @@ GLuint getBaseFormat(GLuint internalFormat);
 
 //Returns base type for a given internalFormat
 GLuint getBaseType(GLuint internalFormat);
+
+//Retuns if the type is made with integral<>. TODO redesign to have unsigend and other base types
+template<typename T> constexpr bool isInternalFormatIntegralType() { return _is_integral_format<T>::value; }
 
 /***** Type definitions *****/
 

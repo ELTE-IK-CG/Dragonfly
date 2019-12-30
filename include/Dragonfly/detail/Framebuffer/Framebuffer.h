@@ -49,12 +49,7 @@ private:
 	template<typename F> using _add_Texture2D_t    = FramebufferObject < typename compile_data:: template _add_InternalFormat_t<F, sizeof...(Attachements)>, Attachements..., Texture2D<F>>;
 	template<typename F> using _add_Renderbuffer_t = FramebufferObject < typename compile_data:: template _add_InternalFormat_t<F, sizeof...(Attachements)>, Attachements..., Renderbuffer<F>>;
 
-	template<int idx>
-	static constexpr int calc_extra_spots_until()
-	{
-		static_assert(idx >= 0 && idx <= sizeof...(Attachements), "Index out of bounds here.");
-		return (idx > compile_data::depth() ? 1 : 0) + (idx > compile_data::stencil() ? 1 : 0) + (idx > compile_data::depthstencil() ? 1 : 0);
-	}
+	template<int idx> static constexpr int calc_extra_spots_until();
 
 public:
 	FramebufferObject(GLuint id, std::tuple<Attachements...> &&attachements, GLuint width = 0, GLuint height = 0) : FramebufferBase(id, 0,0,width,height), _attachements(std::move(attachements)), _width(width), _height(height){}
@@ -74,13 +69,20 @@ public:
 	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (Renderbuffer<InternalFormat>&& ren) &&;
 	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (const Renderbuffer<InternalFormat> &ren) && = delete;
 
-	template<int idx>
-	constexpr typename std::tuple_element<idx, std::tuple<Attachements...>>& get()
+	template<int idx> constexpr typename auto& get()
 	{
 		constexpr int index = idx + calc_extra_spots_until<idx>();
 		static_assert(index >= 0 && index < sizeof...(Attachements), "Index out of bounds here.");
 		return std::get< index >(_attachements);
 	}
+
+	template<int idx> FramebufferObject& operator<< (const detail::ClearColorF<idx>& cleardata);
+	template<int idx> FramebufferObject& operator<< (const detail::ClearColorI<idx>& cleardata);
+	template<int idx> FramebufferObject& operator<< (const detail::ClearColorU<idx>& cleardata);
+	FramebufferObject& operator<< (const detail::ClearDepthF& cleardata);
+	FramebufferObject& operator<< (const detail::ClearStencilI& cleardata);
+	FramebufferObject& operator<< (const detail::ClearDepthStencilIF& cleardata);
+
 };
 
 using EmptyFBO = FramebufferObject<detail::FBO_compile_data<>>;
@@ -130,7 +132,7 @@ Texture<TextureType::TEX_2D, InternalFormat>::operator FramebufferObject<detail:
 
 //fbo + tex
 template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
-inline FramebufferObject<compile_data, Attachements...>::_add_Texture2D_t<InternalFormat> FramebufferObject<compile_data, Attachements...>::operator+(Texture2D<InternalFormat>&& tex) &&
+FramebufferObject<compile_data, Attachements...>::_add_Texture2D_t<InternalFormat> FramebufferObject<compile_data, Attachements...>::operator+(Texture2D<InternalFormat>&& tex) &&
 {
 	compile_data::template static_addition_check<InternalFormat>();
 
@@ -153,7 +155,7 @@ inline FramebufferObject<compile_data, Attachements...>::_add_Texture2D_t<Intern
 
 //fbo + ren
 template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
-inline FramebufferObject<compile_data, Attachements...>::_add_Renderbuffer_t<InternalFormat> FramebufferObject<compile_data, Attachements...>::operator+(Renderbuffer<InternalFormat>&& ren) &&
+FramebufferObject<compile_data, Attachements...>::_add_Renderbuffer_t<InternalFormat> FramebufferObject<compile_data, Attachements...>::operator+(Renderbuffer<InternalFormat>&& ren) &&
 {
 	compile_data::template static_addition_check<InternalFormat>();
 
@@ -174,5 +176,49 @@ inline FramebufferObject<compile_data, Attachements...>::_add_Renderbuffer_t<Int
 	return _add_Renderbuffer_t<InternalFormat>(name, std::tuple_cat(std::move(this->_attachements), std::make_tuple(std::move(ren))), w, h);
 }
 
+//indexing
+template<typename compile_data, typename ...Attachements> template<int idx>
+constexpr int FramebufferObject<compile_data, Attachements...>::calc_extra_spots_until()
+{
+	static_assert(idx >= 0 && idx <= sizeof...(Attachements), "Index out of bounds here.");
+	return (idx > compile_data::depth() ? 1 : 0) + (idx > compile_data::stencil() ? 1 : 0) + (idx > compile_data::depthstencil() ? 1 : 0);
 }
+
+//<<Clean
+template<typename compile_data, typename ...Attachements> template<int idx>
+FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorF<idx>& cleardata)
+{	//TODO: better type check
+	static_assert(!detail::isInternalFormatIntegralType<typename decltype(this->get<idx>())::pixel_format>(), "Cannot clear an framebuffer color attachement with floats if it contains integral values.");
+	glClearBufferfv(GL_COLOR, idx, &cleardata._red);
+	return *this;
+}
+template<typename compile_data, typename ...Attachements> template<int idx>
+FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorI<idx>& cleardata) {
+	static_assert(detail::isInternalFormatIntegralType<typename decltype(this->get<idx>())::pixel_format>(), "Cannot clear an framebuffer color attachement with integers if it contain floating values.");
+	glClearBufferiv(GL_COLOR, idx, &cleardata._red);
+	return *this;
+}
+template<typename compile_data, typename ...Attachements> template<int idx>
+FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorU<idx>& cleardata) {
+	static_assert(detail::isInternalFormatIntegralType<typename decltype(this->get<idx>())::pixel_format>(), "Cannot clear an framebuffer color attachement with integers if it contain floating values.");
+	glClearBufferuv(GL_COLOR, idx, &cleardata._red);
+	return *this;
+}
+template<typename compile_data, typename ...Attachements>
+FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearDepthF& cleardata) {
+	glClearBufferfv(GL_DEPTH, 0, &cleardata._depth);	//check?
+	return *this;
+}
+template<typename compile_data, typename ...Attachements>
+FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearStencilI& cleardata) {
+	glClearBufferiv(GL_DEPTH, 0, &cleardata._stencil);
+	return *this;
+}
+template<typename compile_data, typename ...Attachements>
+FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearDepthStencilIF& cleardata) {
+	glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil);
+	return *this;
+}
+
+} // namespace df
 
