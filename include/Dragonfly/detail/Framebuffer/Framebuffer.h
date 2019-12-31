@@ -83,6 +83,7 @@ public:
 	FramebufferObject& operator<< (const detail::ClearStencilI& cleardata);
 	FramebufferObject& operator<< (const detail::ClearDepthStencilIF& cleardata);
 
+	using FramebufferBase::operator<<;
 };
 
 using EmptyFBO = FramebufferObject<detail::FBO_compile_data<>>;

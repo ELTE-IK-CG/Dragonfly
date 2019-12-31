@@ -15,9 +15,9 @@ namespace df
 	template<int index = 0>	detail::ClearColorF<index> ClearColor(float red, float green, float blue, float alpha) { return { red, green, blue, alpha }; }
 	template<int index = 0> detail::ClearColorI<index> ClearColor(int red, int green, int blue, int alpha) { return { red, green, blue, alpha }; }
 	template<int index = 0> detail::ClearColorU<index> ClearColor(unsigned red, unsigned green, unsigned blue, unsigned alpha) { return { red, green, blue, alpha }; }
-	detail::ClearDepthF ClearDepth(float depth) { return { depth }; }
-	detail::ClearStencilI ClearStencil(int stencil) { return { stencil }; }
-	detail::ClearDepthStencilIF ClearDepthStencil(float depth, int stencil) { return {depth, stencil }; }
+	inline detail::ClearDepthF ClearDepth(float depth) { return { depth }; }
+	inline detail::ClearStencilI ClearStencil(int stencil) { return { stencil }; }
+	inline detail::ClearDepthStencilIF ClearDepthStencil(float depth, int stencil) { return {depth, stencil }; }
 
 class FramebufferBase
 {
@@ -44,6 +44,8 @@ public:
 	DefaultFramebuffer& operator<< (const detail::ClearDepthF& cleardata) { glClearBufferfv(GL_DEPTH, 0, &cleardata._depth); return *this; }
 	DefaultFramebuffer& operator<< (const detail::ClearStencilI& cleardata) { glClearBufferiv(GL_DEPTH, 0, &cleardata._stencil); return *this; }
 	DefaultFramebuffer& operator<< (const detail::ClearDepthStencilIF& cleardata) { glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil); return *this; }
+
+	using FramebufferBase::operator<<;
 };
 
 inline DefaultFramebuffer Canvas(0, 0);
