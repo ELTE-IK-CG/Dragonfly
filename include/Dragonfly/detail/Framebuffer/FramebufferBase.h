@@ -1,6 +1,7 @@
 #pragma once
 #include "../../config.h"
 #include <GL/glew.h>
+#include <glm/glm.hpp>
 
 namespace df
 {
@@ -12,12 +13,12 @@ namespace df
 		struct ClearStencilI { int _stencil; };
 		struct ClearDepthStencilIF { float _depth;  int _stencil; };
 	}
-	template<int index = 0>	detail::ClearColorF<index> ClearColor(float red, float green, float blue, float alpha) { return { red, green, blue, alpha }; }
+	template<int index = 0>	detail::ClearColorF<index> ClearColor(float red, float green, float blue, float alpha = 1.f) { return { red, green, blue, alpha }; }
 	template<int index = 0> detail::ClearColorI<index> ClearColor(int red, int green, int blue, int alpha) { return { red, green, blue, alpha }; }
 	template<int index = 0> detail::ClearColorU<index> ClearColor(unsigned red, unsigned green, unsigned blue, unsigned alpha) { return { red, green, blue, alpha }; }
-	inline detail::ClearDepthF ClearDepth(float depth) { return { depth }; }
-	inline detail::ClearStencilI ClearStencil(int stencil) { return { stencil }; }
-	inline detail::ClearDepthStencilIF ClearDepthStencil(float depth, int stencil) { return {depth, stencil }; }
+	inline detail::ClearDepthF ClearDepth(float depth = 1.f) { return { depth }; }
+	inline detail::ClearStencilI ClearStencil(int stencil = 0) { return { stencil }; }
+	inline detail::ClearDepthStencilIF ClearDepthStencil(float depth = 1.f, int stencil = 0) { return {depth, stencil }; }
 
 class FramebufferBase
 {
@@ -33,6 +34,13 @@ public:
 	template<typename Prog> Prog& operator << (Prog& prog) &;
 	template<typename Prog> Prog& operator << (Prog& prog) && = delete;
 
+	explicit operator GLuint() const { return _id; }
+	
+	glm::ivec2 getSize() const { return { _w,_h }; }
+	GLsizei getWidth() const { return _w; }
+	GLsizei getHeight() const { return _h; }
+	GLint getX() const { return _x; }
+	GLint getY() const { return _y; }
 };
 
 class DefaultFramebuffer : public FramebufferBase
@@ -40,10 +48,10 @@ class DefaultFramebuffer : public FramebufferBase
 public:
 	DefaultFramebuffer(GLint x, GLint y, GLsizei w, GLsizei h) : FramebufferBase(0, x, y, w, h) {}
 	DefaultFramebuffer(GLsizei w, GLsizei h) : DefaultFramebuffer(0, 0, w, h) {}
-	DefaultFramebuffer& operator<< (const detail::ClearColorF<0>& cleardata) { glClearBufferfv(GL_COLOR, 0, &cleardata._red); return *this; }
-	DefaultFramebuffer& operator<< (const detail::ClearDepthF& cleardata) { glClearBufferfv(GL_DEPTH, 0, &cleardata._depth); return *this; }
-	DefaultFramebuffer& operator<< (const detail::ClearStencilI& cleardata) { glClearBufferiv(GL_DEPTH, 0, &cleardata._stencil); return *this; }
-	DefaultFramebuffer& operator<< (const detail::ClearDepthStencilIF& cleardata) { glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil); return *this; }
+	DefaultFramebuffer& operator<< (const detail::ClearColorF<0> & cleardata) { this->bind(); glClearBufferfv(GL_COLOR, 0, &cleardata._red); return *this; }
+	DefaultFramebuffer& operator<< (const detail::ClearDepthF& cleardata) { this->bind(); glClearBufferfv(GL_DEPTH, 0, &cleardata._depth); return *this; }
+	DefaultFramebuffer& operator<< (const detail::ClearStencilI& cleardata) { this->bind(); glClearBufferiv(GL_DEPTH, 0, &cleardata._stencil); return *this; }
+	DefaultFramebuffer& operator<< (const detail::ClearDepthStencilIF& cleardata) { this->bind(); glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil); return *this; }
 
 	using FramebufferBase::operator<<;
 };

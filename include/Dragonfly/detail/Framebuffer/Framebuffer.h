@@ -33,6 +33,9 @@ namespace detail
 		}
 		template<typename F, unsigned size> using _add_InternalFormat_t = FBO_compile_data<has_depth_v<F> ? size : -1, has_stencil_v<F> ? size : -1, has_depthstencil_v<F> ? size : -1>;
 	};
+
+	template<int index, typename InternalFormat> void attach2BoundFbo(const Texture2D<InternalFormat>& tex);
+	template<int index, typename InternalFormat> void attach2BoundFbo(const Renderbuffer<InternalFormat>& ren);
 }
 
 template<typename compile_data, typename ... Attachements>
@@ -57,9 +60,17 @@ public:
 	~FramebufferObject() { if(_id != 0) glDeleteFramebuffers(1, &_id); }
 	FramebufferObject(FramebufferObject&&) = default;
 
-	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>     && tex) : FramebufferBase(0, 0, 0, tex.getWidth(), tex.getHeight()), _attachements(std::make_tuple(std::move(tex))), _width(tex.getWidth()), _height(tex.getHeight()) { glCreateFramebuffers(1, &this->_id); }
+	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>&& tex) : FramebufferBase(0, 0, 0, tex.getWidth(), tex.getHeight()), _attachements(std::make_tuple(std::move(tex))), _width(tex.getWidth()), _height(tex.getHeight()) {
+		glCreateFramebuffers(1, &this->_id);
+		this->bind();
+		detail::attach2BoundFbo<0>(tex);
+	}
 	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)){}
-	template<typename InternalFormat> FramebufferObject(Renderbuffer<InternalFormat>     && ren) : FramebufferBase(0, 0, 0, ren.getWidth(), ren.getHeight()), _attachements(std::make_tuple(std::move(ren))), _width(ren.getWidth()), _height(ren.getHeight()) { glCreateFramebuffers(1, &this->_id); }
+	template<typename InternalFormat> FramebufferObject(Renderbuffer<InternalFormat>&& ren) : FramebufferBase(0, 0, 0, ren.getWidth(), ren.getHeight()), _attachements(std::make_tuple(std::move(ren))), _width(ren.getWidth()), _height(ren.getHeight()) {
+		glCreateFramebuffers(1, &this->_id);
+		this->bind();
+		detail::attach2BoundFbo<0>(ren);
+	}
 	template<typename InternalFormat> FramebufferObject(const Renderbuffer<InternalFormat>& ren) = delete;
 	//FramebufferObject& operator=(FramebufferObject&&) = default;
 	
@@ -140,17 +151,15 @@ FramebufferObject<compile_data, Attachements...>::_add_Texture2D_t<InternalForma
 	constexpr int idx = sizeof...(Attachements);
 	constexpr int index = idx - calc_extra_spots_until<idx>();
 	static_assert(index >= 0 && index <= sizeof...(Attachements), "Index out of bounds here.");
-	constexpr GLenum attachement = detail::is_color_attachement_v<InternalFormat> ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
 
 	ASSERT((this->_width == 0 || tex.getWidth() == 0 || this->_width == tex.getWidth()) && (this->_height == 0 || tex.getHeight() == 0 || this->_height == tex.getHeight()), "Unmaching texture size in framebuffer object.");
 	int w = (this->_width == 0 ? tex.getWidth() : this->_width), h = (this->_height == 0 ? tex.getHeight() : this->_height);
 
 	this->bind();
-	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, (GLuint)tex, 0);
+	detail::attach2BoundFbo<index>(tex);
 
 	GLuint name = this->_id;
 	this->_id = 0;
-	std::cout << "w = " << w << " h = " << h << std::endl;
 	return _add_Texture2D_t<InternalFormat>(name, std::tuple_cat(std::move(this->_attachements), std::make_tuple(std::move(tex))), w, h);
 }
 
@@ -163,17 +172,15 @@ FramebufferObject<compile_data, Attachements...>::_add_Renderbuffer_t<InternalFo
 	constexpr int idx = sizeof...(Attachements);
 	constexpr int index = idx - calc_extra_spots_until<idx>();
 	static_assert(index >= 0 && index <= sizeof...(Attachements), "Index out of bounds here.");
-	constexpr GLenum attachement = detail::is_color_attachement_v<InternalFormat> ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
 
 	ASSERT((this->_width == 0 || ren.getWidth() == 0 || this->_width == ren.getWidth()) && (this->_height == 0 || ren.getHeight() == 0 || this->_height == ren.getHeight()), "Unmaching renderbuffer size in framebuffer object.");
 	int w = (this->_width == 0 ? ren.getWidth() : this->_width), h = (this->_height == 0 ? ren.getHeight() : this->_height);
 
 	this->bind();
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachement, GL_RENDERBUFFER, (GLuint)ren);
+	detail::attach2BoundFbo<index>(ren);
 
 	GLuint name = this->_id;
 	this->_id = 0;
-	std::cout << "w = " << w << " h = " << h << std::endl;
 	return _add_Renderbuffer_t<InternalFormat>(name, std::tuple_cat(std::move(this->_attachements), std::make_tuple(std::move(ren))), w, h);
 }
 
@@ -189,36 +196,72 @@ constexpr int FramebufferObject<compile_data, Attachements...>::calc_extra_spots
 template<typename compile_data, typename ...Attachements> template<int idx>
 FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorF<idx>& cleardata)
 {	//TODO: better type check
-	static_assert(!detail::isInternalFormatIntegralType<typename decltype(this->get<idx>())::pixel_format>(), "Cannot clear an framebuffer color attachement with floats if it contains integral values.");
+	static_assert(!detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->get<idx>())>::PixelFormat>(), "Cannot clear an framebuffer color attachement with floats if it contains integral values.");
+	this->bind();
 	glClearBufferfv(GL_COLOR, idx, &cleardata._red);
 	return *this;
 }
 template<typename compile_data, typename ...Attachements> template<int idx>
 FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorI<idx>& cleardata) {
-	static_assert(detail::isInternalFormatIntegralType<typename decltype(this->get<idx>())::pixel_format>(), "Cannot clear an framebuffer color attachement with integers if it contain floating values.");
+	static_assert(detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->get<idx>())>::PixelFormat>(), "Cannot clear an framebuffer color attachement with integers if it contains floating values.");
+	this->bind();
 	glClearBufferiv(GL_COLOR, idx, &cleardata._red);
 	return *this;
 }
 template<typename compile_data, typename ...Attachements> template<int idx>
 FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorU<idx>& cleardata) {
-	static_assert(detail::isInternalFormatIntegralType<typename decltype(this->get<idx>())::pixel_format>(), "Cannot clear an framebuffer color attachement with integers if it contain floating values.");
+	static_assert(detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->get<idx>())>::PixelFormat>(), "Cannot clear an framebuffer color attachement with integers if it contains floating values.");
+	this->bind();
 	glClearBufferuv(GL_COLOR, idx, &cleardata._red);
 	return *this;
 }
 template<typename compile_data, typename ...Attachements>
 FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearDepthF& cleardata) {
+	this->bind();
 	glClearBufferfv(GL_DEPTH, 0, &cleardata._depth);	//check?
 	return *this;
 }
 template<typename compile_data, typename ...Attachements>
 FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearStencilI& cleardata) {
+	this->bind();
 	glClearBufferiv(GL_DEPTH, 0, &cleardata._stencil);
 	return *this;
 }
 template<typename compile_data, typename ...Attachements>
 FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearDepthStencilIF& cleardata) {
+	this->bind();
 	glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil);
 	return *this;
+}
+
+template<int index, typename InternalFormat>
+void detail::attach2BoundFbo(const Texture2D<InternalFormat>& tex)
+{
+	constexpr bool is_color = detail::is_color_attachement_v<InternalFormat>;
+	constexpr GLenum attachement = is_color ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
+	if constexpr (is_color) {
+		GLenum buffs[index + 1];
+		for (int i = 0; i <= index; ++i) buffs[i] = GL_COLOR_ATTACHMENT0 + i;
+		glDrawBuffers(1, buffs);
+	}
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, (GLuint)tex, 0);
+	std::cout << "Texture2D " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
+		(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << tex.getWidth() << " h = " << tex.getHeight() << std::endl;
+}
+
+template<int index, typename InternalFormat>
+void detail::attach2BoundFbo(const Renderbuffer<InternalFormat>& ren)
+{
+	constexpr bool is_color = detail::is_color_attachement_v<InternalFormat>;
+	constexpr GLenum attachement =  is_color ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
+	if constexpr (is_color) {
+		GLenum buffs[index+1];
+		for (int i = 0; i <= index; ++i) buffs[i] = GL_COLOR_ATTACHMENT0 + i;
+		glDrawBuffers(1, buffs);
+	}
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachement, GL_RENDERBUFFER, (GLuint)ren);
+	std::cout << "Renderbuffer " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
+		(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << ren.getWidth() << " h = " << ren.getHeight() << std::endl;
 }
 
 } // namespace df
