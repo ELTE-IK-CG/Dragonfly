@@ -56,7 +56,6 @@ struct NoShader {
 };
 
 static typename ProgramLowLevelBase::LinkType LinkProgram, CompileProgram;
-static typename SetSubroutinesType SetSubroutines; // TODO remove this if possible
 
 // ========================= Program Input States ==============================
 
@@ -72,7 +71,7 @@ public:
 		using VT = std::remove_cv_t < std::remove_reference_t < ValueType>>;
 		static_assert(!std::is_same_v < ProgramLowLevelBase::LinkType, VT>, "Invalid type in Program's << operator: cannot link in uniform mode.");
 		static_assert(!(
-			std::is_same_v<_CompShader, VT> || std::is_same_v<_FragShader, VT> || std::is_same_v<_VertShader, VT> || std::is_same_v<_GeomShader, VT> || std::is_same_v<_TescShader, VT> || std::is_same_v<_TeseShader, VT>
+			std::is_same_v<detail::_CompShader, VT> || std::is_same_v<detail::_FragShader, VT> || std::is_same_v<detail::_VertShader, VT> || std::is_same_v<detail::_GeomShader, VT> || std::is_same_v<detail::_TescShader, VT> || std::is_same_v<detail::_TeseShader, VT>
 			), "Invalid type in Program's << operator: Shader type as input in uniform mode.");
 		static_assert(!(std::is_same_v < std::string, VT> || std::is_same_v< char, std::remove_extent<std::remove_pointer_t<VT>>>
 			), "Invalid type in Program's << operator: cannot set a string as a uniform.");
@@ -103,7 +102,6 @@ public:
 		return that.invalid_state;
 	}
 private:
-	std::string new_name;
 	ProgramBase<U>& that;
 	ValidState(ProgramBase<U>& that) :that(that) {}
 };

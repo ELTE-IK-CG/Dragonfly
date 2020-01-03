@@ -56,7 +56,7 @@ Sample::Sample(const char* name, int width, int height, int vsync)
 	glEnable(GL_DEPTH_TEST);
 
 
-	df::Canvas = df::DefaultFramebuffer(width, height);
+	df::Backbuffer = df::DefaultFramebuffer(width, height);
 }
 
 Sample::~Sample()

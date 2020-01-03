@@ -25,8 +25,7 @@ namespace detail
 		static constexpr unsigned depth() { return depth_; };
 		static constexpr unsigned stencil() { return stencil_; }
 		static constexpr unsigned depthstencil() { return depthstencil_; }
-		template<typename F> static constexpr void static_addition_check()
-		{
+		template<typename F> static constexpr void static_addition_check() {
 			static_assert(depth() == -1        || !has_depth_v<F>   && !has_depthstencil_v<F>, "An FBO cannot have two depth textures.");
 			static_assert(stencil() == -1      || !has_stencil_v<F> && !has_depthstencil_v<F>, "An FBO cannot have two stencil textures.");
 			static_assert(depthstencil() == -1 || !has_depthstencil_v<F>, "An FBO cannot have two depth-stencil textures, that is just too much!");
@@ -60,17 +59,9 @@ public:
 	~FramebufferObject() { if(_id != 0) glDeleteFramebuffers(1, &_id); }
 	FramebufferObject(FramebufferObject&&) = default;
 
-	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>&& tex) : FramebufferBase(0, 0, 0, tex.getWidth(), tex.getHeight()), _attachements(std::make_tuple(std::move(tex))), _width(tex.getWidth()), _height(tex.getHeight()) {
-		glCreateFramebuffers(1, &this->_id);
-		this->bind();
-		detail::attach2BoundFbo<0>(tex);
-	}
-	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)){}
-	template<typename InternalFormat> FramebufferObject(Renderbuffer<InternalFormat>&& ren) : FramebufferBase(0, 0, 0, ren.getWidth(), ren.getHeight()), _attachements(std::make_tuple(std::move(ren))), _width(ren.getWidth()), _height(ren.getHeight()) {
-		glCreateFramebuffers(1, &this->_id);
-		this->bind();
-		detail::attach2BoundFbo<0>(ren);
-	}
+	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>&& tex) ;
+	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)) {}
+	template<typename InternalFormat> FramebufferObject(Renderbuffer<InternalFormat>&& ren);
 	template<typename InternalFormat> FramebufferObject(const Renderbuffer<InternalFormat>& ren) = delete;
 	//FramebufferObject& operator=(FramebufferObject&&) = default;
 	
@@ -80,12 +71,7 @@ public:
 	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (Renderbuffer<InternalFormat>&& ren) &&;
 	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (const Renderbuffer<InternalFormat> &ren) && = delete;
 
-	template<int idx> constexpr typename auto& get()
-	{
-		constexpr int index = idx + calc_extra_spots_until<idx>();
-		static_assert(index >= 0 && index < sizeof...(Attachements), "Index out of bounds here.");
-		return std::get< index >(_attachements);
-	}
+	template<int idx> constexpr typename auto& get();
 
 	template<int idx> FramebufferObject& operator<< (const detail::ClearColorF<idx>& cleardata);
 	template<int idx> FramebufferObject& operator<< (const detail::ClearColorI<idx>& cleardata);
@@ -101,6 +87,26 @@ using EmptyFBO = FramebufferObject<detail::FBO_compile_data<>>;
 
 template<typename ... ColorAttachements>
 using FBO = FramebufferObject<Renderbuffer<depth24>, ColorAttachements...>;
+
+template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
+FramebufferObject<compile_data, Attachements...>::FramebufferObject(Texture2D<InternalFormat>&& tex)
+	: FramebufferBase(0, 0, 0, tex.getWidth(), tex.getHeight()),
+	_attachements(std::make_tuple(std::move(tex))), _width(tex.getWidth()), _height(tex.getHeight())
+{
+	glCreateFramebuffers(1, &this->_id);
+	this->bind();
+	detail::attach2BoundFbo<0>(tex);
+}
+
+template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
+FramebufferObject<compile_data, Attachements...>::FramebufferObject(Renderbuffer<InternalFormat>&& ren)
+	: FramebufferBase(0, 0, 0, ren.getWidth(), ren.getHeight()),
+	_attachements(std::make_tuple(std::move(ren))), _width(ren.getWidth()), _height(ren.getHeight())
+{
+	glCreateFramebuffers(1, &this->_id);
+	this->bind();
+	detail::attach2BoundFbo<0>(ren);
+}
 
 //tex -> fbo
 template<typename InternalFormat>
@@ -262,6 +268,14 @@ void detail::attach2BoundFbo(const Renderbuffer<InternalFormat>& ren)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachement, GL_RENDERBUFFER, (GLuint)ren);
 	std::cout << "Renderbuffer " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
 		(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << ren.getWidth() << " h = " << ren.getHeight() << std::endl;
+}
+
+template<typename compile_data, typename ...Attachements>
+template<int idx> constexpr auto& df::FramebufferObject<compile_data, Attachements...>::get()
+{
+	constexpr int index = idx + calc_extra_spots_until<idx>();
+	static_assert(index >= 0 && index < sizeof...(Attachements), "Index out of bounds here.");
+	return std::get< index >(_attachements);
 }
 
 } // namespace df

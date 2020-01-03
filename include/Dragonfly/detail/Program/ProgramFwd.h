@@ -17,5 +17,15 @@ namespace df
 	class ProgramLowLevelBase;
 	template<typename Uniform_T> class ProgramBase;
 
+	namespace detail
+	{
+		struct _CompShader { const char* path; };
+		struct _FragShader { const char* path; };
+		struct _VertShader { const char* path; };
+		struct _GeomShader { const char* path; };
+		struct _TescShader { const char* path; };
+		struct _TeseShader { const char* path; };
+	}
+
 } //namespace df
 

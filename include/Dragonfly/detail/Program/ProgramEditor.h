@@ -30,7 +30,7 @@ inline void ProgramEditor<S, U, R>::Render()
 			this->Link();
 		}
 		if (ImGui::BeginTabBar("ProgramTabBar", 0)) {
-			if constexpr (std::is_same_v<typename Base::Frag_t, NoShader>) {
+			if constexpr (std::is_same_v<typename S::Frag, NoShader>) {
 				if (ImGui::BeginTabItem("Compute shader editor")) {
 					tab = 0;
 					ImGui::EndTabItem();
@@ -64,7 +64,7 @@ inline void ProgramEditor<S, U, R>::Render()
 	case(1):
 		this->frag.Render(this->program_name);	this->frag.Update(); break;
 	case(2):
-		this->vert.Render(this->program_name);		this->vert.Update(); break;
+		this->vert.Render(this->program_name);	this->vert.Update(); break;
 	case(3):
 		this->uniforms.Render(this->program_name); break;
 	case(4):

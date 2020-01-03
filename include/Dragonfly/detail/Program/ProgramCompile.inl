@@ -7,14 +7,14 @@
 namespace df
 {
 
-constexpr _CompShader operator"" _comp(const char* str, size_t len) { return _CompShader{ str }; }
-constexpr _FragShader operator"" _frag(const char* str, size_t len) { return _FragShader{ str }; }
-constexpr _VertShader operator"" _vert(const char* str, size_t len) { return _VertShader{ str }; }
-constexpr _GeomShader operator"" _geom(const char* str, size_t len) { return _GeomShader{ str }; }
-constexpr _TescShader operator"" _tesc(const char* str, size_t len) { return _TescShader{ str }; }
-constexpr _TeseShader operator"" _tese(const char* str, size_t len) { return _TeseShader{ str }; }
-constexpr _FragShader operator"" _fs  (const char* str, size_t len) { return _FragShader{ str }; }
-constexpr _VertShader operator"" _vs  (const char* str, size_t len) { return _VertShader{ str }; }
+constexpr detail::_CompShader operator"" _comp(const char* str, size_t len) { return detail::_CompShader{ str }; }
+constexpr detail::_FragShader operator"" _frag(const char* str, size_t len) { return detail::_FragShader{ str }; }
+constexpr detail::_VertShader operator"" _vert(const char* str, size_t len) { return detail::_VertShader{ str }; }
+constexpr detail::_GeomShader operator"" _geom(const char* str, size_t len) { return detail::_GeomShader{ str }; }
+constexpr detail::_TescShader operator"" _tesc(const char* str, size_t len) { return detail::_TescShader{ str }; }
+constexpr detail::_TeseShader operator"" _tese(const char* str, size_t len) { return detail::_TeseShader{ str }; }
+constexpr detail::_FragShader operator"" _fs  (const char* str, size_t len) { return detail::_FragShader{ str }; }
+constexpr detail::_VertShader operator"" _vs  (const char* str, size_t len) { return detail::_VertShader{ str }; }
 
 // ========================= Program Input States ==============================
 
@@ -26,12 +26,12 @@ class Program<S, U, R>::LoadState {
 	LoadState() = delete;
 public:
 	struct LinkType {};
-	LoadState& operator << (const _CompShader& s);
-	LoadState& operator << (const _FragShader& s);
-	LoadState& operator << (const _VertShader& s);
-	LoadState& operator << (const _GeomShader& s);
-	LoadState& operator << (const _TescShader& s);
-	LoadState& operator << (const _TeseShader& s);
+	LoadState& operator << (const detail::_CompShader& s);
+	LoadState& operator << (const detail::_FragShader& s);
+	LoadState& operator << (const detail::_VertShader& s);
+	LoadState& operator << (const detail::_GeomShader& s);
+	LoadState& operator << (const detail::_TescShader& s);
+	LoadState& operator << (const detail::_TeseShader& s);
 	LoadState& operator << (const ProgramLowLevelBase::LinkType &andCompile);
 private:
 	LoadState(Prog&that) : that(that) {}
@@ -40,8 +40,8 @@ private:
 };
 
 template<typename S, typename U, typename R>
-inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _CompShader & s) {
-	static_assert(!std::is_same_v<Comp_t, NoShader>, "Program: No compute shader is present. Maybe you have vertex and fragment shaders instead.");
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const detail::_CompShader & s) {
+	static_assert(!std::is_same_v<S::Comp, NoShader>, "Program: No compute shader is present. Maybe you have vertex and fragment shaders instead.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.comp << s.path;
 	}
@@ -50,8 +50,8 @@ inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operat
 	return *this;
 }
 template<typename S, typename U, typename R>
-inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _FragShader& s) {
-	static_assert(!std::is_same_v<Frag_t, NoShader>, "Program: No fragment shader is present. Maybe you have a compute program.");
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const detail::_FragShader& s) {
+	static_assert(!std::is_same_v<S::Frag, NoShader>, "Program: No fragment shader is present. Maybe you have a compute program.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.frag << s.path;
 	}
@@ -60,8 +60,8 @@ inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operat
 	return *this;
 }
 template<typename S, typename U, typename R>
-inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _VertShader & s) {
-	static_assert(!std::is_same_v<Vert_t, NoShader>, "Program: No vertex shader is present.");
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const detail::_VertShader & s) {
+	static_assert(!std::is_same_v<S::Vert, NoShader>, "Program: No vertex shader is present.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.vert << s.path;
 	}
@@ -70,8 +70,8 @@ inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operat
 	return *this;
 }
 template<typename S, typename U, typename R>
-inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _GeomShader & s) {
-	static_assert(!std::is_same_v<Geom_t, NoShader>, "Program: No geometry shader is present.");
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const detail::_GeomShader & s) {
+	static_assert(!std::is_same_v<S::Geom, NoShader>, "Program: No geometry shader is present.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.geom << s.path;
 	}
@@ -80,8 +80,8 @@ inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operat
 	return *this;
 }
 template<typename S, typename U, typename R>
-inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _TescShader & s) {
-	static_assert(!std::is_same_v<TesC_t, NoShader>, "Program: No tessellation control shader is present.");
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const detail::_TescShader & s) {
+	static_assert(!std::is_same_v<S::TesC, NoShader>, "Program: No tessellation control shader is present.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.tesc << s.path;
 	}
@@ -90,8 +90,8 @@ inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operat
 	return *this;
 }
 template<typename S, typename U, typename R>
-inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const _TeseShader & s) {
-	static_assert(!std::is_same_v<TesE_t, NoShader>, "Program: No tessellation evaluation shader is present.");
+inline typename Program<S, U, R>::LoadState& Program<S, U, R>::LoadState::operator<<(const detail::_TeseShader & s) {
+	static_assert(!std::is_same_v<S::TesE, NoShader>, "Program: No tessellation evaluation shader is present.");
 	if (std::find(shader_list.begin(), shader_list.end(), s.path) == shader_list.end()) {
 		shader_list.push_back(s.path); that.tese << s.path;
 	}

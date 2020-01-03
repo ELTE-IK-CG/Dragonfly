@@ -56,11 +56,11 @@ public:
 	using FramebufferBase::operator<<;
 };
 
-inline DefaultFramebuffer Canvas(0, 0);
+inline DefaultFramebuffer Backbuffer(0, 0);
 
 inline void FramebufferBase::bind() {
 	if (_id == 0 && _w == 0) {
-		*this = Canvas;
+		*this = Backbuffer;
 	}
 	glViewport(_x, _y, _w, _h);
 	glBindFramebuffer(GL_FRAMEBUFFER, _id);
