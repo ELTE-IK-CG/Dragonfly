@@ -71,7 +71,7 @@ public:
 	template<typename F>
 	void AddResize(F&& f) { _resize.emplace(Callback_Resize(f)); }
 
-	// The following member functions will be added as handler functions form the handler class (if it has them):
+	// The following member functions will be added as handler functions from the handler class (if it has them):
 	// HandleKeyUp(const SDL_KeyboardEvent&)
 	// HandleKeyDown(const SDL_KeyboardEvent&)
 	// HandleMouseUp(const SDL_MouseButtonEvent&)

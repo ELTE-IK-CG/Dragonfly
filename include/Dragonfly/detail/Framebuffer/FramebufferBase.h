@@ -54,6 +54,8 @@ public:
 	DefaultFramebuffer& operator<< (const detail::ClearDepthStencilIF& cleardata) { this->bind(); glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil); return *this; }
 
 	using FramebufferBase::operator<<;
+
+	void HandleResize(int w, int h);
 };
 
 inline DefaultFramebuffer Backbuffer(0, 0);
@@ -69,6 +71,14 @@ inline void FramebufferBase::bind() {
 template<typename Prog> Prog& FramebufferBase::operator<<(Prog& prog) & {
 	prog.framebuffer = *this;
 	return prog;
+}
+
+inline void df::DefaultFramebuffer::HandleResize(int w, int h)
+{
+	this->_w = w;
+	this->_h = h;
+	this->bind();
+	glViewport(this->_x, this->_y, this->_w, this->_h);
 }
 
 }
