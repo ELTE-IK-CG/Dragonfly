@@ -37,6 +37,8 @@ namespace detail
 	template<int index, typename InternalFormat> void attach2BoundFbo(const Renderbuffer<InternalFormat>& ren);
 }
 
+enum class SpecialFramebufferAttachementType { DEPTH, STENCIL, DEPTH_STENCIL};
+
 template<typename compile_data, typename ... Attachements>
 class FramebufferObject : public FramebufferBase
 {
@@ -61,6 +63,7 @@ public:
 
 	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>&& tex) ;
 	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)) {}
+	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)) {}
 	template<typename InternalFormat> FramebufferObject(Renderbuffer<InternalFormat>&& ren);
 	template<typename InternalFormat> FramebufferObject(const Renderbuffer<InternalFormat>& ren) = delete;
 	//FramebufferObject& operator=(FramebufferObject&&) = default;
@@ -72,6 +75,9 @@ public:
 	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (const Renderbuffer<InternalFormat> &ren) && = delete;
 
 	template<int idx> constexpr typename auto& get();
+	constexpr typename auto& getDepth();
+	constexpr typename auto& getStencil();
+	constexpr typename auto& getDepthStencil();
 
 	template<int idx> FramebufferObject& operator<< (const detail::ClearColorF<idx>& cleardata);
 	template<int idx> FramebufferObject& operator<< (const detail::ClearColorI<idx>& cleardata);
@@ -110,16 +116,16 @@ FramebufferObject<compile_data, Attachements...>::FramebufferObject(Renderbuffer
 
 //tex -> fbo
 template<typename InternalFormat>
-auto MakeFramebuffer(df::Texture2D<InternalFormat>&& tex) {
+auto MakeFramebuffer(Texture2D<InternalFormat>&& tex) {
 	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Texture2D<InternalFormat>>(std::move(tex));
 }
 template<typename InternalFormat>
-auto MakeFramebuffer(const df::Texture2D<InternalFormat>& tex) {
+auto MakeFramebuffer(const Texture2D<InternalFormat>& tex) {
 	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Texture2D<InternalFormat>>(tex.MakeView(0_level));
 }
 //ren -> fbo
 template<typename InternalFormat>
-auto MakeFramebuffer(df::Renderbuffer<InternalFormat>&& ren) {
+auto MakeFramebuffer(Renderbuffer<InternalFormat>&& ren) {
 	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Renderbuffer<InternalFormat>>(std::move(ren));
 }
 
@@ -222,19 +228,19 @@ FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data
 	return *this;
 }
 template<typename compile_data, typename ...Attachements>
-FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearDepthF& cleardata) {
+FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearDepthF& cleardata) {
 	this->bind();
 	glClearBufferfv(GL_DEPTH, 0, &cleardata._depth);	//check?
 	return *this;
 }
 template<typename compile_data, typename ...Attachements>
-FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearStencilI& cleardata) {
+FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearStencilI& cleardata) {
 	this->bind();
 	glClearBufferiv(GL_DEPTH, 0, &cleardata._stencil);
 	return *this;
 }
 template<typename compile_data, typename ...Attachements>
-FramebufferObject<compile_data, Attachements...>& df::FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearDepthStencilIF& cleardata) {
+FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearDepthStencilIF& cleardata) {
 	this->bind();
 	glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil);
 	return *this;
@@ -270,10 +276,35 @@ void detail::attach2BoundFbo(const Renderbuffer<InternalFormat>& ren)
 		(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << ren.getWidth() << " h = " << ren.getHeight() << std::endl;
 }
 
-template<typename compile_data, typename ...Attachements>
-template<int idx> constexpr auto& df::FramebufferObject<compile_data, Attachements...>::get()
+template<typename compile_data, typename ...Attachements> template<int idx>
+constexpr auto& FramebufferObject<compile_data, Attachements...>::get()
 {
 	constexpr int index = idx + calc_extra_spots_until<idx>();
+	static_assert(index >= 0 && index < sizeof...(Attachements), "Index out of bounds here.");
+	return std::get< index >(_attachements);
+}
+
+template<typename compile_data, typename ...Attachements>
+constexpr auto& FramebufferObject<compile_data, Attachements...>::getDepth()
+{
+	static_assert(compile_data::depth() != -1, "This FramebufferObject does not have a depth-only attachement.");
+	constexpr int index = compile_data::depth();
+	static_assert(index >= 0 && index < sizeof...(Attachements), "Index out of bounds here.");
+	return std::get< index >(_attachements);
+}
+template<typename compile_data, typename ...Attachements>
+constexpr auto& FramebufferObject<compile_data, Attachements...>::getStencil()
+{
+	static_assert(compile_data::stencil() != -1, "This FramebufferObject does not have a stencil-only attachement.");
+	constexpr int index = compile_data::stencil();
+	static_assert(index >= 0 && index < sizeof...(Attachements), "Index out of bounds here.");
+	return std::get< index >(_attachements);
+}
+template<typename compile_data, typename ...Attachements>
+constexpr auto& FramebufferObject<compile_data, Attachements...>::getDepthStencil()
+{
+	static_assert(compile_data::depthstencil() != -1, "This FramebufferObject does not have a combined depth-stencil attachement.");
+	constexpr int index = compile_data::depthstencil();
 	static_assert(index >= 0 && index < sizeof...(Attachements), "Index out of bounds here.");
 	return std::get< index >(_attachements);
 }

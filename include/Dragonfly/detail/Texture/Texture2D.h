@@ -191,4 +191,10 @@ Texture<NewTexType, NewInternalFormat> Texture<TextureType::TEX_2D, InternalForm
 	return this->_MakeView<NewTexType, NewInternalFormat>(levels, 0_layer);
 }
 
+template<typename InternalFormat>
+Texture<TextureType::TEX_2D, InternalFormat> Texture<TextureType::TEX_2D, InternalFormat>::operator[] (TexLevels levels)
+{
+	return MakeView(levels);
+}
+
 } //namespace df

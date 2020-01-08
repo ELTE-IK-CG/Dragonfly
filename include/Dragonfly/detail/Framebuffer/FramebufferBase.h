@@ -73,7 +73,7 @@ template<typename Prog> Prog& FramebufferBase::operator<<(Prog& prog) & {
 	return prog;
 }
 
-inline void df::DefaultFramebuffer::HandleResize(int w, int h)
+inline void DefaultFramebuffer::HandleResize(int w, int h)
 {
 	this->_w = w;
 	this->_h = h;

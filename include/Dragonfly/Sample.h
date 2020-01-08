@@ -54,22 +54,14 @@ public:
 	~Sample();
 
 	void Quit() { quit = true; }
-
-	template<typename F>
-	void AddKeyDown(F&& f, int priority = 0) { _keydown.emplace(-priority, Callback_KeyBoard(f)); }
-	template<typename F>
-	void AddKeyUp(F&& f, int priority = 0){	_keyup.emplace(-priority, Callback_KeyBoard(f)); }
-
-	template<typename F>
-	void AddMouseDown(F&& f, int priority = 0) { _mousedown.emplace(-priority, Callback_MouseButton(f)); }
-	template<typename F>
-	void AddMouseUp(F&& f, int priority = 0) { _mouseup.emplace(-priority, Callback_MouseButton(f)); }
-	template<typename F>
-	void AddMouseMotion(F&& f, int priority = 0) { _mousemove.emplace(-priority, Callback_MouseMotion(f)); }
-	template<typename F>
-	void AddMouseWheel(F&& f, int priority = 0) { _mousewheel.emplace(-priority, Callback_MouseMotion(f)); }
-	template<typename F>
-	void AddResize(F&& f) { _resize.emplace_back(Callback_Resize(f)); }
+	
+	Sample& AddKeyDown    (Callback_KeyBoard&& f,    int priority = 0) {    _keydown.emplace(-priority, std::move(f)); return *this; }
+	Sample& AddKeyUp      (Callback_KeyBoard&& f,    int priority = 0) {      _keyup.emplace(-priority, std::move(f)); return *this; }
+	Sample& AddMouseDown  (Callback_MouseButton&& f, int priority = 0) {  _mousedown.emplace(-priority, std::move(f)); return *this; }
+	Sample& AddMouseUp    (Callback_MouseButton&& f, int priority = 0) {    _mouseup.emplace(-priority, std::move(f)); return *this; }
+	Sample& AddMouseMotion(Callback_MouseMotion&& f, int priority = 0) {  _mousemove.emplace(-priority, std::move(f)); return *this; }
+	Sample& AddMouseWheel (Callback_MouseWheel&& f,  int priority = 0) { _mousewheel.emplace(-priority, std::move(f)); return *this; }
+	Sample& AddResize     (Callback_Resize&& f) { _resize.emplace_back(std::move(f)); return *this; }
 
 	// The following member functions will be added as handler functions from the handler class (if it has them):
 	// HandleKeyUp(const SDL_KeyboardEvent&)
