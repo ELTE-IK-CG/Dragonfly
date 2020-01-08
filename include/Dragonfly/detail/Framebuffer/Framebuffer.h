@@ -59,14 +59,21 @@ public:
 	FramebufferObject(GLuint id, std::tuple<Attachements...> &&attachements, GLuint width = 0, GLuint height = 0) : FramebufferBase(id, 0,0,width,height), _attachements(std::move(attachements)), _width(width), _height(height){}
 	FramebufferObject() { glCreateFramebuffers(1, &_id); }
 	~FramebufferObject() { if(_id != 0) glDeleteFramebuffers(1, &_id); }
-	FramebufferObject(FramebufferObject&&) = default;
+
+	FramebufferObject(const FramebufferObject&) = delete;
+	FramebufferObject(FramebufferObject&& _o)
+		: FramebufferBase(std::move(_o)), _attachements(std::move(_o._attachements)), _width(_o._width), _height(_o.height)
+	{
+		_o._id = 0;
+	}
+
+	FramebufferObject& operator= (const FramebufferObject&) = delete;
+	FramebufferObject& operator= (FramebufferObject&& _o);
 
 	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>&& tex) ;
 	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)) {}
-	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)) {}
 	template<typename InternalFormat> FramebufferObject(Renderbuffer<InternalFormat>&& ren);
 	template<typename InternalFormat> FramebufferObject(const Renderbuffer<InternalFormat>& ren) = delete;
-	//FramebufferObject& operator=(FramebufferObject&&) = default;
 	
 	template<typename InternalFormat> _add_Texture2D_t<InternalFormat> operator + (Texture2D<InternalFormat>&& tex) &&;
 	template<typename InternalFormat> _add_Texture2D_t<InternalFormat> operator + (const Texture2D<InternalFormat> &tex) &&	{ return std::move(*this) + tex.MakeView(0_level);}
@@ -274,6 +281,19 @@ void detail::attach2BoundFbo(const Renderbuffer<InternalFormat>& ren)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachement, GL_RENDERBUFFER, (GLuint)ren);
 	std::cout << "Renderbuffer " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
 		(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << ren.getWidth() << " h = " << ren.getHeight() << std::endl;
+}
+
+template<typename compile_data, typename ...Attachements>
+FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator=(FramebufferObject<compile_data, Attachements...> && _o)
+{
+	_attachements = std::move(_o._attachements);
+	auto thisId = this->_id;
+	FramebufferBase::operator=(std::move(_o));
+	_o._id = thisId;
+	_width = _o._width;
+	_height = _o._height;
+
+	return *this;
 }
 
 template<typename compile_data, typename ...Attachements> template<int idx>
