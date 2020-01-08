@@ -69,7 +69,7 @@ public:
 	template<typename F>
 	void AddMouseWheel(F&& f, int priority = 0) { _mousewheel.emplace(-priority, Callback_MouseMotion(f)); }
 	template<typename F>
-	void AddResize(F&& f) { _resize.emplace(Callback_Resize(f)); }
+	void AddResize(F&& f) { _resize.emplace_back(Callback_Resize(f)); }
 
 	// The following member functions will be added as handler functions from the handler class (if it has them):
 	// HandleKeyUp(const SDL_KeyboardEvent&)
