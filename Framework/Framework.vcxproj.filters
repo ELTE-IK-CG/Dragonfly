@@ -328,5 +328,8 @@
     <None Include="..\include\Dragonfly\detail\Program\ProgramCompile.inl">
       <Filter>Dragonfly\detail\Program</Filter>
     </None>
+    <None Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.inl">
+      <Filter>Dragonfly\detail\Framebuffer</Filter>
+    </None>
   </ItemGroup>
 </Project>

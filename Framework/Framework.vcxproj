@@ -100,6 +100,7 @@
     <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Program\Program.inl" />
     <None Include="..\include\Dragonfly\detail\Program\ProgramCompile.inl" />
     <None Include="..\include\Dragonfly\detail\Shader\Shader.inl" />
