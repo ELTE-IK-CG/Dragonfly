@@ -30,7 +30,7 @@ class VertexArray final
 public:
 
 	VertexArray(){ glGenVertexArrays(1, &this->object_id); }
-	~VertexArray(){ glDeleteVertexArrays(1, &this->object_id); }
+	~VertexArray() { if (s_bound_vao_id() == this->object_id) s_bound_vao_id() = 0; glDeleteVertexArrays(1, &this->object_id); }
 
 	inline void bindVertexArray();
 

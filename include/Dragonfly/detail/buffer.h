@@ -156,6 +156,7 @@ inline Buffer<T_buffer_type>::Buffer()
 template<BufferType T_buffer_type>
 inline Buffer<T_buffer_type>::~Buffer()
 {
+	if(s_bound_buffer_id() == this->object_id) s_bound_buffer_id() = 0;
 	glDeleteBuffers(1, &this->object_id);
 }
 
