@@ -12,13 +12,19 @@ namespace df
 		struct ClearDepthF { float _depth; };
 		struct ClearStencilI { int _stencil; };
 		struct ClearDepthStencilIF { float _depth;  int _stencil; };
+
+		template<int index = 0> struct ClearF { ClearColorF<index> color; float _depth; int _stencil; };
 	}
+	template<int index = 0>	detail::ClearColorF<index> ClearColor(float allchannels = 0.f) { return { allchannels, allchannels, allchannels, allchannels }; }
 	template<int index = 0>	detail::ClearColorF<index> ClearColor(float red, float green, float blue, float alpha = 1.f) { return { red, green, blue, alpha }; }
 	template<int index = 0> detail::ClearColorI<index> ClearColor(int red, int green, int blue, int alpha) { return { red, green, blue, alpha }; }
 	template<int index = 0> detail::ClearColorU<index> ClearColor(unsigned red, unsigned green, unsigned blue, unsigned alpha) { return { red, green, blue, alpha }; }
 	inline detail::ClearDepthF ClearDepth(float depth = 1.f) { return { depth }; }
 	inline detail::ClearStencilI ClearStencil(int stencil = 0) { return { stencil }; }
 	inline detail::ClearDepthStencilIF ClearDepthStencil(float depth = 1.f, int stencil = 0) { return {depth, stencil }; }
+
+	template<int index = 0> detail::ClearF<index> Clear(float red, float green, float blue, float alpha = 1.f, float depth = 1.f, int stencil = 0) { return { ClearColor(red, green, blue, alpha), depth, stencil }; }
+	template<int index = 0> detail::ClearF<index> Clear(float allchannels = 0.f, float depth = 1.f, int stencil = 0) { return {ClearColor(allchannels), depth, stencil}; }
 
 class FramebufferBase
 {
@@ -52,6 +58,7 @@ public:
 	DefaultFramebuffer& operator<< (const detail::ClearDepthF& cleardata) { this->bind(); glClearBufferfv(GL_DEPTH, 0, &cleardata._depth); return *this; }
 	DefaultFramebuffer& operator<< (const detail::ClearStencilI& cleardata) { this->bind(); glClearBufferiv(GL_DEPTH, 0, &cleardata._stencil); return *this; }
 	DefaultFramebuffer& operator<< (const detail::ClearDepthStencilIF& cleardata) { this->bind(); glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil); return *this; }
+	DefaultFramebuffer& operator<< (const detail::ClearF<0> & cleardata) { this->bind(); glClearBufferfv(GL_COLOR, 0, &cleardata.color._red); glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil); return *this; }
 
 	using FramebufferBase::operator<<;
 

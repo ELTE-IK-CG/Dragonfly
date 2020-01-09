@@ -4,15 +4,16 @@
 
 // ========================= Program Base Classes ==============================
 
+constexpr df::detail::_CompShader operator"" _comp(const char* str, size_t len) { return df::detail::_CompShader{ str }; }
+constexpr df::detail::_FragShader operator"" _frag(const char* str, size_t len) { return df::detail::_FragShader{ str }; }
+constexpr df::detail::_VertShader operator"" _vert(const char* str, size_t len) { return df::detail::_VertShader{ str }; }
+constexpr df::detail::_GeomShader operator"" _geom(const char* str, size_t len) { return df::detail::_GeomShader{ str }; }
+constexpr df::detail::_TescShader operator"" _tesc(const char* str, size_t len) { return df::detail::_TescShader{ str }; }
+constexpr df::detail::_TeseShader operator"" _tese(const char* str, size_t len) { return df::detail::_TeseShader{ str }; }
+
 namespace df
 {
 
-constexpr detail::_CompShader operator"" _comp(const char* str, size_t len) { return detail::_CompShader{ str }; }
-constexpr detail::_FragShader operator"" _frag(const char* str, size_t len) { return detail::_FragShader{ str }; }
-constexpr detail::_VertShader operator"" _vert(const char* str, size_t len) { return detail::_VertShader{ str }; }
-constexpr detail::_GeomShader operator"" _geom(const char* str, size_t len) { return detail::_GeomShader{ str }; }
-constexpr detail::_TescShader operator"" _tesc(const char* str, size_t len) { return detail::_TescShader{ str }; }
-constexpr detail::_TeseShader operator"" _tese(const char* str, size_t len) { return detail::_TeseShader{ str }; }
 constexpr detail::_FragShader operator"" _fs  (const char* str, size_t len) { return detail::_FragShader{ str }; }
 constexpr detail::_VertShader operator"" _vs  (const char* str, size_t len) { return detail::_VertShader{ str }; }
 

@@ -15,6 +15,13 @@ namespace df
 		}
 	}
 
+enum TextureCubeFace{	X_POS = TextureType::TEX_CUBE_X_POS,
+						X_NEG = TextureType::TEX_CUBE_X_NEG,
+						Y_POS = TextureType::TEX_CUBE_Y_POS,
+						Y_NEG = TextureType::TEX_CUBE_Y_NEG,
+						Z_POS = TextureType::TEX_CUBE_Z_POS,
+						Z_NEG = TextureType::TEX_CUBE_Z_NEG};
+
 template<typename InternalFormat>
 class Texture<TextureType::TEX_CUBE_MAP, InternalFormat> : public TextureBase<TextureType::TEX_CUBE_MAP, InternalFormat>
 {
@@ -26,7 +33,7 @@ class Texture<TextureType::TEX_CUBE_MAP, InternalFormat> : public TextureBase<Te
 	void LoadFromSDLSurface(SDL_Surface* img, TextureType side);
 
 	template<typename NewInternalFormat = InternalFormat>
-	Texture<TextureType::TEX_2D, NewInternalFormat> MakeFaceView(TextureType face, TexLevels levels = 0_levelAll);
+	Texture<TextureType::TEX_2D, NewInternalFormat> MakeFaceView(TextureCubeFace face, TexLevels levels = 0_levelAll);
 
 public:
 	Texture() {}
@@ -46,7 +53,7 @@ public:
 	template<TextureType NewTexType = TextureType::TEX_CUBE_MAP, typename NewInternalFormat = InternalFormat>
 	auto MakeView(TexLevels levels = 0_levelAll);
 
-	Texture<TextureType::TEX_2D, InternalFormat> operator[](TextureType face);
+	Texture<TextureType::TEX_2D, InternalFormat> operator[](TextureCubeFace face);
 
 	Texture operator[](TexLevels levels);
 };
@@ -76,7 +83,7 @@ void Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::LoadFromSDLSurface(SDL_
 
 template<typename InternalFormat>
 template<typename NewInternalFormat>
-Texture<TextureType::TEX_2D, NewInternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::MakeFaceView(TextureType face, TexLevels levels)
+Texture<TextureType::TEX_2D, NewInternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::MakeFaceView(TextureCubeFace face, TexLevels levels)
 {
 	TexLayers layers{ static_cast<GLuint>(face) - static_cast<GLuint>(TextureType::TEX_CUBE_X_POS), 1 };
 	if (levels.num == ALL) levels.num = this->_levels - levels.min;
@@ -190,9 +197,9 @@ auto Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::MakeView(TexLevels leve
 }
 
 template<typename InternalFormat>
-Texture<TextureType::TEX_2D, InternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::operator[](TextureType face)
+Texture<TextureType::TEX_2D, InternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::operator[](TextureCubeFace face)
 {
-	ASSERT(detail::IsTextureTypeCubeSide(face), "TextureCube: face parameter has to be one of TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG}");
+	ASSERT(detail::IsTextureTypeCubeSide(static_cast<TextureType>(face)), "TextureCube: face parameter has to be one of TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG}");
 	return MakeFaceView(face);
 }
 

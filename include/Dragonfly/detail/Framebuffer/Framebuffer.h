@@ -93,6 +93,7 @@ public:
 	FramebufferObject& operator<< (const detail::ClearDepthF& cleardata);
 	FramebufferObject& operator<< (const detail::ClearStencilI& cleardata);
 	FramebufferObject& operator<< (const detail::ClearDepthStencilIF& cleardata);
+	template<int idx> FramebufferObject& operator<< (const detail::ClearF<idx>& cleardata);
 
 	using FramebufferBase::operator<<;
 };

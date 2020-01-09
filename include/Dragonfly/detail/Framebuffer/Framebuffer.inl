@@ -157,6 +157,13 @@ FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data
 	glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil);
 	return *this;
 }
+template<typename compile_data, typename ...Attachements> template<int idx>
+FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearF<idx>& cleardata) {
+	this->bind();
+	glClearBufferfv(GL_COLOR, idx, &cleardata.color._red);
+	glClearBufferfi(GL_DEPTH_STENCIL, 0, cleardata._depth, cleardata._stencil);
+	return *this;
+}
 
 template<int index, typename InternalFormat>
 void detail::attach2BoundFbo(const Texture2D<InternalFormat>& tex)
