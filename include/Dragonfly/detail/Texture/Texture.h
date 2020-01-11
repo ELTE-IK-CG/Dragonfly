@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+#include <algorithm>
 #include "../../config.h"
 #include "../Traits/InternalFormats.h"
 
