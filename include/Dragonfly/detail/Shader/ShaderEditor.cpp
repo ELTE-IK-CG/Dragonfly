@@ -15,7 +15,8 @@ using namespace df;
 
 template<typename File_t>
 ShaderEditor<File_t>::ShaderEditor(GLenum type, const std::string &directory_, const std::string &name_) : Base(type), directory(directory_), name(name_) {
-	for (const auto &dir : std::filesystem::recursive_directory_iterator(directory_)) {
+	std::filesystem::path dirpath = directory_ == "" ? std::filesystem::current_path() : std::filesystem::path(directory_);
+	for (const auto &dir : std::filesystem::recursive_directory_iterator(dirpath)) {
 		if (dir.is_directory() || (dir.is_regular_file() && (dir.path().extension() == ".glsl" || dir.path().extension() == '.' + name))) {
 			folders.emplace_back();
 			folders.back().is_dir = dir.is_directory();
