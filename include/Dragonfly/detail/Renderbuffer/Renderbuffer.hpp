@@ -1,5 +1,6 @@
 #pragma once
 #include "../../config.h"
+#include "../Traits/InternalFormats.h"
 #include <iostream>
 
 namespace df
@@ -45,6 +46,8 @@ public:
 
 	GLsizei getWidth() const { return _w; }
 	GLsizei getHeight() const { return _h; }
+
+	Renderbuffer MakeResized(GLuint width, GLuint height) const { return Renderbuffer(width, height); }
 };
 
 }

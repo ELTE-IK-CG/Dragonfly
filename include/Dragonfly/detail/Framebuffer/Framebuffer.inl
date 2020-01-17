@@ -245,7 +245,9 @@ template<typename compile_data, typename ...Attachements>
 FramebufferObject<compile_data, Attachements...> FramebufferObject<compile_data, Attachements...>::MakeResized(GLuint width, GLuint height) const
 {
 	GLuint id; glCreateFramebuffers(1, &id);
-	FramebufferObject<compile_data, Attachements...> ret(id, std::make_tuple(Attachements(width, height) ...), width, height);
+	FramebufferObject<compile_data, Attachements...> ret(id,
+		std::apply([&](auto&&...x) {return std::make_tuple(x.MakeResized(width, height)...); }, this->_attachements),
+		width, height);
 	ret.bind();
 	ret.attach_all_upto_idx_to_bound_fb_with_given_size<sizeof...(Attachements) - 1>();
 	return ret;

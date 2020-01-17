@@ -50,6 +50,8 @@ public:
 	Texture<NewTexType, NewInternalFormat> MakeView(TexLevels levels = 0_levelAll) const;
 
 	Texture operator[] (TexLevels levels);
+
+	Texture MakeResized(GLuint width, GLuint height) const;
 };
 
 template<typename InternalFormat>
@@ -190,6 +192,12 @@ template<typename InternalFormat>
 Texture<TextureType::TEX_2D, InternalFormat> Texture<TextureType::TEX_2D, InternalFormat>::operator[] (TexLevels levels)
 {
 	return MakeView(levels);
+}
+
+template<typename InternalFormat>
+Texture<TextureType::TEX_2D, InternalFormat> Texture<TextureType::TEX_2D, InternalFormat>::MakeResized(GLuint width, GLuint height) const
+{
+	return Texture(width, height, this->_levels, this->invertYOnFileLoad);
 }
 
 } //namespace df
