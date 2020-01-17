@@ -1,25 +1,31 @@
-# OpenGL Framework
+# Dragonfly
 
-Utility library with focus on user interface, debugging, and high performace.
+OpenGL C++ framework with focus on high level code, high performace, and debugging with UI.
 
 ## Features
 
  - OpenGL Glew with SDL 2
- - ImGui with docking and detachable windows (multicontext). Included addons:
-    - Text Editor (with fast GLSL systax highlight)
-    - Node Editor (WIP)
-    - ImGui::Auto (WIP)
-    - File Browser and `std::string` support
- - ElteCG opengl wrapper (very WIP, harly works)
-    - OpenGL objects are (template) classes.
-    - Low overhead, extra checks in Debug mode.
- - Higher level OpenGL utility libery (WIP, but going well) 
-    - Classes have high level funtionality but low overhead when they don't use UI. Easy and safe to use.
-    - Program classes: Shader file management, GLSL code editors, Uniform monitoring, ect. (template magic)
-    - Camera (WIP)
+ - ImGui with docking and detachable windows (multicontext) and TextEditor (with fast GLSL systax highlight)
+ - High level OpenGL programming with Dragonfly.
 
+## More Information
+
+ - [Dragonfly Poster](https://people.inf.elte.hu/csabix/publications/articles/WSPS_2020_Poster_Dragonfly.pdf)
+ - [Dragonfly Template Project](https://github.com/Csabix/The-Dragon-Flies)
+ - Or contact the authors at csabix@inf.elte.hu or bundas@inf.elte.hu
+ 
 ## Install
 
- - Download the [GLFrameworkPack.zip](https://drive.google.com/file/d/1qlTScrB4aPtDfvpRD7IJUWWI4b4FYfZn/view?usp=sharing).
- - Find a location and create a virtual T drive, eg.: `subst T: c:\MyT_Drive\`.
- - Unzip the `GLFrameworkPack` there. There should be 3 folders in `T:\GLFrameworkPack`.
+ - Download the [DragonflyPack.zip](https://drive.google.com/file/d/1Ip1ilcjGu7oTZ3ixYK0olPBVj-89Wr9G/view?usp=sharing)
+ - Find a location and create a virtual T drive, eg.: `subst T: C:\MyT_Drive\`
+ - Unzip the `DragonflyPack` there. There should be 3 folders in `T:\DragonflyPack`
+ - Download the [Dragonfly Template Project](https://github.com/Csabix/The-Dragon-Flies) with Dragonfly as a submodule
+ - Use Visual Studio to build the solution
+
+## Credits
+
+Dragonfly is developed by Csaba Bálint and Róbert Bán at Eötvös Loránd University, Budapest, Hungary.
+
+Supported by the ÚNKP19-3 New National Excellence Program of the Ministry for Innovation and Technology. The project has been supported by the European Union, co-financed by the European Social Fund (EFOP-3.6.3-VEKOP-16-2017-00001).
+
+Dragonfly is licensed under the MIT License, see `LICENSE.txt` for more information.

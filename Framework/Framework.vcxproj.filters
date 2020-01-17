@@ -1,15 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ElteCG">
-      <UniqueIdentifier>{96203505-1392-412b-8dae-e0770f69b4f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ElteCG\Utils">
-      <UniqueIdentifier>{7e6a7b4f-a3e3-429f-8b73-329ae227dc36}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ElteCG\ogl">
-      <UniqueIdentifier>{f88982b2-0498-41cd-97ff-a78efa2d89f5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ImGui-Addons">
       <UniqueIdentifier>{4d9fd8f2-b7ba-428e-92fd-aa8b8c468f51}</UniqueIdentifier>
     </Filter>
@@ -31,52 +22,49 @@
     <Filter Include="ImGui-Addons\STD lib">
       <UniqueIdentifier>{02f67e13-3812-4fbb-8c8b-434e935da085}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dragonfly">
+      <UniqueIdentifier>{dc184624-8d34-42ef-a635-04eb808f070a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail">
+      <UniqueIdentifier>{9d3c18a5-3231-4b7e-820d-8f7dbe10c669}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Events">
+      <UniqueIdentifier>{7ab20ea1-6127-42ca-bab0-c13f44059ffa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\File">
+      <UniqueIdentifier>{fa6f4bbe-e609-4dbb-af16-6a671b6a02b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Program">
+      <UniqueIdentifier>{517709f9-b393-41eb-84b3-803244af1bea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Shader">
+      <UniqueIdentifier>{d86689f9-d4ab-4d2d-8310-57fc824082e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Texture">
+      <UniqueIdentifier>{81dc2289-3f35-4c5e-93c0-91350dc9ea31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Uniform">
+      <UniqueIdentifier>{f5379c19-e958-4c3b-b697-642ff08b2117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Traits">
+      <UniqueIdentifier>{04457bb4-f955-4722-9d80-f181a4a11b2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Framebuffer">
+      <UniqueIdentifier>{4f10f253-e305-4dd9-821a-a355c1ce301d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Rendberbuffer">
+      <UniqueIdentifier>{3b9ad3d6-cf8c-4f05-a5cb-0afdc02aeb32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dragonfly\detail\Vao">
+      <UniqueIdentifier>{b3cbbfe7-7b97-40b4-8193-ac71dc82a142}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\ElteCG\utils\Camera.cpp">
-      <Filter>ElteCG\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\utils\Program.cpp">
-      <Filter>ElteCG\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\utils\Shader.cpp">
-      <Filter>ElteCG\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\utils\ShaderEditor.cpp">
-      <Filter>ElteCG\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\utils\UniformEditor.cpp">
-      <Filter>ElteCG\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\utils\Uniforms.cpp">
-      <Filter>ElteCG\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\utils\UniformTypes.cpp">
-      <Filter>ElteCG\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\ogl\texture_helper.cpp">
-      <Filter>ElteCG\ogl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ElteCG\debug.cpp">
-      <Filter>ElteCG</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp">
       <Filter>ImGui-Addons\Implementation</Filter>
     </ClCompile>
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_sdl.cpp">
       <Filter>ImGui-Addons\Implementation</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_demo.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_draw.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_widgets.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
     </ClCompile>
     <ClCompile Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.cpp">
       <Filter>ImGui-Addons\Text Editor</Filter>
@@ -99,94 +87,67 @@
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp">
       <Filter>ImGui-Addons\STD lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\ElteCG\utils\Texture.cpp">
-      <Filter>ElteCG\Utils</Filter>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\File\File.cpp">
+      <Filter>Dragonfly\detail\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\File\FileEditor.cpp">
+      <Filter>Dragonfly\detail\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Traits\UniformTypes.cpp">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\Subroutines.cpp">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\Uniform.cpp">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Uniform\UniformEditor.cpp">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Texture\Texture.cpp">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Program\Program.cpp">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\Shader.cpp">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderEditor.cpp">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\config.cpp">
+      <Filter>Dragonfly\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Traits\InternalFormats.cpp">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_demo.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_draw.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\ElteCG\utils\Camera.h">
-      <Filter>ElteCG\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\utils\Program.h">
-      <Filter>ElteCG\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\utils\Shader.h">
-      <Filter>ElteCG\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\utils\ShaderEditor.h">
-      <Filter>ElteCG\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\utils\UniformEditor.h">
-      <Filter>ElteCG\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\utils\Uniforms.h">
-      <Filter>ElteCG\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\utils\UniformTypes.hpp">
-      <Filter>ElteCG\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\buffer.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\object.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\program.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\sampler.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\shader.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\static_helper.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\texture.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\texture_helper.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\texture2D.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\ogl\vao.h">
-      <Filter>ElteCG\ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\config.h">
-      <Filter>ElteCG</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\debug.h">
-      <Filter>ElteCG</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ElteCG\define.h">
-      <Filter>ElteCG</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
       <Filter>ImGui-Addons\Implementation</Filter>
     </ClInclude>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_sdl.h">
       <Filter>ImGui-Addons\Implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imconfig.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imgui.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imgui_internal.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_rectpack.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_textedit.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_truetype.h">
-      <Filter>ImGui %28in pack%29</Filter>
     </ClInclude>
     <ClInclude Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.h">
       <Filter>ImGui-Addons\Text Editor</Filter>
@@ -224,23 +185,131 @@
     <ClInclude Include="..\include\ImGui-addons\cpp\imgui_stdlib.h">
       <Filter>ImGui-Addons\STD lib</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ElteCG\utils\ProgramEditor.h">
-      <Filter>ElteCG\Utils</Filter>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h">
+      <Filter>Dragonfly\detail\Events</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ElteCG\utils\Texture.h">
-      <Filter>ElteCG\Utils</Filter>
+    <ClInclude Include="..\include\Dragonfly\detail\File\File.h">
+      <Filter>Dragonfly\detail\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h">
+      <Filter>Dragonfly\detail\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\EventHandlerTraits.h">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\UniformTypes.hpp">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\Subroutines.h">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\Uniform.h">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Uniform\UniformEditor.h">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\Shader.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\buffer.h">
+      <Filter>Dragonfly\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\object.h">
+      <Filter>Dragonfly\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\vao.h">
+      <Filter>Dragonfly\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\config.h">
+      <Filter>Dragonfly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\core.h">
+      <Filter>Dragonfly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\editor.h">
+      <Filter>Dragonfly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture1D.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture2DArray.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture3D.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture2D.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Texture\TextureCube.h">
+      <Filter>Dragonfly\detail\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.h">
+      <Filter>Dragonfly\detail\Framebuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Renderbuffer\Renderbuffer.hpp">
+      <Filter>Dragonfly\detail\Rendberbuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\InternalFormats.h">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Program\Program.h">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Program\ProgramEditor.h">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Program\ProgramFwd.h">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Program\ProgramBase.h">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Framebuffer\FramebufferBase.h">
+      <Filter>Dragonfly\detail\Framebuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderFwd.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\Vao.h">
+      <Filter>Dragonfly\detail\Vao</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Vao\Vao.h">
+      <Filter>Dragonfly\detail\Vao</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\Sample.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imconfig.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imgui.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imgui_internal.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_rectpack.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_textedit.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h">
+      <Filter>ImGui %28in pack%29</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\include\ElteCG\utils\Program.inl">
-      <Filter>ElteCG\Utils</Filter>
-    </None>
-    <None Include="..\include\ElteCG\utils\Shader.inl">
-      <Filter>ElteCG\Utils</Filter>
-    </None>
-    <None Include="..\include\ElteCG\utils\Uniforms.inl">
-      <Filter>ElteCG\Utils</Filter>
-    </None>
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl">
       <Filter>ImGui-Addons\Node Editor</Filter>
     </None>
@@ -250,8 +319,24 @@
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl">
       <Filter>ImGui-Addons\Node Editor</Filter>
     </None>
-    <None Include="..\include\ElteCG\utils\Texture.inl">
-      <Filter>ElteCG\Utils</Filter>
+    <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl">
+      <Filter>Dragonfly\detail\Uniform</Filter>
     </None>
+    <None Include="..\include\Dragonfly\detail\Uniform\Uniform.inl">
+      <Filter>Dragonfly\detail\Uniform</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Program\Program.inl">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Shader\Shader.inl">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Program\ProgramCompile.inl">
+      <Filter>Dragonfly\detail\Program</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.inl">
+      <Filter>Dragonfly\detail\Framebuffer</Filter>
+    </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
