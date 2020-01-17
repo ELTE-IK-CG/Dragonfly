@@ -182,8 +182,8 @@ public:
 				{
 				case SDL_KEYUP:				callEventHandlers(_keyup, ev.key);				break;
 				case SDL_KEYDOWN:			callEventHandlers(_keydown, ev.key);			break;
-				case SDL_MOUSEBUTTONDOWN:	callEventHandlers(_mouseup, ev.button);			break;
-				case SDL_MOUSEBUTTONUP:		callEventHandlers(_mousedown, ev.button);		break;
+				case SDL_MOUSEBUTTONDOWN:	callEventHandlers(_mousedown, ev.button);		break;
+				case SDL_MOUSEBUTTONUP:		callEventHandlers(_mouseup, ev.button);			break;
 				case SDL_MOUSEMOTION:		callEventHandlers(_mousemove, ev.motion);		break;
 				case SDL_MOUSEWHEEL:		callEventHandlers(_mousewheel, ev.wheel);		break;
 				case SDL_WINDOWEVENT:
