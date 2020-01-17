@@ -89,13 +89,13 @@ protected:
 
 // **** Main Texture class ****
 
-template<TextureType TexType, typename InternalFormat>
+template<TextureType TexType, typename InternalFormat_>
 class Texture{
 	//Only specializations are allowed
 	Texture() = delete;
 };
 
-template<TextureType TexType, typename InternalFormat>
+template<TextureType TexType, typename InternalFormat_>
 class TextureBase : public TextureLowLevelBase {
 protected:
 	TextureBase() {}
@@ -111,7 +111,7 @@ protected:
 	Texture<NewTexType, NewInternalFormat> _MakeView(TexLevels levels, TexLayers layers) const;
 
 public:
-	using PixelFormat = InternalFormat;
+	using Internal_Format = InternalFormat_;
 
 	void bind() const;
 	void bind(GLuint hwSamplerUnit) const;
@@ -120,38 +120,38 @@ public:
 
 //implemented Texture 'instanses':
 
-template<typename InternalFormat = glm::u8vec3>
-using Texture2D = Texture<TextureType::TEX_2D, InternalFormat>;
+template<typename InternalFormat_ = glm::u8vec3>
+using Texture2D = Texture<TextureType::TEX_2D, InternalFormat_>;
 
-template<typename InternalFormat = glm::u8vec3>
-using Texture2DArray = Texture<TextureType::TEX_2D_ARRAY, InternalFormat>;
+template<typename InternalFormat_ = glm::u8vec3>
+using Texture2DArray = Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>;
 
-template<typename InternalFormat> //no default, choose carefully!
-using Texture3D = Texture<TextureType::TEX_3D, InternalFormat>;
+template<typename InternalFormat_> //no default, choose carefully!
+using Texture3D = Texture<TextureType::TEX_3D, InternalFormat_>;
 
-template<typename InternalFormat = glm::u8vec3>
-using TextureCube = Texture<TextureType::TEX_CUBE_MAP, InternalFormat>;
+template<typename InternalFormat_ = glm::u8vec3>
+using TextureCube = Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>;
 
 
 // **** Implementation ****
 
-template<TextureType TexType, typename InternalFormat>
-TextureBase<TexType, InternalFormat>& TextureBase<TexType, InternalFormat>::operator= (TextureBase&& _o) {
+template<TextureType TexType, typename InternalFormat_>
+TextureBase<TexType, InternalFormat_>& TextureBase<TexType, InternalFormat_>::operator= (TextureBase&& _o) {
 	TextureLowLevelBase::operator=(std::move(_o));
 	return *this;
 }
 
-template<TextureType TexType, typename InternalFormat>
+template<TextureType TexType, typename InternalFormat_>
 template<TextureType NewTexType, typename NewInternalFormat>
-Texture<NewTexType, NewInternalFormat> TextureBase<TexType, InternalFormat>::_MakeView(TexLevels levels, TexLayers layers) const
+Texture<NewTexType, NewInternalFormat> TextureBase<TexType, InternalFormat_>::_MakeView(TexLevels levels, TexLayers layers) const
 {
 	ASSERT(this->_hasStorage, "Texture: Cannot create a view from a texture that has no storage.");
 	ASSERT(levels.min < this->_levels && levels.min + levels.num <= this->_levels, "Texture: wrong mipmap level arguments");
 	ASSERT(layers.min < this->_layers && layers.min + layers.num <= this->_layers, "Texture: wrong array layer arguments");
 	Texture<NewTexType, NewInternalFormat> view;
 	if (this->_hasStorage) {
-		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat>();
-		static_assert(sizeof(InternalFormat) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
+		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat_>();
+		static_assert(sizeof(InternalFormat_) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
 		glTextureView(view.texture_id, static_cast<GLenum>(NewTexType), this->texture_id, iFormat, levels.min, levels.num, layers.min, layers.num);
 		GL_CHECK;
 		view._width = std::max((GLuint)1, this->_width >> levels.min);
@@ -164,13 +164,13 @@ Texture<NewTexType, NewInternalFormat> TextureBase<TexType, InternalFormat>::_Ma
 	return std::move(view);
 }
 
-template<TextureType TexType, typename InternalFormat>
-void TextureBase<TexType, InternalFormat>::bind() const {
+template<TextureType TexType, typename InternalFormat_>
+void TextureBase<TexType, InternalFormat_>::bind() const {
 	glBindTexture(static_cast<GLenum>(TexType), this->texture_id);
 }
 
-template<TextureType TexType, typename InternalFormat>
-void TextureBase<TexType, InternalFormat>::bind(GLuint hwSamplerUnit) const {
+template<TextureType TexType, typename InternalFormat_>
+void TextureBase<TexType, InternalFormat_>::bind(GLuint hwSamplerUnit) const {
 	ASSERT(hwSamplerUnit < 256, "Texture or sampler units you can attach your texture to start from 0 (and go to 96 minimum in OpenGL 4.5.)");
 	glActiveTexture(GL_TEXTURE0 + hwSamplerUnit);
 	this->bind();

@@ -36,7 +36,7 @@ template<typename T> struct _GetInternalFormat {
 	static constexpr GLenum GetBaseType() { static_assert(false, "Cannot process this internal format type (or this type is yet to be implemented)."); return GL_INVALID_ENUM; }
 };
 template <typename T> struct _is_integral_format : public std::false_type {};
-template <typename InternalFormat> struct _is_integral_format<integral< InternalFormat>> : public std::true_type{};
+template <typename InternalFormat_> struct _is_integral_format<integral< InternalFormat_>> : public std::true_type{};
 
 /***** Format functions *****/
 

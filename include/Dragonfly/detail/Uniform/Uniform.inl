@@ -32,7 +32,7 @@ inline void df::Uniforms::SetUniform(std::string&& str, ValType&& val)
 	using NakedValType = std::remove_reference_t<std::remove_cv_t<ValType>>;
 	if constexpr (std::is_base_of_v<df::TextureLowLevelBase, NakedValType>) {
 		auto tex_it = texLoc2sampler.find(it->second.loc);
-		//ASSERT(tex_it != texLoc2sampler.end(), ("Texture sampler \"" + str + "\" not found of type \"Texture<" + typeid(InternalFormat).name() + ">\". This error should not occur.").c_str());
+		//ASSERT(tex_it != texLoc2sampler.end(), ("Texture sampler \"" + str + "\" not found of type \"Texture<" + typeid(InternalFormat_).name() + ">\". This error should not occur.").c_str());
 		//TODO ASSERT TYPE CHECK
 		val.bind(tex_it->second);
 		glUniform1i(it->second.loc, static_cast<GLint>(tex_it->second)); //same as SetUni

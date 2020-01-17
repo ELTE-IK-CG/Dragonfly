@@ -146,21 +146,21 @@
       <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Program\ProgramEditor.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="df::Texture&lt;TextureType::TEX_2D, InternalFormat&gt;">
+  <Class Name="df::Texture&lt;TextureType::TEX_2D, InternalFormat_&gt;">
     <Position X="7.5" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAgCAAAAAQgAAABAAAAAQAAAEAAAAAAAIgAAAAEAE=</HashCode>
       <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Texture\Texture2D.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="df::Texture&lt;TexType, InternalFormat&gt;">
+  <Class Name="df::Texture&lt;TexType, InternalFormat_&gt;">
     <Position X="7.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
       <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Texture\Texture.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="df::TextureBase&lt;TexType, InternalFormat&gt;">
+  <Class Name="df::TextureBase&lt;TexType, InternalFormat_&gt;">
     <Position X="7.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAIAAAAAAAAAAAAEAAAAAIAAAAAAgAAAAAgA=</HashCode>

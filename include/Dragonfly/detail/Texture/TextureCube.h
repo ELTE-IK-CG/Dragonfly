@@ -22,17 +22,17 @@ enum TextureCubeFace{	X_POS = TextureType::TEX_CUBE_X_POS,
 						Z_POS = TextureType::TEX_CUBE_Z_POS,
 						Z_NEG = TextureType::TEX_CUBE_Z_NEG};
 
-template<typename InternalFormat>
-class Texture<TextureType::TEX_CUBE_MAP, InternalFormat> : public TextureBase<TextureType::TEX_CUBE_MAP, InternalFormat>
+template<typename InternalFormat_>
+class Texture<TextureType::TEX_CUBE_MAP, InternalFormat_> : public TextureBase<TextureType::TEX_CUBE_MAP, InternalFormat_>
 {
-	using Base = TextureBase<TextureType::TEX_CUBE_MAP, InternalFormat>;
+	using Base = TextureBase<TextureType::TEX_CUBE_MAP, InternalFormat_>;
 
 	template<TextureType TT, typename IF>
 	friend class TextureBase;
 
 	void LoadFromSDLSurface(SDL_Surface* img, TextureType side);
 
-	template<typename NewInternalFormat = InternalFormat>
+	template<typename NewInternalFormat = InternalFormat_>
 	Texture<TextureType::TEX_2D, NewInternalFormat> MakeFaceView(TextureCubeFace face, TexLevels levels = 0_levelAll);
 
 public:
@@ -50,18 +50,18 @@ public:
 	void InitTexture(GLuint size, GLuint numLevels = ALL);
 	void InitSizeFromFile(const std::string& file, GLuint numLevels = ALL);
 	
-	template<TextureType NewTexType = TextureType::TEX_CUBE_MAP, typename NewInternalFormat = InternalFormat>
+	template<TextureType NewTexType = TextureType::TEX_CUBE_MAP, typename NewInternalFormat = InternalFormat_>
 	auto MakeView(TexLevels levels = 0_levelAll);
 
-	Texture<TextureType::TEX_2D, InternalFormat> operator[](TextureCubeFace face);
+	Texture<TextureType::TEX_2D, InternalFormat_> operator[](TextureCubeFace face);
 
 	Texture operator[](TexLevels levels);
 };
 
 // TextureCube
 
-template<typename InternalFormat>
-void Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::LoadFromSDLSurface(SDL_Surface* img, TextureType side)
+template<typename InternalFormat_>
+void Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::LoadFromSDLSurface(SDL_Surface* img, TextureType side)
 {
 	ASSERT(detail::IsTextureTypeCubeSide(side), "TextureCube: side must be one of TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG}");
 	GLenum target = static_cast<GLenum>(side);
@@ -81,9 +81,9 @@ void Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::LoadFromSDLSurface(SDL_
 	SDL_FreeSurface(img);
 }
 
-template<typename InternalFormat>
+template<typename InternalFormat_>
 template<typename NewInternalFormat>
-Texture<TextureType::TEX_2D, NewInternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::MakeFaceView(TextureCubeFace face, TexLevels levels)
+Texture<TextureType::TEX_2D, NewInternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::MakeFaceView(TextureCubeFace face, TexLevels levels)
 {
 	TexLayers layers{ static_cast<GLuint>(face) - static_cast<GLuint>(TextureType::TEX_CUBE_X_POS), 1 };
 	if (levels.num == ALL) levels.num = this->_levels - levels.min;
@@ -94,14 +94,14 @@ Texture<TextureType::TEX_2D, NewInternalFormat> Texture<TextureType::TEX_CUBE_MA
 	return tex;
 }
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::Texture(GLint size, GLint numLevels)
+template<typename InternalFormat_>
+Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::Texture(GLint size, GLint numLevels)
 {
 	InitTexture(size, numLevels);
 }
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::Texture(const std::string& Xpos, const std::string& Xneg, const std::string& Ypos, const std::string& Yneg, const std::string& Zpos, const std::string& Zneg)
+template<typename InternalFormat_>
+Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::Texture(const std::string& Xpos, const std::string& Xneg, const std::string& Ypos, const std::string& Yneg, const std::string& Zpos, const std::string& Zneg)
 {
 	SDL_Surface* loaded_img = IMG_Load(Xpos.c_str());
 	ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load texture from \"" + Xpos + "\".").c_str());
@@ -139,14 +139,14 @@ Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::Texture(const std::string& X
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 }
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_CUBE_MAP, InternalFormat>& Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::operator= (Texture&& _o) {
+template<typename InternalFormat_>
+Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>& Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::operator= (Texture&& _o) {
 	Base::operator=(std::move(_o));
 	return *this;
 }
 
-template<typename InternalFormat>
-void Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::InitTexture(GLuint size, GLuint numLevels)
+template<typename InternalFormat_>
+void Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::InitTexture(GLuint size, GLuint numLevels)
 {
 	ASSERT(!this->_hasStorage, "TextureCube: cannot change texture's size after the storage has been set");
 	if (!this->_hasStorage) {
@@ -157,14 +157,14 @@ void Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::InitTexture(GLuint size
 		this->_levels = numLevels;
 		this->_layers = 6;
 		this->bind();
-		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat>();
+		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat_>();
 		glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, iFormat, size, size);
 		this->_hasStorage = true;
 	}
 }
 
-template<typename InternalFormat>
-void Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::InitSizeFromFile(const std::string& file, GLuint numLevels)
+template<typename InternalFormat_>
+void Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::InitSizeFromFile(const std::string& file, GLuint numLevels)
 {
 	SDL_Surface* loaded_img = IMG_Load(file.c_str());
 	ASSERT(loaded_img != nullptr, ("TextureCube: Failed to load file \"" + file + "\".").c_str());
@@ -175,9 +175,9 @@ void Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::InitSizeFromFile(const 
 	SDL_FreeSurface(loaded_img);
 }
 
-template<typename InternalFormat>
+template<typename InternalFormat_>
 template<TextureType NewTexType, typename NewInternalFormat>
-auto Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::MakeView(TexLevels levels)
+auto Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::MakeView(TexLevels levels)
 {
 	static_assert(NewTexType != TextureType::TEX_2D, "TextureCube: Use the TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG} instead of TextureType::TEX_2D.");
 	static_assert(/*NewTexType == TextureType::TEX_2D || */    NewTexType == TextureType::TEX_2D_ARRAY
@@ -196,15 +196,15 @@ auto Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::MakeView(TexLevels leve
 	}
 }
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_2D, InternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::operator[](TextureCubeFace face)
+template<typename InternalFormat_>
+Texture<TextureType::TEX_2D, InternalFormat_> Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::operator[](TextureCubeFace face)
 {
 	ASSERT(detail::IsTextureTypeCubeSide(static_cast<TextureType>(face)), "TextureCube: face parameter has to be one of TextureType::TEX_CUBE_{X,Y,Z}_{POS,NEG}");
 	return MakeFaceView(face);
 }
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_CUBE_MAP, InternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat>::operator[](TexLevels levels)
+template<typename InternalFormat_>
+Texture<TextureType::TEX_CUBE_MAP, InternalFormat_> Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::operator[](TexLevels levels)
 {
 	return MakeView(levels);
 }

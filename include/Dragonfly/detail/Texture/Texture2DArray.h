@@ -6,10 +6,10 @@
 namespace df
 {
 
-template<typename InternalFormat>
-class Texture<TextureType::TEX_2D_ARRAY, InternalFormat> : public TextureBase<TextureType::TEX_2D_ARRAY, InternalFormat>
+template<typename InternalFormat_>
+class Texture<TextureType::TEX_2D_ARRAY, InternalFormat_> : public TextureBase<TextureType::TEX_2D_ARRAY, InternalFormat_>
 {
-	using Base = TextureBase<TextureType::TEX_2D_ARRAY, InternalFormat>;
+	using Base = TextureBase<TextureType::TEX_2D_ARRAY, InternalFormat_>;
 
 	template<TextureType TT, typename IF>
 	friend class TextureBase;
@@ -33,34 +33,34 @@ public:
 	template<typename Format>
 	Texture& LoadData(const std::vector<Format>& data, bool genMipmap = true);
 
-	template<TextureType NewTexType = TextureType::TEX_2D_ARRAY, typename NewInternalFormat = InternalFormat>
+	template<TextureType NewTexType = TextureType::TEX_2D_ARRAY, typename NewInternalFormat = InternalFormat_>
 	Texture<NewTexType, NewInternalFormat> MakeView(TexLevelsAndLayers levelsAndLayers = 0_levelAll & 0_layerAll);
 
 	Texture operator[] (TexLevelsAndLayers levelsAndLayers);
-	Texture<TextureType::TEX_2D, InternalFormat> operator[] (GLuint layer);
+	Texture<TextureType::TEX_2D, InternalFormat_> operator[] (GLuint layer);
 };
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::Texture(GLuint width, GLuint height, GLuint numLayers, GLuint numLevels)
+template<typename InternalFormat_>
+Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::Texture(GLuint width, GLuint height, GLuint numLayers, GLuint numLevels)
 {
 	InitTexture(width, height, numLayers, numLevels);
 }
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_2D_ARRAY, InternalFormat>& Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::operator= (Texture&& _o) {
+template<typename InternalFormat_>
+Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>& Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::operator= (Texture&& _o) {
 	Base::operator=(std::move(_o));
 	return *this;
 }
 
-template<typename InternalFormat>
+template<typename InternalFormat_>
 template<typename Format>
-Texture<TextureType::TEX_2D_ARRAY, InternalFormat>& Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::operator= (const std::vector<Format>& data)
+Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>& Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::operator= (const std::vector<Format>& data)
 {
 	return LoadData(data);
 }
 
-template<typename InternalFormat>
-void Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::InitTexture(GLuint width, GLuint height, GLuint numLayers, GLuint numLevels)
+template<typename InternalFormat_>
+void Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::InitTexture(GLuint width, GLuint height, GLuint numLayers, GLuint numLevels)
 {
 	ASSERT(!this->_hasStorage, "Texture2DArray: cannot change texture's size after the storage has been set");
 	if (!this->_hasStorage) {
@@ -72,15 +72,15 @@ void Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::InitTexture(GLuint widt
 		this->_layers = numLayers;
 		ASSERT(width >= 1 && height >= 1 && numLevels >= 1 && numLevels <= log2(width > height ? width : height) + 1 && numLayers >= 1, "Texture2DArray: Invalid dimensions");
 		this->bind(); // todo named
-		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat>();
+		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat_>();
 		glTexStorage3D(GL_TEXTURE_2D_ARRAY, numLevels, iFormat, width, height, numLayers);
 		this->_hasStorage = true;
 	}
 }
 
-template<typename InternalFormat>
+template<typename InternalFormat_>
 template<typename Format>
-Texture<TextureType::TEX_2D_ARRAY, InternalFormat>& Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::LoadData(const std::vector<Format>& data, bool genMipmap)
+Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>& Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::LoadData(const std::vector<Format>& data, bool genMipmap)
 {
 	ASSERT(this->_hasStorage, "Texture2DArray: you can only load data to a texture if it has its size set (Init)");
 	if (this->_hasStorage) {
@@ -101,9 +101,9 @@ Texture<TextureType::TEX_2D_ARRAY, InternalFormat>& Texture<TextureType::TEX_2D_
 	return *this;
 }
 
-template<typename InternalFormat>
+template<typename InternalFormat_>
 template<TextureType NewTexType, typename NewInternalFormat>
-Texture<NewTexType, NewInternalFormat> Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::MakeView(TexLevelsAndLayers levelsAndLayers)
+Texture<NewTexType, NewInternalFormat> Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::MakeView(TexLevelsAndLayers levelsAndLayers)
 {
 	static_assert(NewTexType == TextureType::TEX_2D || NewTexType == TextureType::TEX_2D_ARRAY, "Texture2DArray: Incompatible view target.");
 	if (levelsAndLayers.levels.num == ALL) levelsAndLayers.levels.num = this->_levels - levelsAndLayers.levels.min;
@@ -115,14 +115,14 @@ Texture<NewTexType, NewInternalFormat> Texture<TextureType::TEX_2D_ARRAY, Intern
 	return this->_MakeView<NewTexType, NewInternalFormat>(levelsAndLayers.levels, levelsAndLayers.layers);
 }
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_2D_ARRAY, InternalFormat> Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::operator[] (TexLevelsAndLayers levelsAndLayers)
+template<typename InternalFormat_>
+Texture<TextureType::TEX_2D_ARRAY, InternalFormat_> Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::operator[] (TexLevelsAndLayers levelsAndLayers)
 {
 	return MakeView(levelsAndLayers);
 }
 
-template<typename InternalFormat>
-Texture<TextureType::TEX_2D, InternalFormat> Texture<TextureType::TEX_2D_ARRAY, InternalFormat>::operator[] (GLuint layer)
+template<typename InternalFormat_>
+Texture<TextureType::TEX_2D, InternalFormat_> Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::operator[] (GLuint layer)
 {
 	return MakeView<TextureType::TEX_2D>(TexLayers{ layer, 1 });
 }

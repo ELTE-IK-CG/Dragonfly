@@ -39,17 +39,17 @@ public:
 	FramebufferObject& operator= (const FramebufferObject&) = delete;
 	FramebufferObject& operator= (FramebufferObject&& _o);
 
-	template<typename InternalFormat> FramebufferObject(Texture2D<InternalFormat>&& tex) ;
-	template<typename InternalFormat> FramebufferObject(const Texture2D<InternalFormat>& tex) : FramebufferObject(tex.MakeView(0_level)) {}
-	template<typename InternalFormat> FramebufferObject(Renderbuffer<InternalFormat>&& ren);
-	template<typename InternalFormat> FramebufferObject(const Renderbuffer<InternalFormat>& ren) = delete;
+	template<typename InternalFormat_> FramebufferObject(Texture2D<InternalFormat_>&& tex) ;
+	template<typename InternalFormat_> FramebufferObject(const Texture2D<InternalFormat_>& tex) : FramebufferObject(tex.MakeView(0_level)) {}
+	template<typename InternalFormat_> FramebufferObject(Renderbuffer<InternalFormat_>&& ren);
+	template<typename InternalFormat_> FramebufferObject(const Renderbuffer<InternalFormat_>& ren) = delete;
 	
-	template<typename InternalFormat> _add_Texture2D_t   <InternalFormat> operator + (Texture2D<InternalFormat>&& tex) &&;
-	template<typename InternalFormat> _add_Texture2D_t   <InternalFormat> operator + (const Texture2D<InternalFormat> &tex) &&	{ return std::move(*this) + tex.MakeView(0_level);}
-	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (Renderbuffer<InternalFormat>&& ren) &&;
-	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (const Renderbuffer<InternalFormat> &ren) && = delete;
+	template<typename InternalFormat_> _add_Texture2D_t   <InternalFormat_> operator + (Texture2D<InternalFormat_>&& tex) &&;
+	template<typename InternalFormat_> _add_Texture2D_t   <InternalFormat_> operator + (const Texture2D<InternalFormat_> &tex) &&	{ return std::move(*this) + tex.MakeView(0_level);}
+	template<typename InternalFormat_> _add_Renderbuffer_t<InternalFormat_> operator + (Renderbuffer<InternalFormat_>&& ren) &&;
+	template<typename InternalFormat_> _add_Renderbuffer_t<InternalFormat_> operator + (const Renderbuffer<InternalFormat_> &ren) && = delete;
 
-	template<typename InternalFormat> constexpr Texture2D<InternalFormat>& get();
+	template<typename InternalFormat_> constexpr Texture2D<InternalFormat_>& get();
 	template<int idx> constexpr typename auto& getColor();
 	constexpr typename auto& getDepth();
 	constexpr typename auto& getStencil();
@@ -69,9 +69,9 @@ public:
 
 };
 
-template<typename InternalFormat> auto MakeFramebuffer(Texture2D<InternalFormat>&& tex);
-template<typename InternalFormat> auto MakeFramebuffer(const Texture2D<InternalFormat>& tex);
-template<typename InternalFormat> auto MakeFramebuffer(Renderbuffer<InternalFormat>&& ren);
+template<typename InternalFormat_> auto MakeFramebuffer(Texture2D<InternalFormat_>&& tex);
+template<typename InternalFormat_> auto MakeFramebuffer(const Texture2D<InternalFormat_>& tex);
+template<typename InternalFormat_> auto MakeFramebuffer(Renderbuffer<InternalFormat_>&& ren);
 template<class Atta, class ...As> auto MakeFramebuffer(Atta&& first_, As&&...tail_);
 template<typename ...Attachments> using MakeFramebuffer_Type = decltype(MakeFramebuffer(Attachments(0,0)...));
 
