@@ -66,18 +66,6 @@
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_sdl.cpp">
       <Filter>ImGui-Addons\Implementation</Filter>
     </ClCompile>
-    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_demo.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_draw.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_widgets.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.cpp">
       <Filter>ImGui-Addons\Text Editor</Filter>
     </ClCompile>
@@ -141,6 +129,18 @@
     <ClCompile Include="..\include\Dragonfly\detail\Traits\InternalFormats.cpp">
       <Filter>Dragonfly\detail\Traits</Filter>
     </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_demo.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_draw.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -148,24 +148,6 @@
     </ClInclude>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_sdl.h">
       <Filter>ImGui-Addons\Implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imconfig.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imgui.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imgui_internal.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_rectpack.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_textedit.h">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClInclude>
-    <ClInclude Include="T:\GLFrameworkPack\includes\ImGui\imstb_truetype.h">
-      <Filter>ImGui %28in pack%29</Filter>
     </ClInclude>
     <ClInclude Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.h">
       <Filter>ImGui-Addons\Text Editor</Filter>
@@ -307,6 +289,24 @@
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Events\Sample.h">
       <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imconfig.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imgui.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imgui_internal.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_rectpack.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_textedit.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h">
+      <Filter>ImGui %28in pack%29</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
