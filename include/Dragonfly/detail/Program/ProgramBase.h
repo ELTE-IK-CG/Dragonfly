@@ -1,7 +1,7 @@
 #pragma once
 #include "ProgramFwd.h"
 #include "../Framebuffer/FramebufferBase.h"
-#include "../../Vao.h"
+#include "../Vao/Vao.h"
 #include <GL/glew.h>
 #include <string>
 

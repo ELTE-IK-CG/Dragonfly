@@ -1,9 +1,9 @@
 #include <string>
 #include <GL/glew.h>
-#include "../../Sample.h"
+#include "Sample.h"
 #include "../../detail/Framebuffer/FramebufferBase.h"
 
-Sample::Sample(const char* name, int width, int height, int vsync)
+df::Sample::Sample(const char* name, int width, int height, int vsync)
 {
 	auto err = SDL_Init(SDL_INIT_EVERYTHING);
 	ASSERT( err != -1, (std::string("Unable to initialize SDL: ") + SDL_GetError()).c_str());
@@ -55,11 +55,11 @@ Sample::Sample(const char* name, int width, int height, int vsync)
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
-
 	df::Backbuffer = df::DefaultFramebuffer(width, height);
+	this->AddHandlerClass(Backbuffer); //todo add flag system to Sample class
 }
 
-Sample::~Sample()
+df::Sample::~Sample()
 {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();

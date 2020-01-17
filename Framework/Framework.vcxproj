@@ -44,11 +44,12 @@
     <ClCompile Include="T:\GLFrameworkPack\includes\ImGui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\Dragonfly\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\config.h" />
     <ClInclude Include="..\include\Dragonfly\core.h" />
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\Sample.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\File.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.h" />
@@ -75,8 +76,8 @@
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Uniform.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\UniformEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\vao.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Vao\Vao.h" />
     <ClInclude Include="..\include\Dragonfly\editor.h" />
-    <ClInclude Include="..\include\Dragonfly\Sample.h" />
     <ClInclude Include="..\include\Dragonfly\Vao.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\auto.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\core.h" />
@@ -109,6 +110,7 @@
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.inl" />
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -9,3 +9,5 @@
 #include "detail/Texture/Texture.h"
 	#include "detail/Texture/Texture2D.h"
 	#include "detail/Texture/TextureCube.h"
+
+#include "detail/Framebuffer/Framebuffer.h"

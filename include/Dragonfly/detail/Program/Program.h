@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <string>
 #include <deque>
-#include "../../Vao.h"
+#include "../Vao/Vao.h"
 #include "../Program/ProgramFwd.h"
 #include "../Shader/Shader.h"
 #include "../Uniform/Subroutines.h"

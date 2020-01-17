@@ -5,7 +5,6 @@
 #include "../Texture/Texture2D.h"
 #include "../Framebuffer/FramebufferBase.h"
 #include "../Renderbuffer/Renderbuffer.hpp"
-#include <iostream>
 
 namespace df
 {

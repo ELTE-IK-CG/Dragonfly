@@ -2,7 +2,6 @@
 #include "../../config.h"
 #include "../Texture/Texture2D.h"
 #include "../Framebuffer/Framebuffer.h"
-#include <iostream>
 
 namespace df
 {
@@ -176,8 +175,8 @@ void detail::attach2BoundFbo(const Texture2D<InternalFormat>& tex)
 		glDrawBuffers(index + 1, buffs);
 	}
 	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, (GLuint)tex, 0);
-	std::cout << "Texture2D " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
-		(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << tex.getWidth() << " h = " << tex.getHeight() << std::endl;
+	//std::cout << "Texture2D " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
+		//(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << tex.getWidth() << " h = " << tex.getHeight() << std::endl;
 }
 
 template<int index, typename InternalFormat>
@@ -191,8 +190,8 @@ void detail::attach2BoundFbo(const Renderbuffer<InternalFormat>& ren)
 		glDrawBuffers(index + 1, buffs);
 	}
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachement, GL_RENDERBUFFER, (GLuint)ren);
-	std::cout << "Renderbuffer " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
-		(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << ren.getWidth() << " h = " << ren.getHeight() << std::endl;
+	//std::cout << "Renderbuffer " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
+		//(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << ren.getWidth() << " h = " << ren.getHeight() << std::endl;
 }
 
 template<typename compile_data, typename ...Attachements>
