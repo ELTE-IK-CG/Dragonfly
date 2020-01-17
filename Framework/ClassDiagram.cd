@@ -46,17 +46,17 @@
   <Class Name="df::ShaderEditor&lt;File_t&gt;">
     <Position X="2.25" Y="10.5" Width="1.5" />
     <NestedTypes>
-      <Struct Name="df::ShaderEditor&lt;File_t&gt;::__unnamed_struct_001d_1" Collapsed="true">
+      <Struct Name="df::ShaderEditor&lt;File_t&gt;::__unnamed_struct_001e_1" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Shader\ShaderEditor.h</NewMemberFileName>
         </TypeIdentifier>
       </Struct>
-      <Struct Name="df::ShaderEditor&lt;File_t&gt;::__unnamed_struct_001d_2" Collapsed="true">
+      <Struct Name="df::ShaderEditor&lt;File_t&gt;::__unnamed_struct_001e_2" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Shader\ShaderEditor.h</NewMemberFileName>
         </TypeIdentifier>
       </Struct>
-      <Struct Name="df::ShaderEditor&lt;File_t&gt;::__unnamed_struct_001d_3" Collapsed="true">
+      <Struct Name="df::ShaderEditor&lt;File_t&gt;::__unnamed_struct_001e_3" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Shader\ShaderEditor.h</NewMemberFileName>
         </TypeIdentifier>
@@ -265,13 +265,6 @@
     </Compartments>
     <NestedTypes>
       <Struct Name="df::FileEditor::ErrorLine">
-        <NestedTypes>
-          <Enum Name="df::FileEditor::ErrorLine::Type" Collapsed="true">
-            <TypeIdentifier>
-              <NewMemberFileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\File\FileEditor.h</NewMemberFileName>
-            </TypeIdentifier>
-          </Enum>
-        </NestedTypes>
         <TypeIdentifier>
           <NewMemberFileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\File\FileEditor.h</NewMemberFileName>
         </TypeIdentifier>
@@ -443,39 +436,32 @@
       <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Program\Program.inl</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="df::detail::FBO_compile_data&lt;depth_, stencil_, depthstencil_&gt;">
-    <Position X="9.25" Y="10" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>IAAAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAIAAAAAA=</HashCode>
-      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Framebuffer\Framebuffer.h</FileName>
-    </TypeIdentifier>
-  </Struct>
   <Struct Name="df::VaoBase">
     <Position X="12.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAIAAAAAAAgBAAAAAAAAAAAAAAACAAAAgAAA=</HashCode>
-      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\Vao.h</FileName>
+      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Vao\Vao.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="df::VaoArrays">
     <Position X="12.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAABAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\Vao.h</FileName>
+      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Vao\Vao.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="df::VaoElements">
     <Position X="11" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAACAAAAAAA=</HashCode>
-      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\Vao.h</FileName>
+      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Vao\Vao.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="df::NoVao">
     <Position X="12.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
-      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\Vao.h</FileName>
+      <FileName>C:\Users\User\Documents\GithubRepok\Research\The-Dragon-Flies\Dragonfly\include\Dragonfly\detail\Vao\Vao.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Font Name="Segoe UI" Size="9" />

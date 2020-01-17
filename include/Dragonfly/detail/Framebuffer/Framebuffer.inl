@@ -1,10 +1,70 @@
 #pragma once
+#include <utility>
 #include "../../config.h"
 #include "../Texture/Texture2D.h"
 #include "../Framebuffer/Framebuffer.h"
 
 namespace df
 {
+
+namespace detail
+{
+	template<typename F> constexpr bool has_depth_v = std::is_same_v<F, depth16> || std::is_same_v<F, depth24> || std::is_same_v<F, depth32F>;
+	template<typename F> constexpr bool has_stencil_v = std::is_same_v<F, stencil1> || std::is_same_v<F, stencil4> || std::is_same_v<F, stencil8> || std::is_same_v<F, stencil16>;
+	template<typename F> constexpr bool has_depthstencil_v = std::is_same_v<F, depth24stencil8> || std::is_same_v<F, depth32Fstencil8 >;
+	template<typename F> constexpr bool is_color_attachement_v = !has_depth_v<F> && !has_stencil_v<F> && !has_depthstencil_v<F>;
+	template<typename F> constexpr GLenum get_attachement_v = has_depth_v<F> ? GL_DEPTH_ATTACHMENT : has_stencil_v<F> ? GL_STENCIL_ATTACHMENT : has_depthstencil_v<F> ? GL_DEPTH_STENCIL_ATTACHMENT : 0;
+
+	constexpr unsigned _none_ = -1;
+
+	template<unsigned depth_ = _none_, unsigned stencil_ = _none_, unsigned depthstencil_ = _none_>
+	struct FBO_compile_data
+	{
+		static constexpr unsigned depth() { return depth_; };
+		static constexpr unsigned stencil() { return stencil_; }
+		static constexpr unsigned depthstencil() { return depthstencil_; }
+		template<typename F> static constexpr void static_addition_check() {
+			static_assert(depth() == _none_ || !has_depth_v<F> && !has_depthstencil_v<F>, "An FBO cannot have two depth textures.");
+			static_assert(stencil() == _none_ || !has_stencil_v<F> && !has_depthstencil_v<F>, "An FBO cannot have two stencil textures.");
+			static_assert(depthstencil() == _none_ || !has_depthstencil_v<F>, "An FBO cannot have two depth-stencil textures, that is just too much!");
+		}
+		template<typename F, unsigned size> using _add_InternalFormat_t = FBO_compile_data<has_depth_v<F> ? size : depth_, has_stencil_v<F> ? size : stencil_, has_depthstencil_v<F> ? size : depthstencil_>;
+	};
+
+	template<int index, typename InternalFormat> void attach2BoundFbo(const Texture2D<InternalFormat>& tex);
+	template<int index, typename InternalFormat> void attach2BoundFbo(const Renderbuffer<InternalFormat>& ren);
+}
+
+template<int index, typename InternalFormat>
+void detail::attach2BoundFbo(const Texture2D<InternalFormat>& tex)
+{
+	constexpr bool is_color = detail::is_color_attachement_v<InternalFormat>;
+	constexpr GLenum attachement = is_color ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
+	if constexpr (is_color) {
+		GLenum buffs[index + 1];
+		for (int i = 0; i <= index; ++i) buffs[i] = GL_COLOR_ATTACHMENT0 + i;
+		glDrawBuffers(index + 1, buffs);
+	}
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, (GLuint)tex, 0);
+	//std::cout << "Texture2D " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
+		//(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << tex.getWidth() << " h = " << tex.getHeight() << std::endl;
+}
+
+template<int index, typename InternalFormat>
+void detail::attach2BoundFbo(const Renderbuffer<InternalFormat>& ren)
+{
+	constexpr bool is_color = detail::is_color_attachement_v<InternalFormat>;
+	constexpr GLenum attachement = is_color ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
+	if constexpr (is_color) {
+		GLenum buffs[index + 1];
+		for (int i = 0; i <= index; ++i) buffs[i] = GL_COLOR_ATTACHMENT0 + i;
+		glDrawBuffers(index + 1, buffs);
+	}
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachement, GL_RENDERBUFFER, (GLuint)ren);
+	//std::cout << "Renderbuffer " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
+		//(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << ren.getWidth() << " h = " << ren.getHeight() << std::endl;
+}
+
 
 template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
 FramebufferObject<compile_data, Attachements...>::FramebufferObject(Texture2D<InternalFormat>&& tex)
@@ -24,21 +84,6 @@ FramebufferObject<compile_data, Attachements...>::FramebufferObject(Renderbuffer
 	glCreateFramebuffers(1, &this->_id);
 	this->bind();
 	detail::attach2BoundFbo<0>(std::get<0>(_attachements));
-}
-
-//tex -> fbo
-template<typename InternalFormat>
-auto MakeFramebuffer(Texture2D<InternalFormat>&& tex) {
-	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Texture2D<InternalFormat>>(std::move(tex));
-}
-template<typename InternalFormat>
-auto MakeFramebuffer(const Texture2D<InternalFormat>& tex) {
-	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Texture2D<InternalFormat>>(tex.MakeView(0_level));
-}
-//ren -> fbo
-template<typename InternalFormat>
-auto MakeFramebuffer(Renderbuffer<InternalFormat>&& ren) {
-	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Renderbuffer<InternalFormat>>(std::move(ren));
 }
 
 // tex + tex (for convenience)
@@ -164,36 +209,6 @@ FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data
 	return *this;
 }
 
-template<int index, typename InternalFormat>
-void detail::attach2BoundFbo(const Texture2D<InternalFormat>& tex)
-{
-	constexpr bool is_color = detail::is_color_attachement_v<InternalFormat>;
-	constexpr GLenum attachement = is_color ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
-	if constexpr (is_color) {
-		GLenum buffs[index + 1];
-		for (int i = 0; i <= index; ++i) buffs[i] = GL_COLOR_ATTACHMENT0 + i;
-		glDrawBuffers(index + 1, buffs);
-	}
-	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, (GLuint)tex, 0);
-	//std::cout << "Texture2D " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
-		//(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << tex.getWidth() << " h = " << tex.getHeight() << std::endl;
-}
-
-template<int index, typename InternalFormat>
-void detail::attach2BoundFbo(const Renderbuffer<InternalFormat>& ren)
-{
-	constexpr bool is_color = detail::is_color_attachement_v<InternalFormat>;
-	constexpr GLenum attachement =  is_color ? GL_COLOR_ATTACHMENT0 + index : detail::get_attachement_v<InternalFormat>;
-	if constexpr (is_color) {
-		GLenum buffs[index+1];
-		for (int i = 0; i <= index; ++i) buffs[i] = GL_COLOR_ATTACHMENT0 + i;
-		glDrawBuffers(index + 1, buffs);
-	}
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachement, GL_RENDERBUFFER, (GLuint)ren);
-	//std::cout << "Renderbuffer " << (detail::is_color_attachement_v<InternalFormat> ? "COLOR_ATTACHEMENT_ " : "DEPTH_") <<
-		//(detail::is_color_attachement_v<InternalFormat> ? index : 0) << "w = " << ren.getWidth() << " h = " << ren.getHeight() << std::endl;
-}
-
 template<typename compile_data, typename ...Attachements>
 FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator=(FramebufferObject<compile_data, Attachements...> && _o)
 {
@@ -260,6 +275,23 @@ FramebufferObject<compile_data, Attachements...> FramebufferObject<compile_data,
 	return ret;
 }
 
+//MakeFramebuffer
 
+template<typename InternalFormat>
+auto MakeFramebuffer(Texture2D<InternalFormat>&& tex) {
+	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Texture2D<InternalFormat>>(std::move(tex));
+}
+template<typename InternalFormat>
+auto MakeFramebuffer(const Texture2D<InternalFormat>& tex) {
+	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Texture2D<InternalFormat>>(tex.MakeView(0_level));
+}
+template<typename InternalFormat>
+auto MakeFramebuffer(Renderbuffer<InternalFormat>&& ren) {
+	return FramebufferObject<typename detail::FBO_compile_data<>::template _add_InternalFormat_t<InternalFormat, 0>, Renderbuffer<InternalFormat>>(std::move(ren));
+}
+template<typename Atta, typename ...As>
+auto MakeFramebuffer(Atta&& first_, As&& ...tail_) {
+	return (MakeFramebuffer(std::forward<Atta>(first_)) + ... + std::forward<As>(tail_));
+}
 } // namespace df
 
