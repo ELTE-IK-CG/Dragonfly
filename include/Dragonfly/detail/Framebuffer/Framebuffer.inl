@@ -120,21 +120,21 @@ constexpr void FramebufferObject<compile_data, Attachements...>::attach_all_upto
 template<typename compile_data, typename ...Attachements> template<int idx>
 FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorF<idx>& cleardata)
 {	//TODO: better type check
-	static_assert(!detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->getColor<idx>())>::PixelFormat>(), "Cannot clear an framebuffer color attachement with floats if it contains integral values.");
+	static_assert(!detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->getColor<idx>())>::PixelFormat>(), "Cannot clear a framebuffer color attachement with floats if it contains integral values.");
 	this->bind();
 	glClearBufferfv(GL_COLOR, idx, &cleardata._red);
 	return *this;
 }
 template<typename compile_data, typename ...Attachements> template<int idx>
 FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorI<idx>& cleardata) {
-	static_assert(detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->getColor<idx>())>::PixelFormat>(), "Cannot clear an framebuffer color attachement with integers if it contains floating values.");
+	static_assert(detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->getColor<idx>())>::PixelFormat>(), "Cannot clear a framebuffer color attachement with integers if it contains floating values.");
 	this->bind();
 	glClearBufferiv(GL_COLOR, idx, &cleardata._red);
 	return *this;
 }
 template<typename compile_data, typename ...Attachements> template<int idx>
 FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data, Attachements...>::operator<<(const detail::ClearColorU<idx>& cleardata) {
-	static_assert(detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->getColor<idx>())>::PixelFormat>(), "Cannot clear an framebuffer color attachement with integers if it contains floating values.");
+	static_assert(detail::isInternalFormatIntegralType<typename std::remove_reference_t<decltype(this->getColor<idx>())>::PixelFormat>(), "Cannot clear a framebuffer color attachement with integers if it contains floating values.");
 	this->bind();
 	glClearBufferuv(GL_COLOR, idx, &cleardata._red);
 	return *this;
@@ -208,6 +208,14 @@ FramebufferObject<compile_data, Attachements...>& FramebufferObject<compile_data
 	return *this;
 }
 
+
+template<typename compile_data, typename ...Attachements> template<typename InternalFormat>
+constexpr Texture2D<InternalFormat>& FramebufferObject<compile_data, Attachements...>::get()
+{	//Only texture types can be returned.
+	static_assert(std::disjunction_v<std::is_same<Texture2D<InternalFormat>, Attachements>...>, "FramebufferObject does not contain this Texture type.");
+	return std::get<Texture2D<InternalFormat>>(this->_attachements);
+}
+
 template<typename compile_data, typename ...Attachements> template<int idx>
 constexpr auto& FramebufferObject<compile_data, Attachements...>::getColor()
 {
@@ -252,6 +260,7 @@ FramebufferObject<compile_data, Attachements...> FramebufferObject<compile_data,
 	ret.attach_all_upto_idx_to_bound_fb_with_given_size<sizeof...(Attachements) - 1>();
 	return ret;
 }
+
 
 } // namespace df
 

@@ -80,10 +80,12 @@ public:
 	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (Renderbuffer<InternalFormat>&& ren) &&;
 	template<typename InternalFormat> _add_Renderbuffer_t<InternalFormat> operator + (const Renderbuffer<InternalFormat> &ren) && = delete;
 
+	template<typename InternalFormat> constexpr Texture2D<InternalFormat>& get();
 	template<int idx> constexpr typename auto& getColor();
 	constexpr typename auto& getDepth();
 	constexpr typename auto& getStencil();
 	constexpr typename auto& getDepthStencil();
+
 
 	FramebufferObject MakeResized(GLuint width, GLuint height) const;
 
@@ -96,6 +98,7 @@ public:
 	template<int idx> FramebufferObject& operator<< (const detail::ClearF<idx>& cleardata);
 
 	using FramebufferBase::operator<<;
+
 };
 
 
