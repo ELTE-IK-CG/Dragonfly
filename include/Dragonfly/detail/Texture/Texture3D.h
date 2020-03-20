@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <SDL/SDL_image.h>
 #include "../../config.h"
 #include "Texture.h"
