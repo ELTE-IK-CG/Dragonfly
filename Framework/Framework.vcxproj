@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\File\File.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\File\FileEditor.cpp" />
@@ -49,6 +50,8 @@
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Sample.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\File.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h" />

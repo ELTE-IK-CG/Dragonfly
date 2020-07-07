@@ -1,6 +1,7 @@
 #pragma once
 #include <imgui/imgui.h>
 #include <type_traits>
+#include <typeinfo>
 #include <string>
 
 /*

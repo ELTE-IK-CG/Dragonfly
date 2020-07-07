@@ -2,9 +2,13 @@
 #include <GL/glew.h>
 #include "Sample.h"
 #include "../../detail/Framebuffer/FramebufferBase.h"
+#include "renderdoc_load_api.h"
 
-df::Sample::Sample(const char* name, int width, int height, int vsync)
+df::Sample::Sample(const char* name, int width, int height, const Settings& settings)
 {
+	if(settings.initRenderDoc)
+		rdoc::initRenderDocAPI(settings.launchRenderDoc);
+
 	auto err = SDL_Init(SDL_INIT_EVERYTHING);
 	ASSERT( err != -1, (std::string("Unable to initialize SDL: ") + SDL_GetError()).c_str());
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -24,7 +28,7 @@ df::Sample::Sample(const char* name, int width, int height, int vsync)
 
 	context = SDL_GL_CreateContext(win);
 	ASSERT(context != nullptr, (std::string("Unable to create OpenGL context: ") + SDL_GetError()).c_str());
-	SDL_GL_SetSwapInterval(vsync);
+	SDL_GL_SetSwapInterval(settings.vsync);
 
 	GLenum error = glewInit();
 	ASSERT(error == GLEW_OK, "Unable to initialize GLEW");

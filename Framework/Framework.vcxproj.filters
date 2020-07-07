@@ -141,6 +141,9 @@
     <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp">
       <Filter>ImGui %28in pack%29</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -307,6 +310,12 @@
     </ClInclude>
     <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h">
       <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h">
+      <Filter>Dragonfly\detail\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

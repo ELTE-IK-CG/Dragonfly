@@ -16,13 +16,20 @@ namespace df {
 
 class Sample
 {
-protected:
+public:
 	using Callback_KeyBoard		= std::function<bool(const SDL_KeyboardEvent &)>;
 	using Callback_MouseButton	= std::function<bool(const SDL_MouseButtonEvent&)>;
 	using Callback_MouseMotion	= std::function<bool(const SDL_MouseMotionEvent&)>;
 	using Callback_MouseWheel	= std::function<bool(const SDL_MouseWheelEvent&)>;
 	using Callback_Resize		= std::function<void(int, int)>;
 
+	struct Settings {
+		int vsync = -1; // see SDL_GL_SetSwapInterval
+		bool initRenderDoc = false; // initialize RenderDoc connection and API
+		bool launchRenderDoc = false; // launch RenderDoc (if API is initialized)
+	};
+
+protected:
 	std::multimap<int, Callback_KeyBoard>		_keydown,	_keyup;
 	std::multimap<int, Callback_MouseButton>	_mousedown,	_mouseup;
 	std::multimap<int, Callback_MouseMotion>	_mousemove;
@@ -37,7 +44,7 @@ protected:
 	SDL_Window *win = nullptr;
 	SDL_GLContext context = nullptr;
 public:
-	Sample(const char* name = "OpenGL Sample", int width = 720, int height = 480, int vsync = -1);
+	Sample(const char* name = "OpenGL Sample", int width = 720, int height = 480, const Settings& settings = {});
 	~Sample();
 
 	void Quit() { quit = true; }
