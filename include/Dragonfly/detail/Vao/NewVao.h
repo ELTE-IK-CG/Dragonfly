@@ -50,21 +50,34 @@ namespace df
 
 		NewVao(const GLuint id, std::tuple<Buffers...>&& buffers) : NewVaoBase(id), _buffers(std::move(buffers)) {}
 
-		template<typename T1>
-		NewVao<Buffers..., T1> operator+ (Buffer<T1> buf)&&;
+		template<typename ...T1>
+		NewVao<Buffers..., Buffer<T1...>> operator+ (Buffer<T1...>&& buf)&&;
 
-		template<typename T1>
-		NewVao<Buffers..., T1> operator+ (Buffer<T1>& buf);
+		template<typename ...T1>
+		NewVao<Buffers..., Buffer<T1...>> operator+ (const Buffer<T1...>& buf)&&;
+
+		void Copy();
 
 	};
 
 	template <typename BufferFormat>
 	NewVao<df::Buffer<BufferFormat>> MakeVertexArray(Buffer<BufferFormat> buf);
 
-	template<typename T1, typename T2>
-	static NewVao<T1, T2> operator+ (T1 buf1, T2 buf2);
+	template<typename Buffer2, typename ...T1>
+	NewVao<Buffer<T1...>, Buffer2> operator+ (Buffer<T1...> buf1, Buffer2 buf2);
 
-	//void addBuffer()
+	template<typename Buffer_T>
+	struct addBufferHelper
+	{
+		//static_assert(false, "Invalid struct");
+	};
+
+	template<typename Type_First, typename ...Types>
+	struct addBufferHelper<Buffer<Type_First, Types...>>
+	{
+		template <GLsizei stride, GLsizei index, GLsizei offset>
+		static void addBuffer();
+	};
 
 }
 
