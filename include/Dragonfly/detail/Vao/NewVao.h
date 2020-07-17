@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Dragonfly/detail/Buffer/Buffer.h"
+#include <iostream>
 
 namespace df
 {
@@ -9,23 +10,12 @@ namespace df
 	template<typename T> struct is_dummy_t<dummy_t<T>> : std::true_type {};
 	template<typename D> constexpr bool is_dummy_t_v = is_dummy_t< std::decay_t<D>>::value;
 
-	template <GLsizei stride, GLsizei index, GLsizei offset, typename Type_First, typename ...Types>
-	void addBuffer()
-	{
-		glEnableVertexAttribArray(index);
-		GL_CHECK;
-
-		// sizeof(Type_First) + sizeof...(Types);
-		if constexpr (!is_dummy_t_v<Type_First>)
-		{
-			// Add buffer
-			addBuffer<stride, index + 1, offset + sizeof(Type_First), Types...>();
-		}
-		else
-		{
-			addBuffer<stride, index, offset + sizeof(Type_First), Types...>();
-		}
-	}
+	template <typename T> struct as_array_type { using type = T; };
+	template <typename T> struct as_array_type<glm::vec<1, T>> { using type = T[1]; };
+	template <typename T> struct as_array_type<glm::vec<2, T>> { using type = T[2]; };
+	template <typename T> struct as_array_type<glm::vec<3, T>> { using type = T[3]; };
+	template <typename T> struct as_array_type<glm::vec<4, T>> { using type = T[4]; };
+	template <typename T> using as_array_type_t = typename as_array_type<std::decay_t<T>>::type;
 
 	inline GLuint genAndBindVao()
 	{
@@ -35,76 +25,50 @@ namespace df
 		return id;
 	}
 
-	template<typename ... Buffers>
-	class NewVao
+	class NewVaoBase
 	{
 	protected:
 		GLuint _vao_id;
 		GLuint _curr_attrib_index;
 
+		NewVaoBase(const GLuint id) : _vao_id(id), _curr_attrib_index(0) {}
+
+		void bind() const { glBindVertexArray(_vao_id); }
+	};
+
+	template<typename ... Buffers>
+	class NewVao : public NewVaoBase
+	{
 	public:
 		std::tuple<Buffers...> _buffers;
 
-		template <typename T1>
-		NewVao(df::Buffer<T1>& buf1)
+		/*template <typename BufferFormat>
+		NewVao(df::Buffer<BufferFormat>& buf1)
 		{
 			std::get<0>(_buffers) = buf1;
-		}
+		}*/
 
-		NewVao(const GLuint id, std::tuple<Buffers...>&& buffers) : _vao_id(id), _buffers(std::move(buffers)) {}
-
-		void bind() const { glBindVertexArray(_vao_id); }
+		NewVao(const GLuint id, std::tuple<Buffers...>&& buffers) : NewVaoBase(id), _buffers(std::move(buffers)) {}
 
 		template<typename T1>
-		NewVao<Buffers..., T1> operator+ (df::Buffer<T1> buf)&&
-		{
-			addBuffer<sizeof(T1) + (0 + ... + sizeof(Buffers::value_type)), 0, 0, T1>();
-
-			return NewVao(this->_vao_id, std::tuple_cat(std::move(this->_buffers), std::make_tuple(buf))); //tuple<Buff1, Buff2, ... Buffn
-		}
+		NewVao<Buffers..., T1> operator+ (Buffer<T1> buf)&&;
 
 		template<typename T1>
-		NewVao<Buffers..., T1> operator+ (df::Buffer<T1>& buf)
-		{
-			addBuffer<sizeof(T1) + (0 + ... + sizeof(Buffers::value_type)), 0, 0, T1>();
-
-			auto vao_id = genAndBindVao();
-
-			return NewVao(vao_id, std::tuple_cat(this->_buffers, std::make_tuple(buf))); //tuple<Buff1, Buff2, ... Buffn
-		}
+		NewVao<Buffers..., T1> operator+ (Buffer<T1>& buf);
 
 	};
 
-	template <typename T1>
-	df::NewVao<df::Buffer<T1>> MakeVertexArray(df::Buffer<T1> buf)
-	{
-		auto vao_id = genAndBindVao();
-		return NewVao(vao_id, std::make_tuple(buf));
-	}
-
-	/*template<typename T1, typename ...Buffers>
-	static NewVao<Buffers..., T1> operator+ (NewVao<Buffers...>&& vao, df::Buffer<T1> buf)
-	{
-		addBuffer<sizeof(T1) + (0 + ... + sizeof(Buffers::value_type)), 0, 0, T1>();
-
-		return NewVao(vao.vao_id, std::tuple_cat(std::move(vao._buffers), std::make_tuple(buf))); //tuple<Buff1, Buff2, ... Buffn
-	}*/
+	template <typename BufferFormat>
+	NewVao<df::Buffer<BufferFormat>> MakeVertexArray(Buffer<BufferFormat> buf);
 
 	template<typename T1, typename T2>
-	static NewVao<T1, T2> operator+ (T1 buf1, T2 buf2)
-	{
-		GLuint vao_id;
-		glGenVertexArrays(1, &vao_id);
-		glBindVertexArray(vao_id);
+	static NewVao<T1, T2> operator+ (T1 buf1, T2 buf2);
 
-		addBuffer<sizeof(T1::value_type) + sizeof(T1::value_type), 0, 0, T1, T2>();
-
-		return NewVao(vao_id, std::tuple<T1, T2>(buf1, buf2));
-	}
-
-
+	//void addBuffer()
 
 }
+
+#include "NewVao.inl"
 
 
 /*template<typename E>
