@@ -36,71 +36,35 @@ namespace df
 
 		// This MUST be called in each constructor, otherwise the bufferInstance counter
 		// won't be increased and ~Buffer will have undefined behavior.
-		void _initBuffer(int size, void* data)
-		{
-			glGenBuffers(1, &buffer_id);
-			glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-			glBufferStorage(GL_ARRAY_BUFFER, size, data, GL_MAP_WRITE_BIT | GL_MAP_READ_BIT);
-
-			bufferInstances[buffer_id] = 1;
-		}
+		void _initBuffer(int size, void* data);
 
 	public:
-		~BufferBase()
-		{
-			if (--bufferInstances[buffer_id] == 0)
-				glDeleteBuffers(1, &buffer_id);
-		}
+		~BufferBase();
 	};
 
 	template <class ...ItemType>
 	class Buffer : public BufferBase
-	{		
+	{
 	public:
 		using value_type = std::tuple<ItemType...>;
 
-		explicit Buffer(std::initializer_list<std::tuple<ItemType...>> items)
-		{
-			_initBuffer(_getParamsSize() * items.size(), (void*)items.begin());
-		}
+		explicit Buffer(std::initializer_list<std::tuple<ItemType...>> items);
 
-		explicit Buffer(std::vector<std::tuple<ItemType...>> vec)
-		{
-			_initBuffer(_getParamsSize() * vec.size(), vec);
-		}
+		explicit Buffer(std::vector<std::tuple<ItemType...>> vec);
 
 		template<typename NewType>
-		explicit Buffer(const std::vector<NewType>& vec)
-		{
-			_initBuffer(_getParamsSize() * vec.size(), static_cast<void*>(vec));
-		}
+		explicit Buffer(const std::vector<NewType>& vec);
 
 		template<typename ...NewTypes>
-		explicit Buffer(const std::vector<detail::ConvertVecRef<std::tuple<NewTypes...>>>& vec)
-		{
-			_initBuffer(_getParamsSize() * vec.size(), vec);
-		}
+		explicit Buffer(const std::vector<detail::ConvertVecRef<std::tuple<NewTypes...>>>& vec);
 
-		Buffer(int alloc_size)
-		{
-			_initBuffer(_getParamsSize() * alloc_size, nullptr);
-		}
+		Buffer(int alloc_size);
 
 		template<typename NewType>
-		Buffer& operator=(const Buffer<NewType> buffer)
-		{
-
-			return buffer;
-		}
+		Buffer& operator=(const Buffer<NewType> buffer);
 
 		template <typename ...NewBufferType>
-		Buffer<NewBufferType...> MakeView()
-		{
-			Buffer<NewBufferType...> newBuf();
-			newBuf.buffer_id = buffer_id;
-			// count instances
-			return newBuf;
-		}
+		Buffer<NewBufferType...> MakeView();
 
 	private:
 
