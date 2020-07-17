@@ -72,7 +72,7 @@ namespace df
 		template<typename NewType>
 		explicit Buffer(const std::vector<NewType>& vec)
 		{
-			_initBuffer(_getParamsSize() * vec.size(), vec);
+			_initBuffer(_getParamsSize() * vec.size(), static_cast<void*>(vec));
 		}
 
 		template<typename ...NewTypes>
@@ -110,4 +110,3 @@ namespace df
 		}
 	};
 }
-
