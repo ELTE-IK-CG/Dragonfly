@@ -4,10 +4,10 @@
 #include "../../detail/Framebuffer/FramebufferBase.h"
 #include "renderdoc_load_api.h"
 
-df::Sample::Sample(const char* name, int width, int height, const Settings& settings)
+df::Sample::Sample(const char* name, int width, int height, FLAGS flags)
 {
-	if(settings.initRenderDoc)
-		rdoc::initRenderDocAPI(settings.launchRenderDoc);
+	if(flags && FLAGS::INIT_RENDERDOC)
+		rdoc::initRenderDocAPI(flags && FLAGS::LAUNCH_RENDERDOC);
 
 	auto err = SDL_Init(SDL_INIT_EVERYTHING);
 	ASSERT( err != -1, (std::string("Unable to initialize SDL: ") + SDL_GetError()).c_str());
@@ -22,14 +22,18 @@ df::Sample::Sample(const char* name, int width, int height, const Settings& sett
 
 	SDL_DisplayMode DM;
 	SDL_GetCurrentDisplayMode(0, &DM);
-	win = SDL_CreateWindow(name, DM.w / 2 - width / 2, DM.h / 2 - height / 2, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+	Uint32 sdlflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI;
+	sdlflags |= flags && FLAGS::WINDOW_BORDERLESS	? SDL_WINDOW_BORDERLESS	: 0;
+	sdlflags |= flags && FLAGS::WINDOW_FULLSCREEN	? SDL_WINDOW_FULLSCREEN	: 0;
+	sdlflags |= flags && FLAGS::WINDOW_RESIZABLE	? SDL_WINDOW_RESIZABLE	: 0;
+	win = SDL_CreateWindow(name, DM.w / 2 - width / 2, DM.h / 2 - height / 2, width, height, sdlflags);
 	ASSERT(win != nullptr, (std::string("Unable to create SDL window: ") + SDL_GetError()).c_str());
 	mainWindowID = SDL_GetWindowID(win);
 
 	context = SDL_GL_CreateContext(win);
 	ASSERT(context != nullptr, (std::string("Unable to create OpenGL context: ") + SDL_GetError()).c_str());
-	SDL_GL_SetSwapInterval(settings.vsync);
-
+	if(SDL_GL_SetSwapInterval(flags && FLAGS::V_SYNC_ADAPTIVE ? -1 : flags && FLAGS::V_SYNC ? 1 : 0) == -1 && (flags && FLAGS::V_SYNC_ADAPTIVE));
+		SDL_GL_SetSwapInterval(1);
 	GLenum error = glewInit();
 	ASSERT(error == GLEW_OK, "Unable to initialize GLEW");
 	int v_ma = -1, v_mi = -1;
@@ -60,7 +64,7 @@ df::Sample::Sample(const char* name, int width, int height, const Settings& sett
 	glEnable(GL_DEPTH_TEST);
 
 	df::Backbuffer = df::DefaultFramebuffer(width, height);
-	this->AddHandlerClass(Backbuffer); //todo add flag system to Sample class
+	this->AddHandlerClass(Backbuffer);
 }
 
 df::Sample::~Sample()

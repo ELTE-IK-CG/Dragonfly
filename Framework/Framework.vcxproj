@@ -104,6 +104,7 @@
     <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\include\Dragonfly\detail\Events\Sample.inl" />
     <None Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Program\Program.inl" />
     <None Include="..\include\Dragonfly\detail\Program\ProgramCompile.inl" />

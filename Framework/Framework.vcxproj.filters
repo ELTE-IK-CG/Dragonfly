@@ -347,5 +347,8 @@
       <Filter>Dragonfly\detail\Framebuffer</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="..\include\Dragonfly\detail\Events\Sample.inl">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </None>
   </ItemGroup>
 </Project>
