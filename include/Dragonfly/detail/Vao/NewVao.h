@@ -17,6 +17,41 @@ namespace df
 	template <typename T> struct as_array_type<glm::vec<4, T>> { using type = T[4]; };
 	template <typename T> using as_array_type_t = typename as_array_type<std::decay_t<T>>::type;
 
+	namespace detail
+	{
+		template<typename ...TT>
+		struct VAO_Index_Calc {
+			//constexpr int index = 0; //error if this is needed
+		};
+
+		template<>
+		struct VAO_Index_Calc<> {
+			constexpr int value = 0;
+		};
+
+		template<typename T1, typename ...TT>
+		struct VAO_Index_Calc<T1, TT...> {
+			constexpr int value = 1 + VAO_Index_Calc<TT...>::value;
+		};
+
+		template<typename T1, typename ...TT>
+		struct VAO_Index_Calc<dummy_t<T1>, TT...> {
+			constexpr int value = 0 + VAO_Index_Calc<TT...>::value;
+		};
+
+		template<typename T>
+		struct VAO_Index_Calc<integral<T>> {
+		};
+
+		template <unsigned index_>
+		struct VAO_compile_data
+		{
+			static constexpr unsigned index() { return index_; }
+
+			template<unsigned index, typename ... Buffs> using _addBuffer_t = VAO_compile_data<VAO_Index_Calc<Buffs...>::value>;
+		};
+	}
+
 	inline GLuint genAndBindVao()
 	{
 		GLuint id;
@@ -36,11 +71,16 @@ namespace df
 		void bind() const { glBindVertexArray(_vao_id); }
 	};
 
-	template<typename ... Buffers>
+	template<typename compile_data, typename ... Buffers>
 	class NewVao : public NewVaoBase
 	{
 	public:
+		using Compile_Data = compile_data;
+
 		std::tuple<Buffers...> _buffers;
+
+		template<typename ...T>
+		using _add_Buffer_t = NewVao<typename compile_data::template _addBuffer_t<T...>, Buffers..., Buffer<T...>>;
 
 		/*template <typename BufferFormat>
 		NewVao(df::Buffer<BufferFormat>& buf1)
@@ -50,26 +90,36 @@ namespace df
 
 		NewVao(const GLuint id, std::tuple<Buffers...>&& buffers) : NewVaoBase(id), _buffers(std::move(buffers)) {}
 
-		template<typename ...T1>
-		NewVao<Buffers..., Buffer<T1...>> operator+ (Buffer<T1...>&& buf)&&;
+		//template<typename ...T1>
+		//NewVao<Buffers..., Buffer<T1...>> operator+ (Buffer<T1...>&& buf)&&;
+
+		//template<typename ...T1>
+		//NewVao<Buffers..., Buffer<T1...>> operator+ (const Buffer<T1...>& buf)&&;
 
 		template<typename ...T1>
-		NewVao<Buffers..., Buffer<T1...>> operator+ (const Buffer<T1...>& buf)&&;
+		_add_Buffer_t<T1...> operator+ (const Buffer<T1...>& buf)&&;
 
 		void Copy();
 
 	};
 
-	template <typename BufferFormat>
-	NewVao<df::Buffer<BufferFormat>> MakeVertexArray(Buffer<BufferFormat> buf);
+	template <typename compile_data, typename ...T1>
+	NewVao<detail::VAO_compile_data<0>>::_add_Buffer_t<T1...> MakeVertexArray(Buffer<T1...> buf);
 
-	template<typename Buffer2, typename ...T1>
+	template<typename compile_data, typename Buffer2, typename ...T1>
 	NewVao<Buffer<T1...>, Buffer2> operator+ (Buffer<T1...> buf1, Buffer2 buf2);
 
-	template<typename Buffer_T>
+	template<typename NotABuffer>
 	struct addBufferHelper
 	{
 		//static_assert(false, "Invalid struct");
+	};
+
+	template<>
+	struct addBufferHelper<Buffer<>>
+	{
+		template <GLsizei stride, GLsizei index, GLsizei offset>
+		static void addBuffer() {}
 	};
 
 	template<typename Type_First, typename ...Types>
