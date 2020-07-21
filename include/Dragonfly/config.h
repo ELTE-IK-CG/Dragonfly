@@ -7,14 +7,11 @@
 //Define if you want colorful output
 #define USE_COLOR_CODES
 
-//#define GPU_DEBUG //You should have a build configuration for this
-
-
-/* Debug stuff*/
-// TODO: Make it better
 
 #if defined(_DEBUG) || defined(GPU_DEBUG)
 
+
+//TODO REMOVE:
 //namespace for elte cg hidden stuff
 namespace eltecg {
 	namespace detail {
@@ -28,7 +25,7 @@ namespace eltecg {
 #endif
 
 /* Defines*/
-
+//TODO REMOVE:
 #ifdef _DEBUG
 namespace df { constexpr bool IS_THIS_DEBUG = true; }
 #define WARNING(expr, msg) if((expr) && ++eltecg::detail::warn_count <= eltecg::detail::max_warn_count) \
@@ -56,14 +53,17 @@ namespace df { constexpr bool IS_THIS_DEBUG = false; }
 #define GL_CHECK
 #endif
 
-#include <type_traits> // The following is from https://stackoverflow.com/a/58068168
-#define ENUM_CLASS_FLAG_OPERATORS(T)                                                                                                                                            \
-    inline T operator~ (T a) { return static_cast<T>( ~static_cast<std::underlying_type<T>::type>(a) ); }                                                                       \
-    inline T operator| (T a, T b) { return static_cast<T>( static_cast<std::underlying_type<T>::type>(a) | static_cast<std::underlying_type<T>::type>(b) ); }                   \
-    inline T operator& (T a, T b) { return static_cast<T>( static_cast<std::underlying_type<T>::type>(a) & static_cast<std::underlying_type<T>::type>(b) ); }                   \
-    inline T operator^ (T a, T b) { return static_cast<T>( static_cast<std::underlying_type<T>::type>(a) ^ static_cast<std::underlying_type<T>::type>(b) ); }                   \
-    inline T& operator|= (T& a, T b) { return reinterpret_cast<T&>( reinterpret_cast<std::underlying_type<T>::type&>(a) |= static_cast<std::underlying_type<T>::type>(b) ); }   \
-    inline T& operator&= (T& a, T b) { return reinterpret_cast<T&>( reinterpret_cast<std::underlying_type<T>::type&>(a) &= static_cast<std::underlying_type<T>::type>(b) ); }   \
-    inline T& operator^= (T& a, T b) { return reinterpret_cast<T&>( reinterpret_cast<std::underlying_type<T>::type&>(a) ^= static_cast<std::underlying_type<T>::type>(b) ); }	\
-	inline bool operator && (T a, T b) { return static_cast<bool>(a & b); }
+//NEW LOG
+#if _DEBUG
 
+#define DF_LOG_SEVERITY 0
+#define DF_LOG_TRACE true
+#define DF_LOG_DEBUG true
+
+#else
+
+#define DF_LOG_SEVERITY 7
+#define DF_LOG_TRACE false
+#define DF_LOG_DEBUG false
+
+#endif

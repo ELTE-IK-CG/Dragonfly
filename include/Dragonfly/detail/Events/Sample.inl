@@ -71,6 +71,12 @@ inline void Sample::AddHandlerClass(C_& c_, int priority_)
 	else if constexpr (df::has_HandleResize<C_, int, int>()) {
 		_resize.emplace_back(std::bind(&C_::HandleResize, &c_, _1, _2));
 	}
+	if constexpr (df::has_static_HandleLogger<C_, LogEntry_Vec, uint64_t>()) {
+		_logger.emplace_back(&C_::HandleLogger);
+	}
+	else if constexpr (df::has_HandleLogger<C_, LogEntry_Vec, uint64_t>()) {
+		_logger.emplace_back(std::bind(&C_::HandleLogger, &c_, _1, _2));
+	}
 }
 
 template<typename C_>
@@ -97,6 +103,9 @@ inline void Sample::AddHandlerClass(int priority_)
 	if constexpr (df::has_static_HandleResize<C_, int, int>()) {
 		_resize.emplace_back(&C_::HandleResize);
 	}
+	if constexpr (df::has_static_HandleLogger<C_, LogEntry_Vec, uint64_t>()) {
+		_logger.emplace_back(&C_::HandleLogger);
+	}
 }
 
 inline void df::Sample::_CallResizeHandlers(std::vector<Callback_Resize>& handlers_, int w_, int h_)
@@ -106,10 +115,19 @@ inline void df::Sample::_CallResizeHandlers(std::vector<Callback_Resize>& handle
 	}
 }
 
+inline void df::Sample::_CallLoggerHandlers(std::vector<Callback_Logger>& handlers_, uint64_t frame_number_)
+{
+	const auto& logs = df::Logger.GetEntries();
+	for (auto& pF : handlers_) {
+		pF(logs, frame_number_);
+	}
+}
+
 template<typename F>
 inline void Sample::Run(F&& RenderFunc_)
 {
 	_quit = false;
+	uint64_t frame_number = 0;
 	SDL_Event ev;
 	int canvas_width, canvas_height;
 	SDL_GL_GetDrawableSize(_mainWindowPtr, &canvas_width, &canvas_height);
@@ -131,8 +149,8 @@ inline void Sample::Run(F&& RenderFunc_)
 				if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED && _mainWindowID == ev.window.windowID)
 				{
 					SDL_GL_GetDrawableSize(_mainWindowPtr, &ev.window.data1, &ev.window.data2);
-					_CallResizeHandlers(_resize, ev.window.data1, ev.window.data2);
 					glViewport(0, 0, ev.window.data1, ev.window.data2); //are we sure?
+					_CallResizeHandlers(_resize, ev.window.data1, ev.window.data2);
 				}
 				else if (ev.window.event == SDL_WINDOWEVENT_CLOSE && _mainWindowID == ev.window.windowID) {
 					Quit();
@@ -142,6 +160,7 @@ inline void Sample::Run(F&& RenderFunc_)
 			default: break;
 			}
 		}
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame(_mainWindowPtr);
 		ImGui::NewFrame();
@@ -160,7 +179,11 @@ inline void Sample::Run(F&& RenderFunc_)
 			ImGui::RenderPlatformWindowsDefault();
 			SDL_GL_MakeCurrent(_mainWindowPtr, _mainWindowContext);
 		}
+		if (!Logger.GetEntries().empty())
+			_CallLoggerHandlers(_logger, frame_number);
+		Logger.ClearEntries();
 		SDL_GL_SwapWindow(_mainWindowPtr);
+		++frame_number;	//is this the same as renderdoc?
 	}
 }
 

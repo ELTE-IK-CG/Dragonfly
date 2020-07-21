@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\Logger.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\File\File.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\Logger.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Sample.h" />
@@ -78,6 +80,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Subroutines.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Uniform.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\UniformEditor.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\utility.h" />
     <ClInclude Include="..\include\Dragonfly\detail\vao.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Vao\Vao.h" />
     <ClInclude Include="..\include\Dragonfly\editor.h" />

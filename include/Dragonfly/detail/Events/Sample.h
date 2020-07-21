@@ -3,7 +3,7 @@
 #include <vector>
 #include <functional>
 #include <SDL/SDL.h>
-#include "../../config.h"
+#include "Logger.h"
 
 namespace df {
 
@@ -15,6 +15,7 @@ public:
 	using Callback_MouseMotion	= std::function<bool(const SDL_MouseMotionEvent&)>;
 	using Callback_MouseWheel	= std::function<bool(const SDL_MouseWheelEvent&)>;
 	using Callback_Resize		= std::function<void(int, int)>;
+	using Callback_Logger		= std::function<void(const LogEntry_Vec&, uint64_t)>;
 
 	enum class FLAGS : unsigned int
 	{
@@ -34,10 +35,12 @@ protected:
 	std::multimap<int, Callback_MouseMotion>	_mousemove;
 	std::multimap<int, Callback_MouseWheel>		_mousewheel;
 	std::vector<Callback_Resize>				_resize;
+	std::vector<Callback_Logger>				_logger;
 
 	template<typename F_,typename E_>
 	static void _CallEventHandlers(std::multimap<int, F_>& queue_, E_&& arg_);
 	static void _CallResizeHandlers(std::vector<Callback_Resize>& handlers_, int w_, int h_);
+	static void _CallLoggerHandlers(std::vector<Callback_Logger>& handlers_, uint64_t frame_number_);
 	bool _quit = false;
 	Uint32 _mainWindowID;
 	SDL_Window *_mainWindowPtr = nullptr;
@@ -55,6 +58,7 @@ public:
 	Sample& AddMouseMotion(Callback_MouseMotion&& f_, int priority_ = 0) {  _mousemove.emplace(-priority_, std::move(f_)); return *this; }
 	Sample& AddMouseWheel (Callback_MouseWheel&& f_,  int priority_ = 0) { _mousewheel.emplace(-priority_, std::move(f_)); return *this; }
 	Sample& AddResize     (Callback_Resize&& f_) { _resize.emplace_back(std::move(f_)); return *this; }
+	Sample& AddLogger     (Callback_Logger&& f_) { _logger.emplace_back(std::move(f_)); return *this; }
 
 	// Sample::AddHandlerClass() adds the following handler functions from the handler class
 	//	(if the given class has the function with the given name and signature):
@@ -65,6 +69,7 @@ public:
 	// bool HandleMouseMotion(const SDL_MouseMotionEvent&)
 	// bool HandleMouseWheel(const SDL_MouseWheelEvent&)
 	// void HandleResize(int, int)
+	// void HandleLogger(const LogEntry_Vec&, uint64_t)
 	template<typename C_> void AddHandlerClass(C_& c_, int priority_ = 0);
 	template<typename C_> void AddHandlerClass(int priority_ = 0);
 

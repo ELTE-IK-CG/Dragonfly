@@ -45,6 +45,7 @@ namespace detail
 	TRAIT_TEST_STRUCT1(HandleMouseMotion)
 	TRAIT_TEST_STRUCT1(HandleMouseWheel)
 	TRAIT_TEST_STRUCT2(HandleResize)
+	TRAIT_TEST_STRUCT2(HandleLogger)
 	TRAIT_TEST_STATIC_STRUCT1(HandleKeyUp)
 	TRAIT_TEST_STATIC_STRUCT1(HandleKeyDown)
 	TRAIT_TEST_STATIC_STRUCT1(HandleMouseUp)
@@ -52,6 +53,7 @@ namespace detail
 	TRAIT_TEST_STATIC_STRUCT1(HandleMouseMotion)
 	TRAIT_TEST_STATIC_STRUCT1(HandleMouseWheel)
 	TRAIT_TEST_STATIC_STRUCT2(HandleResize)
+	TRAIT_TEST_STATIC_STRUCT2(HandleLogger)
 
 #undef TRAIT_TEST_STRUCT0
 #undef TRAIT_TEST_STRUCT1
@@ -87,6 +89,7 @@ namespace detail
 	HAS_TRAIT1(HandleMouseMotion)
 	HAS_TRAIT1(HandleMouseWheel)
 	HAS_TRAIT2(HandleResize)
+	HAS_TRAIT2(HandleLogger)
 	HAS_STATIC_TRAIT1(HandleKeyUp)
 	HAS_STATIC_TRAIT1(HandleKeyDown)
 	HAS_STATIC_TRAIT1(HandleMouseUp)
@@ -94,6 +97,7 @@ namespace detail
 	HAS_STATIC_TRAIT1(HandleMouseMotion)
 	HAS_STATIC_TRAIT1(HandleMouseWheel)
 	HAS_STATIC_TRAIT2(HandleResize)
+	HAS_STATIC_TRAIT2(HandleLogger)
 
 #undef HAS_TRAIT0
 #undef HAS_TRAIT1
