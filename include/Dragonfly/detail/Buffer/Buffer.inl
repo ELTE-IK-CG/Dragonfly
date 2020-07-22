@@ -5,20 +5,6 @@
 
 namespace df
 {
-	inline void BufferBase::_initBuffer(int size, void* data)
-	{
-		glGenBuffers(1, &this->buffer_id);
-		glBindBuffer(GL_ARRAY_BUFFER, this->buffer_id);
-		glBufferStorage(GL_ARRAY_BUFFER, size, data, GL_MAP_WRITE_BIT | GL_MAP_READ_BIT);
-
-		bufferInstances[this->buffer_id] = 1;
-	}
-
-	inline BufferBase::~BufferBase()
-	{
-		if (--bufferInstances[this->buffer_id] == 0)
-			glDeleteBuffers(1, &this->buffer_id);
-	}
 
 	template <class ...ItemType>
 	explicit Buffer<ItemType...>::Buffer(std::initializer_list<std::tuple<ItemType...>> items)

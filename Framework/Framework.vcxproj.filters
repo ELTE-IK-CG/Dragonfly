@@ -58,6 +58,9 @@
     <Filter Include="Dragonfly\detail\Vao">
       <UniqueIdentifier>{b3cbbfe7-7b97-40b4-8193-ac71dc82a142}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dragonfly\detail\Buffer">
+      <UniqueIdentifier>{79cd8f2c-65ae-4cfb-a6cb-ea5737779130}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp">
@@ -141,6 +144,7 @@
     <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp">
       <Filter>ImGui %28in pack%29</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -308,6 +312,15 @@
     <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h">
       <Filter>ImGui %28in pack%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Vao\NewVao.h">
+      <Filter>Dragonfly\detail\Vao</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Buffer\Buffer.h">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Buffer\BufferBase.h">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl">
@@ -338,5 +351,11 @@
       <Filter>Dragonfly\detail\Framebuffer</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="..\include\Dragonfly\detail\Vao\NewVao.inl">
+      <Filter>Dragonfly\detail\Vao</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Buffer\Buffer.inl">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </None>
   </ItemGroup>
 </Project>
