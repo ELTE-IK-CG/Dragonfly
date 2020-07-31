@@ -129,18 +129,6 @@
     <ClCompile Include="..\include\Dragonfly\detail\Traits\InternalFormats.cpp">
       <Filter>Dragonfly\detail\Traits</Filter>
     </ClCompile>
-    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_demo.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_draw.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
-    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp">
-      <Filter>ImGui %28in pack%29</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>

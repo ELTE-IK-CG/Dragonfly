@@ -18,6 +18,7 @@
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Logger.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\File\File.cpp" />
