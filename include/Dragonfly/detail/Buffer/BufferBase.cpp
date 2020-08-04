@@ -1,31 +1,38 @@
 #include "BufferBase.h"
 
-df::BufferBase::BufferBase(int size, void* data)
+df::BufferBase::BufferBase(GLuint bufferId_, size_t bytes_)
+	: _bufferId(bufferId_), _bytes(bytes_)
 {
-	glGenBuffers(1, &this->buffer_id);
-	glBindBuffer(GL_ARRAY_BUFFER, this->buffer_id);
-	glBufferStorage(GL_ARRAY_BUFFER, size, data, GL_MAP_WRITE_BIT | GL_MAP_READ_BIT);
+	ASSERT(bufferInstances.count(this->_bufferId) != 0, "df::BufferBase: should have already had a buffer to copy");
+	++bufferInstances[this->_bufferId];
+}
+
+df::BufferBase::BufferBase(int bytes_, void* data)
+{
+	glGenBuffers(1, &this->_bufferId);
+	glBindBuffer(GL_ARRAY_BUFFER, this->_bufferId);
+	glBufferStorage(GL_ARRAY_BUFFER, bytes_, data, GL_MAP_WRITE_BIT | GL_MAP_READ_BIT);
 	
-	bufferInstances[this->buffer_id] = 1;
-	this->size = size;
+	bufferInstances[this->_bufferId] = 1;
+	this->_bytes = bytes_;
 }
 
 df::BufferBase::BufferBase(df::BufferBase &&other_) noexcept
-	: buffer_id(std::exchange(other_.buffer_id, 0)), size(std::exchange(other_.size, 0))
+	: _bufferId(std::exchange(other_._bufferId, 0)), _bytes(std::exchange(other_._bytes, 0))
 { 
 }
 
 df::BufferBase& df::BufferBase::operator=(df::BufferBase &&other_)
 {
 	if(this != &other_){
-		std::swap(this->buffer_id, other_.buffer_id);
-		std::swap(this->size, other_.size);
+		std::swap(this->_bufferId, other_._bufferId);
+		std::swap(this->_bytes, other_._bytes);
 	}
 	return *this;
 }
 
 df::BufferBase::~BufferBase()
 {
-	if (--bufferInstances[this->buffer_id] == 0)
-		glDeleteBuffers(1, &this->buffer_id);
+	if (--bufferInstances[this->_bufferId] == 0)
+		glDeleteBuffers(1, &this->_bufferId);
 }

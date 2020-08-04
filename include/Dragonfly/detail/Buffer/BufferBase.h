@@ -33,8 +33,8 @@ namespace df
 	class BufferBase
 	{
 	protected:
-		GLuint buffer_id = 0;
-		size_t size = 0;
+		GLuint _bufferId;
+		size_t _bytes = 0;
 
 		// This MUST be called in each constructor, otherwise the bufferInstance counter
 		// won't be increased and ~Buffer will have undefined behavior.
@@ -44,13 +44,18 @@ namespace df
 		template<GLenum role> inline void Bind(GLuint index);
 		template<GLenum role> inline void Bind(GLuint index, GLintptr offset, GLsizeiptr size);
 
+		BufferBase(GLuint bufferId_, size_t bytes_);
+
 	public:
 		BufferBase(int size, void* data = nullptr);
 		BufferBase(const BufferBase&) = delete;
 		BufferBase(BufferBase&&) noexcept;
 		BufferBase& operator=(const BufferBase&) = delete;
 		BufferBase& operator=(BufferBase&&);
-
+				
+		operator GLuint() const { return _bufferId; }
+		size_t Bytes() const { return _bytes; };
+ 
 		~BufferBase();
 
 	};
@@ -113,7 +118,7 @@ template<GLenum Role_>
 inline void df::BufferBase::Bind()
 {
 	static_assert(df::detail::_isBufferRole<Role_>(), "Role_ is not a valid OpenGL Buffer Type");
-	glBindBuffer(Role_, buffer_id);
+	glBindBuffer(Role_, _bufferId);
 }
 
 template<GLenum Role_>
@@ -121,7 +126,7 @@ inline void df::BufferBase::Bind(GLuint index)
 {
 	static_assert(df::detail::_isBufferIndexedRole<Role_>(), "This buffer Role_ cannot be bound to an indexed position");
 	//TODO assert index https://www.khronos.org/opengl/wiki/Buffer_Object#Binding_indexed_targets
-	glBindBufferBase(Role_, index, buffer_id);
+	glBindBufferBase(Role_, index, _bufferId);
 }
 
 template<GLenum Role_>
@@ -129,5 +134,5 @@ inline void df::BufferBase::Bind(GLuint index, GLintptr offset, GLsizeiptr size)
 {
 	static_assert(df::detail::_isBufferIndexedRole<Role_>(), "This buffer Role_ cannot be bound to an indexed position");
 	//TODO assert index https://www.khronos.org/opengl/wiki/Buffer_Object#Binding_indexed_targets
-	glBindBufferRange(Role_, index, buffer_id);
+	glBindBufferRange(Role_, index, _bufferId, offset, size);
 }

@@ -86,9 +86,9 @@ template<typename NewInternalFormat>
 Texture<TextureType::TEX_2D, NewInternalFormat> Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::MakeFaceView(TextureCubeFace face, TexLevels levels)
 {
 	TexLayers layers{ static_cast<GLuint>(face) - static_cast<GLuint>(TextureType::TEX_CUBE_X_POS), 1 };
-	if (levels.num == ALL) levels.num = this->_levels - levels.min;
-	ASSERT(levels.min < this->_levels, "TextureCube: Too large mipmap index.");
-	WARNING(levels.min + levels.num > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use ALL.");
+	if (levels.num == ALL) levels.num = this->_levels - levels.start;
+	ASSERT(levels.start < this->_levels, "TextureCube: Too large mipmap index.");
+	WARNING(levels.start + levels.num > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use ALL.");
 	auto tex = this->_MakeView<TextureType::TEX_2D, NewInternalFormat>(levels, layers);
 	tex.invertYOnFileLoad = false;
 	return tex;
@@ -189,9 +189,9 @@ auto Texture<TextureType::TEX_CUBE_MAP, InternalFormat_>::MakeView(TexLevels lev
 	}
 	else {
 		TexLayers layers = 0_layer >> 6;
-		if (levels.num == ALL) levels.num = this->_levels - levels.min;
-		ASSERT(levels.min < this->_levels, "TextureCube: Too large mipmap index.");
-		WARNING(levels.min + levels.num > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use ALL.");
+		if (levels.num == ALL) levels.num = this->_levels - levels.start;
+		ASSERT(levels.start < this->_levels, "TextureCube: Too large mipmap index.");
+		WARNING(levels.start + levels.num > this->_levels, "TextureCube: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use ALL.");
 		return this->_MakeView<NewTexType, NewInternalFormat>(levels, layers);
 	}
 }

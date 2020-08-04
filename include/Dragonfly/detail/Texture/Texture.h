@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "../../config.h"
 #include "../Traits/InternalFormats.h"
+#include "../Traits/Range.h"
 
 namespace df
 {
@@ -24,26 +25,20 @@ static const GLuint ALL = -1; // Mipmap level / array layer
 struct TexLevelsAndLayers;
 
 // Texture Mipmap levels
-struct TexLevels {
-	GLuint min;
-	GLuint num;
-
-	constexpr TexLevels operator>> (GLuint numLelvels) { return TexLevels{ this->min, numLelvels }; }
+struct TexLevels : Range {
+	using Range::Range;
 	constexpr operator TexLevelsAndLayers();
 };
 constexpr TexLevels operator"" _level(unsigned long long int minLevel) { return TexLevels{ static_cast<GLuint>(minLevel), 1 }; }
-constexpr TexLevels operator"" _levelAll(unsigned long long int minLevel) { return TexLevels{ static_cast<GLuint>(minLevel), ALL }; }
+constexpr TexLevels operator"" _levelAll(unsigned long long int minLevel) { return TexLevels{ static_cast<GLuint>(minLevel), All }; }
 
 // Texture Array layers
-struct TexLayers {
-	GLuint min;
-	GLuint num;
-
-	constexpr TexLayers operator>> (GLuint numLayers) { return TexLayers{ this->min, numLayers }; }
+struct TexLayers : Range {
+	using Range::Range;
 	constexpr operator TexLevelsAndLayers();
 };
 constexpr TexLayers operator"" _layer(unsigned long long int minLevel) { return TexLayers{ static_cast<GLuint>(minLevel), 1 }; }
-constexpr TexLayers operator"" _layerAll(unsigned long long int minLevel) { return TexLayers{ static_cast<GLuint>(minLevel), ALL }; }
+constexpr TexLayers operator"" _layerAll(unsigned long long int minLevel) { return TexLayers{ static_cast<GLuint>(minLevel), All }; }
 
 struct TexLevelsAndLayers {
 	TexLevels levels;
@@ -52,8 +47,8 @@ struct TexLevelsAndLayers {
 constexpr TexLevelsAndLayers operator& (TexLevels levels, TexLayers layers) { return { levels, layers }; }
 constexpr TexLevelsAndLayers operator& (TexLayers layers, TexLevels levels) { return { levels, layers }; }
 
-inline constexpr TexLevels::operator TexLevelsAndLayers() { return { *this, {0, ALL} }; }
-inline constexpr TexLayers::operator TexLevelsAndLayers() { return { {0, ALL}, *this }; }
+inline constexpr TexLevels::operator TexLevelsAndLayers() { return { *this, {0, All} }; }
+inline constexpr TexLayers::operator TexLevelsAndLayers() { return { {0, All}, *this }; }
 
 
 class TextureLowLevelBase {
@@ -146,17 +141,17 @@ template<TextureType NewTexType, typename NewInternalFormat>
 Texture<NewTexType, NewInternalFormat> TextureBase<TexType, InternalFormat_>::_MakeView(TexLevels levels, TexLayers layers) const
 {
 	ASSERT(this->_hasStorage, "Texture: Cannot create a view from a texture that has no storage.");
-	ASSERT(levels.min < this->_levels && levels.min + levels.num <= this->_levels, "Texture: wrong mipmap level arguments");
-	ASSERT(layers.min < this->_layers && layers.min + layers.num <= this->_layers, "Texture: wrong array layer arguments");
+	ASSERT(levels.start < this->_levels && levels.start + levels.num <= this->_levels, "Texture: wrong mipmap level arguments");
+	ASSERT(layers.start < this->_layers && layers.start + layers.num <= this->_layers, "Texture: wrong array layer arguments");
 	Texture<NewTexType, NewInternalFormat> view;
 	if (this->_hasStorage) {
 		constexpr GLenum iFormat = detail::getInternalFormat<InternalFormat_>();
 		static_assert(sizeof(InternalFormat_) == sizeof(NewInternalFormat), "Texture: Internal formats must be of the same size class");
-		glTextureView(view.texture_id, static_cast<GLenum>(NewTexType), this->texture_id, iFormat, levels.min, levels.num, layers.min, layers.num);
+		glTextureView(view.texture_id, static_cast<GLenum>(NewTexType), this->texture_id, iFormat, levels.start, levels.num, layers.start, layers.num);
 		GL_CHECK;
-		view._width = std::max((GLuint)1, this->_width >> levels.min);
-		view._height = std::max((GLuint)1, this->_height >> levels.min);
-		view._depth = std::max((GLuint)1, this->_depth >> levels.min);
+		view._width = std::max((GLuint)1, this->_width >> levels.start);
+		view._height = std::max((GLuint)1, this->_height >> levels.start);
+		view._depth = std::max((GLuint)1, this->_depth >> levels.start);
 		view._levels = levels.num;
 		view._layers = layers.num;
 		view._hasStorage = true;

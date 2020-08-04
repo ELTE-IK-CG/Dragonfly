@@ -182,9 +182,9 @@ template<TextureType NewTexType, typename NewInternalFormat>
 Texture<NewTexType, NewInternalFormat> Texture<TextureType::TEX_2D, InternalFormat_>::MakeView(TexLevels levels) const
 {
 	static_assert(NewTexType == TextureType::TEX_2D || NewTexType == TextureType::TEX_2D_ARRAY, "Texture2D: Incompatible view target.");
-	if (levels.num == ALL) levels.num = this->_levels - levels.min;
-	ASSERT(levels.min < this->_levels, "Texture2D: Too large mipmap index.");
-	WARNING(levels.min + levels.num > this->_levels, "Texture2D: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use ALL.");
+	if (levels.num == ALL) levels.num = this->_levels - levels.start;
+	ASSERT(levels.start < this->_levels, "Texture2D: Too large mipmap index.");
+	WARNING(levels.start + levels.num > this->_levels, "Texture2D: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use ALL.");
 	return this->_MakeView<NewTexType, NewInternalFormat>(levels, 0_layer);
 }
 

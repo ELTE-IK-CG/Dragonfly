@@ -107,12 +107,12 @@ template<TextureType NewTexType, typename NewInternalFormat>
 Texture<NewTexType, NewInternalFormat> Texture<TextureType::TEX_2D_ARRAY, InternalFormat_>::MakeView(TexLevelsAndLayers levelsAndLayers)
 {
 	static_assert(NewTexType == TextureType::TEX_2D || NewTexType == TextureType::TEX_2D_ARRAY, "Texture2DArray: Incompatible view target.");
-	if (levelsAndLayers.levels.num == ALL) levelsAndLayers.levels.num = this->_levels - levelsAndLayers.levels.min;
-	if (levelsAndLayers.layers.num == ALL) levelsAndLayers.layers.num = this->_layers - levelsAndLayers.layers.min;
-	ASSERT(levelsAndLayers.levels.min < this->_levels, "Texture2DArray: Too large mipmap index.");
-	ASSERT(levelsAndLayers.layers.min < this->_layers, "Texture2DArray: Too large layer index.");
-	WARNING(levelsAndLayers.levels.min + levelsAndLayers.levels.num > this->_levels, "Texture2DArray: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use ALL.");
-	WARNING(levelsAndLayers.layers.min + levelsAndLayers.layers.num > this->_layers, "Texture2DArray: Number of layers must be more than intended.");
+	if (levelsAndLayers.levels.num == ALL) levelsAndLayers.levels.num = this->_levels - levelsAndLayers.levels.start;
+	if (levelsAndLayers.layers.num == ALL) levelsAndLayers.layers.num = this->_layers - levelsAndLayers.layers.start;
+	ASSERT(levelsAndLayers.levels.start < this->_levels, "Texture2DArray: Too large mipmap index.");
+	ASSERT(levelsAndLayers.layers.start < this->_layers, "Texture2DArray: Too large layer index.");
+	WARNING(levelsAndLayers.levels.start + levelsAndLayers.levels.num > this->_levels, "Texture2DArray: Number of mipmap levels must be more than intended. For maximum available mipmap levels, use ALL.");
+	WARNING(levelsAndLayers.layers.start + levelsAndLayers.layers.num > this->_layers, "Texture2DArray: Number of layers must be more than intended.");
 	return this->_MakeView<NewTexType, NewInternalFormat>(levelsAndLayers.levels, levelsAndLayers.layers);
 }
 
