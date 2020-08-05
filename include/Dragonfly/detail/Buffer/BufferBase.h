@@ -51,7 +51,7 @@ namespace df
 		BufferBase(const BufferBase&) = delete;
 		BufferBase(BufferBase&&) noexcept;
 		BufferBase& operator=(const BufferBase&) = delete;
-		BufferBase& operator=(BufferBase&&);
+		BufferBase& operator=(BufferBase&&) noexcept;
 				
 		operator GLuint() const { return _bufferId; }
 		size_t Bytes() const { return _bytes; };

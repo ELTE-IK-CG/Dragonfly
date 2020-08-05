@@ -4,6 +4,5 @@
 #include <vector>
 
 namespace df
-{
-	   	 
+{		   	 
 }

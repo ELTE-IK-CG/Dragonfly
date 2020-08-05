@@ -144,7 +144,9 @@
     <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp">
       <Filter>ImGui %28in pack%29</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -321,6 +323,9 @@
     <ClInclude Include="..\include\Dragonfly\detail\Buffer\BufferBase.h">
       <Filter>Dragonfly\detail\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.h">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl">
@@ -355,6 +360,9 @@
       <Filter>Dragonfly\detail\Vao</Filter>
     </None>
     <None Include="..\include\Dragonfly\detail\Buffer\Buffer.inl">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.inl">
       <Filter>Dragonfly\detail\Buffer</Filter>
     </None>
   </ItemGroup>

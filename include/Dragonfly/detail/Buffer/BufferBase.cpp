@@ -12,8 +12,11 @@ df::BufferBase::BufferBase(int bytes_, void* data)
 	glGenBuffers(1, &this->_bufferId);
 	glBindBuffer(GL_ARRAY_BUFFER, this->_bufferId);
 	glBufferStorage(GL_ARRAY_BUFFER, bytes_, data, GL_MAP_WRITE_BIT | GL_MAP_READ_BIT);
-	
+
+	ASSERT(bufferInstances.count(this->_bufferId) == 0, "df::BufferBase: should not have any with this id.");
+
 	bufferInstances[this->_bufferId] = 1;
+	auto size = bufferInstances.size();
 	this->_bytes = bytes_;
 }
 
@@ -22,7 +25,7 @@ df::BufferBase::BufferBase(df::BufferBase &&other_) noexcept
 { 
 }
 
-df::BufferBase& df::BufferBase::operator=(df::BufferBase &&other_)
+df::BufferBase& df::BufferBase::operator=(df::BufferBase &&other_) noexcept
 {
 	if(this != &other_){
 		std::swap(this->_bufferId, other_._bufferId);
