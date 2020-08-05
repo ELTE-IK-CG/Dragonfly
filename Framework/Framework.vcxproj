@@ -18,6 +18,7 @@
     <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\File\File.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\File\FileEditor.cpp" />
@@ -53,6 +54,8 @@
     <ClInclude Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Sample.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\File.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h" />
@@ -106,6 +109,7 @@
     <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\include\Dragonfly\detail\Events\Sample.inl" />
     <None Include="..\include\Dragonfly\detail\Buffer\Buffer.inl" />
     <None Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.inl" />

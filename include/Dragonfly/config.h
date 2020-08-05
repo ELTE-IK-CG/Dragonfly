@@ -30,11 +30,13 @@ namespace eltecg {
 /* Defines*/
 
 #ifdef _DEBUG
+namespace df { constexpr bool IS_THIS_DEBUG = true; }
 #define WARNING(expr, msg) if((expr) && ++eltecg::detail::warn_count <= eltecg::detail::max_warn_count) \
 		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::WARNING ,__FILE__, __LINE__, (msg), #expr )
 #define ASSERT(expr, msg) if(!(expr)) \
 		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::ASSERT ,__FILE__, __LINE__, (msg), #expr )
 #else //_RELEASE
+namespace df { constexpr bool IS_THIS_DEBUG = false; }
 #define WARNING(expr, msg)
 #define ASSERT(expr, msg)
 #endif
@@ -54,12 +56,14 @@ namespace eltecg {
 #define GL_CHECK
 #endif
 
-//This trick is from https://github.com/NVIDIAGameWorks/Falcor/blob/master/Framework/Source/Framework.h
-#define ENUM_CLASS_FLAG_OPERATORS(e_)																	\
-	inline e_ operator& (e_ a, e_ b){return static_cast<e_>(static_cast<int>(a)& static_cast<int>(b));}	\
-    inline e_ operator| (e_ a, e_ b){return static_cast<e_>(static_cast<int>(a)| static_cast<int>(b));}	\
-    inline e_& operator|= (e_& a, e_ b){a = a | b; return a;};											\
-    inline e_& operator&= (e_& a, e_ b) { a = a & b; return a; };										\
-    inline e_  operator~ (e_ a) { return static_cast<e_>(~static_cast<int>(a));}						\
-    inline bool is_set(e_ val, e_ flag) { return (val & flag) != (e_)0;}
+#include <type_traits> // The following is from https://stackoverflow.com/a/58068168
+#define ENUM_CLASS_FLAG_OPERATORS(T)                                                                                                                                            \
+    inline T operator~ (T a) { return static_cast<T>( ~static_cast<std::underlying_type<T>::type>(a) ); }                                                                       \
+    inline T operator| (T a, T b) { return static_cast<T>( static_cast<std::underlying_type<T>::type>(a) | static_cast<std::underlying_type<T>::type>(b) ); }                   \
+    inline T operator& (T a, T b) { return static_cast<T>( static_cast<std::underlying_type<T>::type>(a) & static_cast<std::underlying_type<T>::type>(b) ); }                   \
+    inline T operator^ (T a, T b) { return static_cast<T>( static_cast<std::underlying_type<T>::type>(a) ^ static_cast<std::underlying_type<T>::type>(b) ); }                   \
+    inline T& operator|= (T& a, T b) { return reinterpret_cast<T&>( reinterpret_cast<std::underlying_type<T>::type&>(a) |= static_cast<std::underlying_type<T>::type>(b) ); }   \
+    inline T& operator&= (T& a, T b) { return reinterpret_cast<T&>( reinterpret_cast<std::underlying_type<T>::type&>(a) &= static_cast<std::underlying_type<T>::type>(b) ); }   \
+    inline T& operator^= (T& a, T b) { return reinterpret_cast<T&>( reinterpret_cast<std::underlying_type<T>::type&>(a) ^= static_cast<std::underlying_type<T>::type>(b) ); }	\
+	inline bool operator && (T a, T b) { return static_cast<bool>(a & b); }
 

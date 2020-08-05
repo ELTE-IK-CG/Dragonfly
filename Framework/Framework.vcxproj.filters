@@ -144,6 +144,9 @@
     <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp">
       <Filter>ImGui %28in pack%29</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
     <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp">
       <Filter>Dragonfly\detail\Buffer</Filter>
     </ClCompile>
@@ -314,6 +317,12 @@
     <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h">
       <Filter>ImGui %28in pack%29</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Vao\NewVao.h">
       <Filter>Dragonfly\detail\Vao</Filter>
     </ClInclude>
@@ -356,6 +365,9 @@
       <Filter>Dragonfly\detail\Framebuffer</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="..\include\Dragonfly\detail\Events\Sample.inl">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </None>
     <None Include="..\include\Dragonfly\detail\Vao\NewVao.inl">
       <Filter>Dragonfly\detail\Vao</Filter>
     </None>
