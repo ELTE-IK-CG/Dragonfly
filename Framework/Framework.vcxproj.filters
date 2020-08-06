@@ -138,6 +138,9 @@
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogWindow.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogFilterHelper.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>
@@ -321,6 +324,9 @@
       <Filter>Dragonfly\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogManager.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogWindow.h">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilterHelper.h">

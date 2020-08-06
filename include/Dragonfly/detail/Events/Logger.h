@@ -12,15 +12,15 @@ namespace df {
 		public:
 			struct Entry {
 				enum class SEVERITY : uint32_t {
-					TRACE = 0,	//for use during developement
-					DEBUG = 1,	//for debugging
-					INFO = 2,
-					HINT = 3,
-					NOTICE = 4,
+					TRACE = DF_DETAIL_LOGGER_ENTRY_SEVERITY_TRACE,	//for use during developement
+					DEBUG = DF_DETAIL_LOGGER_ENTRY_SEVERITY_DEBUG,	//for debugging
+					INFO = DF_DETAIL_LOGGER_ENTRY_SEVERITY_INFO,
+					HINT = DF_DETAIL_LOGGER_ENTRY_SEVERITY_HINT,
+					NOTICE = DF_DETAIL_LOGGER_ENTRY_SEVERITY_NOTICE,
 					WARNING = DF_DETAIL_LOGGER_ENTRY_SEVERITY_WARNING,
-					ALARM = 6,
+					ALARM = DF_DETAIL_LOGGER_ENTRY_SEVERITY_ALARM,
 					ERROR = DF_DETAIL_LOGGER_ENTRY_SEVERITY_ERROR,
-					FATAL = 8,
+					FATAL = DF_DETAIL_LOGGER_ENTRY_SEVERITY_FATAL,
 				};
 				enum class TYPE : uint32_t {
 					CHECK,
