@@ -2,6 +2,7 @@
 #include "../utility.h"
 #include <string_view>
 #include <vector>
+#include <utility>
 
 namespace df {
 	namespace detail {
@@ -63,6 +64,8 @@ namespace df {
 			inline const std::vector<Entry>& GetEntries() const { return _entries; }
 		}; //class Logger
 
+
+
 		ENUM_CLASS_RELATIONAL_OPERATORS(Logger::Entry::SEVERITY)
 
 	}	//namespace df::detail
@@ -71,5 +74,15 @@ namespace df {
 	// df::detail::Logger& df::Logger = df::detail::Logger::GetSingleton();	 
 
 	using LogEntry_Vec = std::vector<detail::Logger::Entry>;
+
+	namespace detail
+	{
+		inline bool CheckImpl(df::detail::Logger::Entry&& entry, bool exp)
+		{
+			if (!exp)
+				df::Logger.AddEntry(std::move(entry));
+			return exp;
+		}
+	}
 
 }	//namespace df

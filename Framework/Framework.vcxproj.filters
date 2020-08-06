@@ -135,6 +135,12 @@
     <ClCompile Include="..\include\Dragonfly\detail\Events\Logger.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogFilterHelper.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -313,6 +319,12 @@
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\utility.h">
       <Filter>Dragonfly\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogManager.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilterHelper.h">
+      <Filter>Dragonfly\detail\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -29,13 +29,6 @@
 #define DF_DETAIL_LOGGER_ENTRY_SEVERITY_ERROR	 7
 #define DF_DETAIL_LOGGER_ENTRY_SEVERITY_FATAL	 8
 
-#define DF_DETAIL_LOG_MGR_CONDITION_EQUALS       0
-#define DF_DETAIL_LOG_MGR_CONDITION_NEQUALS      1
-#define DF_DETAIL_LOG_MGR_CONDITION_ABOVE        2
-#define DF_DETAIL_LOG_MGR_CONDITION_ABOVE_EQ     3
-#define DF_DETAIL_LOG_MGR_CONDITION_BELOW        4
-#define DF_DETAIL_LOG_MGR_CONDITION_BELOW_EQ     5
-
 // Macros should not depend on Debug/Release mode directly
 
 #define _SEV_ df::detail::Logger::Entry::SEVERITY
@@ -43,8 +36,8 @@
 
 #define DF_DETAIL_LOCATION df::detail::Logger::Entry::Location{ __FILE__, __LINE__ }
 
-#define DF_DETAIL_CHECK_IMPL(sev, exp, msg) if(exp) df::Logger.AddEntry(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, (exp), (msg), _TYPE_::USER));
-#define DF_DETAIL_ASSERT_IMPL(sev, exp, msg) if(!(exp)) df::Logger.AddEntry(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, (exp), (msg), _TYPE_::USER));
+#define DF_DETAIL_CHECK_IMPL(sev, exp, msg) CheckImpl(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, (#exp), (msg), _TYPE_::USER), exp)
+#define DF_DETAIL_ASSERT_IMPL(sev, exp, msg) if(!(exp)) df::Logger.AddEntry(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, (#exp), (msg), _TYPE_::USER));
 #define DF_DETAIL_MESSAGE_IMPL(sev, msg) df::Logger.AddEntry(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, "", (msg), _TYPE_::USER));	
 
 #if DF_LOG_SEVERITY >= DF_DETAIL_LOGGER_ENTRY_SEVERITY_TRACE		// =	_SEV_::TRACE

@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogFilterHelper.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Logger.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
@@ -52,7 +53,9 @@
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilterHelper.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Logger.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogManager.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Sample.h" />
