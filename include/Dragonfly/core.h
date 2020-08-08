@@ -5,6 +5,7 @@
 	#include "detail/Shader/ShaderFwd.h"
 	#include "detail/Shader/Shader.h"
 	#include "detail/Uniform/Uniform.h"
+	#include "detail/Buffer/Buffer.h"
 
 #include "detail/Texture/Texture.h"
 	#include "detail/Texture/Texture2D.h"

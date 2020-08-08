@@ -2,7 +2,7 @@
 #include "../Traits/Range.h"
 #include "BufferBase.h"
 #include "MappedBuffer.h"
-
+#include <type_traits>
 
 namespace df {
 
@@ -11,71 +11,85 @@ class StorageBuffer : public detail::BufferBase<ItemTypes_...> // no GL_MAP_READ
 {
 protected:
 	using Base = detail::BufferBase<ItemTypes_...>;
-	using Base::Single_Type, Base::Tuple_Type;
-	constexpr BUFFER_BITS _RequiredFlag = BUFFER_BITS::NONE;
-	constexpr MAP_BITS _DefaultMapFlags = MAP_BITS::NONE;
+	using Base::First_Type, Base::Pair_Type, Base::Tuple_Type;
+	static constexpr BUFFER_BITS _requiredFlag = BUFFER_BITS::NONE;
+	static constexpr MAP_BITS _defaultMapFlags = MAP_BITS::NONE;
 protected:
 	// for creating a view
-	StorageBuffer(const detail::BufferLowLevelBase& base_) : Base::Base(base_) {}
+	explicit StorageBuffer(const detail::BufferLowLevelBase& base_) : Base::BufferBase(base_) {}
 public:
-	StorageBuffer(size_t len_,								BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(len_, flags_ | _RequiredFlag){}
-	StorageBuffer(const std::vector<Single_Type>& vec_,		BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	StorageBuffer(std::initializer_list<Single_Type> vec_,	BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	StorageBuffer(const std::vector<Tuple_Type>& vec_,		BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	StorageBuffer(std::initializer_list<Tuple_Type> vec_,	BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
+	explicit StorageBuffer(size_t len_,						BUFFER_BITS flags_ = _requiredFlag) : Base::BufferBase(len_, flags_ | _requiredFlag){}
+	StorageBuffer(const std::vector		<First_Type>& vec_,	BUFFER_BITS flags_ = _requiredFlag)	: Base::BufferBase(vec_, flags_ | _requiredFlag){}
+	StorageBuffer(std::initializer_list	<First_Type>  vec_,	BUFFER_BITS flags_ = _requiredFlag)	: Base::BufferBase(vec_, flags_ | _requiredFlag){}
+	StorageBuffer(const std::vector		<Pair_Type>&  vec_,	BUFFER_BITS flags_ = _requiredFlag)	: Base::BufferBase(vec_, flags_ | _requiredFlag){}
+	StorageBuffer(std::initializer_list	<Pair_Type>   vec_,	BUFFER_BITS flags_ = _requiredFlag)	: Base::BufferBase(vec_, flags_ | _requiredFlag){}
+	StorageBuffer(const std::vector		<Tuple_Type>& vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::BufferBase(vec_, flags_ | _requiredFlag){}
+	StorageBuffer(std::initializer_list	<Tuple_Type>  vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::BufferBase(vec_, flags_ | _requiredFlag){}
 
 	template<typename ...NewItemTypes>
 	StorageBuffer<NewItemTypes...> MakeView() const { return StorageBuffer<NewItemTypes...>(static_cast<detail::BufferLowLevelBase&>(*this)); }
 };
+
 
 template<typename ...ItemTypes_>
 class ReadBuffer : public StorageBuffer<ItemTypes_...> // the GL_MAP_READ_BIT is set, but no GL_MAP_WRITE_BIT is set
 {
 protected:
 	using Base = StorageBuffer<ItemTypes_...>;
-	using Base::Single_Type, Base::Tuple_Type;
-	constexpr BUFFER_BITS _RequiredFlag = Base::_RequiredFlag | BUFFER_BITS::READ;
-	constexpr MAP_BITS _DefaultMapFlags = Base::_DefaultMapFlags | MAP_BITS::READ;
+	using Base::First_Type, Base::Pair_Type, Base::Tuple_Type;
+	static constexpr BUFFER_BITS _requiredFlag = BUFFER_BITS::READ;//Base::_requiredFlag | BUFFER_BITS::READ;
+	static constexpr MAP_BITS _defaultMapFlags = MAP_BITS::READ;//Base::_defaultMapFlags | MAP_BITS::READ;
 protected:
-	ReadBuffer(const detail::BufferLowLevelBase& base_) : Base::Base(base_) {}
+	ReadBuffer(const detail::BufferLowLevelBase& base_) : Base::StorageBuffer(base_) {}
 public:
-	ReadBuffer(size_t len_,								BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(len_, flags_ | _RequiredFlag) {}
-	ReadBuffer(const std::vector<Single_Type>& vec_,	BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	ReadBuffer(std::initializer_list<Single_Type> vec_,	BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	ReadBuffer(const std::vector<Tuple_Type>& vec_,		BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	ReadBuffer(std::initializer_list<Tuple_Type> vec_,	BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
+	explicit ReadBuffer(size_t len_,					BUFFER_BITS flags_ = _requiredFlag) : Base::StorageBuffer(len_, flags_ | _requiredFlag) {}
+	ReadBuffer(const std::vector	<First_Type>& vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::StorageBuffer(vec_, flags_ | _requiredFlag){}
+	ReadBuffer(std::initializer_list<First_Type>  vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::StorageBuffer(vec_, flags_ | _requiredFlag){}
+	ReadBuffer(const std::vector	<Pair_Type>&  vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::StorageBuffer(vec_, flags_ | _requiredFlag){}
+	//ReadBuffer(std::initializer_list<Pair_Type >  vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::StorageBuffer(vec_, flags_ | _requiredFlag){}
+	ReadBuffer(const std::vector	<Tuple_Type>& vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::StorageBuffer(vec_, flags_ | _requiredFlag){}
+	ReadBuffer(std::initializer_list<Tuple_Type>  vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::StorageBuffer(vec_, flags_ | _requiredFlag){}
 
 	template<typename ...NewItemTypes>
 	ReadBuffer<NewItemTypes...> MakeView() const { return ReadBuffer<NewItemTypes...>(static_cast<detail::BufferLowLevelBase&>(*this)); }
 
-	const detail::MappedBuffer<ItemTypes_> MapBuffer(Range range_, MAP_BITS flags_ = _DefaultMapFlags) const;
-	const detail::MappedBuffer<ItemTypes_> operator[](Range range_) const{ return MapBuffer(range_); }
+	[[nodiscard]] operator std::vector<First_Type>() const { return this->_DownloadData<First_Type>(); }
+	[[nodiscard]] operator std::vector<Pair_Type>()  const { return this->_DownloadData<Pair_Type>(); }
+	[[nodiscard]] operator std::vector<Tuple_Type>() const { return this->_DownloadData<Tuple_Type>(); }
+
+	//const detail::MappedBuffer<ItemTypes_> MapBuffer(Range range_, MAP_BITS flags_ = _defaultMapFlags) const;
+	//const detail::MappedBuffer<ItemTypes_> operator[](Range range_) const{ return MapBuffer(range_); }
 };
 
 template<typename ...ItemTypes_>
 class Buffer: public ReadBuffer<ItemTypes_...> // the GL_MAP_WRITE_BIT is set
 {
-	template<typename> friend class Buffer;
+	//template<typename> friend class Buffer<>;
 protected:
 	using Base = ReadBuffer<ItemTypes_...>;
-	using Base::Single_Type, Base::Tuple_Type;
-	constexpr BUFFER_BITS _RequiredFlag = Base::_RequiredFlag | BUFFER_BITS::WRITE;
-	constexpr MAP_BITS _DefaultMapFlags = Base::_DefaultMapFlags | MAP_BITS::WRITE;
+	using Base::First_Type, Base::Pair_Type, Base::Tuple_Type;
+	static constexpr BUFFER_BITS _requiredFlag = static_cast<BUFFER_BITS>(GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);//Base::_requiredFlag | BUFFER_BITS::WRITE;
+	static constexpr MAP_BITS _defaultMapFlags = static_cast<MAP_BITS>(GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);//Base::_defaultMapFlags | MAP_BITS::WRITE;
 protected:
-	Buffer(const detail::BufferLowLevelBase& base_) : Base::Base(base_) {}
+	Buffer(const detail::BufferLowLevelBase& base_) : Base::ReadBuffer(base_) {}
 public:
-	Buffer(size_t len_,								BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(len_, flags_ | _RequiredFlag) {}
-	Buffer(const std::vector<Single_Type>& vec_,	BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	Buffer(std::initializer_list<Single_Type> vec_,	BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	Buffer(const std::vector<Tuple_Type>& vec_,		BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
-	Buffer(std::initializer_list<Tuple_Type> vec_,	BUFFER_BITS flags_ = _RequiredFlag) : Base::Base(vec_, flags_ | _RequiredFlag){}
+	explicit Buffer(size_t len_,					BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(len_, flags_ | _requiredFlag) {}
+	Buffer(const std::vector	<First_Type>& vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}
+	Buffer(std::initializer_list<First_Type>  vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}
+	Buffer(const std::vector	<Pair_Type>&  vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}
+	//Buffer(std::initializer_list<Pair_Type>   vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}
+	Buffer(const std::vector	<Tuple_Type>& vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}
+	Buffer(std::initializer_list<Tuple_Type>  vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}
 
 	template<typename ...NewItemTypes>
 	Buffer<NewItemTypes...> MakeView() const { return Buffer<NewItemTypes...>(static_cast<detail::BufferLowLevelBase&>(*this)); }
-	Buffer MakeView() const { Buffer(static_cast<detail::BufferLowLevelBase&>(*this)); } //doesitwork???
+	Buffer MakeView() const { return Buffer(static_cast<detail::BufferLowLevelBase&>(*this)); } //doesitwork???
 
-	detail::MappedBuffer<ItemTypes_> MapBuffer(Range range_, MAP_BITS flags_ = _DefaultMapFlags);
-	detail::MappedBuffer<ItemTypes_> operator[](Range range_) { return MapBuffer(range_); }
+	//detail::MappedBuffer<ItemTypes_> MapBuffer(Range range_, MAP_BITS flags_ = _defaultMapFlags);
+	//detail::MappedBuffer<ItemTypes_> operator[](Range range_) { return MapBuffer(range_); }
+	Buffer operator=(const std::vector<First_Type>& vec) { this->_UploadData(static_cast<const void*>(vec.data()), sizeof(First_Type) * vec.size()); return *this; }
+	Buffer operator=(const std::vector<Pair_Type>& vec) { this->_UploadData(static_cast<const void*>(vec.data()), sizeof(Pair_Type) * vec.size()); return *this; }
+	Buffer operator=(const std::vector<Tuple_Type>& vec) { this->_UploadData(static_cast<const void*>(vec.data()), sizeof(Tuple_Type) * vec.size()); return *this; }
 };
 
 } //namespace df

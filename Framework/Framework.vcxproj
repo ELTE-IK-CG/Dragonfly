@@ -110,7 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\Dragonfly\detail\Events\Sample.inl" />
-    <None Include="..\include\Dragonfly\detail\Buffer\Buffer.inl" />
     <None Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Program\Program.inl" />

@@ -1,5 +1,40 @@
 #include "BufferBase.h"
 
+//static std::map<GLuint, unsigned int> df::detail::BufferLowLevelBase::_instances;
+
+df::detail::BufferLowLevelBase::BufferLowLevelBase(const BufferLowLevelBase& other_) : _id(other_._id), _bytes(other_._bytes), _flags(other_._flags)
+{
+	ASSERT(checkBufferFlag(_flags), "df::detail::BufferLowLevelBase: Invalid Flag setup.");
+	ASSERT(_id != 0 && (_instances.count(_id) != 0 && _instances[_id] != 0), "df::detail::BufferLowLevelBase: Should already have an instance with this id.");
+	++_instances[_id];
+}
+
+df::detail::BufferLowLevelBase::BufferLowLevelBase(size_t bytes_, BUFFER_BITS flags_, void* data_) : _bytes(bytes_), _flags(flags_)
+{
+	ASSERT(checkBufferFlag(flags_), "df::detail::BufferLowLevelBase: Invalid Flag setup.");
+	glGenBuffers(1, &_id);
+	ASSERT(_id != 0 && (_instances.count(_id) == 0 || _instances[_id] == 0), "df::detail::BufferLowLevelBase: Should not have an instance already with this id.");
+	glNamedBufferStorage(_id, _bytes, data_, static_cast<GLenum>(flags_));
+	_instances[_id] = 1;
+}
+
+df::detail::BufferLowLevelBase::~BufferLowLevelBase()
+{
+	if (_id != 0 && --_instances[_id] == 0)
+		glDeleteBuffers(1, &_id);
+}
+
+void df::detail::BufferLowLevelBase::_UploadData(const void* data_, size_t size_)
+{
+	ASSERT(size_ <= this->Bytes(), "df::detail::BufferLowLevelBase: Cannot overwrite with larger data.");
+	ASSERT(_flags && BUFFER_BITS::WRITE, "df::detail::BufferLowLevelBase: Writing into this buffer is not allowed.");
+	const size_t size = size_ <= Bytes() ? size_ : Bytes();
+	void* mapped = glMapNamedBufferRange(static_cast<GLuint>(*this), 0, size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
+	ASSERT(mapped != nullptr, "df::detail::BufferLowLevelBase: Mapping operation failed.");
+	memcpy(mapped, data_, size);
+	glUnmapNamedBuffer(static_cast<GLuint>(*this));
+}
+
 /*
 df::BufferBase::BufferBase(GLuint bufferId_, size_t bytes_)
 	: _bufferId(bufferId_), _bytes(bytes_)
@@ -41,25 +76,3 @@ df::BufferBase::~BufferBase()
 		glDeleteBuffers(1, &this->_bufferId);
 }
 */
-
-inline df::detail::BufferLowLevelBase::BufferLowLevelBase(const BufferLowLevelBase& other_) : _id(other_._id), _bytes(other_._bytes), _flags(other_._flags)
-{
-	ASSERT(checkBufferFlag(_flags), "df::detail::BufferLowLevelBase: Invalid Flag setup.");
-	ASSERT(_id != 0 && (_instances.count(_id) != 0 && _instances[_id] != 0), "df::detail::BufferLowLevelBase: Should already have an instance with this id.");
-	++_instances[_id];
-}
-
-inline df::detail::BufferLowLevelBase::BufferLowLevelBase(size_t bytes_, BUFFER_BITS flags_, void* data) : _bytes(bytes_), _flags(flags_)
-{
-	ASSERT(checkBufferFlag(flags_), "df::detail::BufferLowLevelBase: Invalid Flag setup.");
-	glGenBuffers(1, &_id);
-	ASSERT(_id != 0 && (_instances.count(_id) == 0 || _instances[_id] == 0), "df::detail::BufferLowLevelBase: Should not have an instance already with this id.");
-	glNamedBufferStorage(_id, _bytes, data, static_cast<GLenum>(flags_));
-	_instances[_id] = 1;
-}
-
-inline df::detail::BufferLowLevelBase::~BufferLowLevelBase()
-{
-	if (_id != 0 && --_instances[_id] == 0)
-		glDeleteBuffers(1, &_id);
-}

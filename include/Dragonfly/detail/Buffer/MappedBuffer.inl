@@ -5,7 +5,7 @@
 
 namespace df
 {
-
+/*
 template<typename TupleType_>
 inline detail::MappedBuffer<TupleType_>::MappedBuffer(const Buffer<TupleType_>& buffer_, df::Range range)
 	:_bufferView(buffer_.MakeView()) //_begin(nullptr), _end(nullptr)
@@ -18,6 +18,6 @@ inline detail::MappedBuffer<TupleType_>::MappedBuffer(const Buffer<TupleType_>& 
 	ASSERT(raw_ptr != nullptr, "df::detail::MappedBuffer: glMapBuffer returned a nullptr");
 	_begin = static_cast<TupleType_*>(raw_ptr);
 	_end = _begin + length;
-}
+}*/
 	   	 
 }

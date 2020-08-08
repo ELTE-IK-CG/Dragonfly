@@ -18,10 +18,15 @@ enum class MAP_BITS : GLenum
 
 namespace detail {
 
-constexpr bool checkMapFlag(MAP_BITS flags) {
-	return  checkBufferFlag(static_cast<BUFFER_BITS>(flags))
-		&& ((flags && (~MAP_BITS::READ & MAP_BITS::WRITE)) || !(flags && MAP_BITS::INVALIDATE))
-		&& ((flags && MAP_BITS::WRITE) || !(flags && MAP_BITS::FLUSH));
+template<MAP_BITS flags_> constexpr bool checkMapFlag() {
+	return  checkBufferFlag<static_cast<BUFFER_BITS>(flags_)>()
+		&& ((flags_ && (~MAP_BITS::READ & MAP_BITS::WRITE)) || !(flags_ && MAP_BITS::INVALIDATE))
+		&& ((flags_ && MAP_BITS::WRITE) || !(flags_ && MAP_BITS::FLUSH));
+}
+inline bool checkMapFlag(MAP_BITS flags_) {
+	return  checkBufferFlag(static_cast<BUFFER_BITS>(flags_))
+		&& ((flags_ && (~MAP_BITS::READ & MAP_BITS::WRITE)) || !(flags_ && MAP_BITS::INVALIDATE))
+		&& ((flags_ && MAP_BITS::WRITE) || !(flags_ && MAP_BITS::FLUSH));
 }
 
 template<typename ValueType_>
@@ -32,9 +37,9 @@ class MappedBuffer
 	MAP_BITS _flags;
 	bool is_mapped;
 public:
-	MappedBuffer(const BufferLowLevelBase &base_, Range range_, MAP_BITS flags_) : _view(base_), _flags(flags_), is_mapped(false){
+	/*MappedBuffer(const BufferLowLevelBase &base_, Range range_, MAP_BITS flags_) : _view(base_), _flags(flags_), is_mapped(false){
 		
-	}
+	}*/
 };
 
 

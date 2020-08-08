@@ -371,9 +371,6 @@
     <None Include="..\include\Dragonfly\detail\Vao\NewVao.inl">
       <Filter>Dragonfly\detail\Vao</Filter>
     </None>
-    <None Include="..\include\Dragonfly\detail\Buffer\Buffer.inl">
-      <Filter>Dragonfly\detail\Buffer</Filter>
-    </None>
     <None Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.inl">
       <Filter>Dragonfly\detail\Buffer</Filter>
     </None>

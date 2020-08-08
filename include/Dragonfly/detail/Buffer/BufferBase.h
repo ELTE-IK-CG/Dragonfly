@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <map>
 #include <vector>
+#include <tuple>
 #include "../../config.h"
 
 namespace df{
@@ -21,53 +22,77 @@ enum class BUFFER_BITS : GLenum
 
 namespace detail{
 
-constexpr bool checkBufferFlag(BUFFER_BITS flags) {
-	return  ((flags && (BUFFER_BITS::READ | BUFFER_BITS::WRITE)) || !(flags && BUFFER_BITS::PERSISTENT))
-		&&  ((flags && BUFFER_BITS::PERSISTENT)					|| !(flags && BUFFER_BITS::COHERENT));
+template<BUFFER_BITS flags_> constexpr bool checkBufferFlag() {
+	return  ((flags_ && (BUFFER_BITS::READ | BUFFER_BITS::WRITE)) || !(flags_ && BUFFER_BITS::PERSISTENT))
+		&&  ((flags_ && BUFFER_BITS::PERSISTENT)				  || !(flags_ && BUFFER_BITS::COHERENT));
+}
+
+inline bool checkBufferFlag(BUFFER_BITS flags_) {
+	return  ((flags_ && (BUFFER_BITS::READ | BUFFER_BITS::WRITE)) || !(flags_ && BUFFER_BITS::PERSISTENT))
+		&&  ((flags_ && BUFFER_BITS::PERSISTENT)				  || !(flags_ && BUFFER_BITS::COHERENT));
 }
 
 
-template<typename ...Types_>  struct EnableIfSingle{};
-template<typename SingleType> struct EnableIfSingle<SingleType>{ using Type = SingleType;};
+//template<typename ...Types_>  struct EnableIfSingle{};
+//template<typename SingleType> struct EnableIfSingle<SingleType>{ using Type = SingleType;};
 
-template<typename ...Types_>
-using EnableIfSingle_Type = typename EnableIfSingle<Types_...>::Type;
+//template<typename ...Types_>
+//using EnableIfSingle_Type = typename EnableIfSingle<Types_...>::Type;
 
 class BufferLowLevelBase
 {
 private:
-	static std::map<GLuint, unsigned int> _instances;
+	inline static std::map<GLuint, unsigned int> _instances = std::map<GLuint, unsigned int>();
 	GLuint _id;
 	size_t _bytes;
 	BUFFER_BITS _flags;
 protected:
 	BufferLowLevelBase(const BufferLowLevelBase& other_);
-	BufferLowLevelBase(size_t bytes_, BUFFER_BITS flags_, void* data = nullptr);
+	BufferLowLevelBase(size_t bytes_, BUFFER_BITS flags_, void* data_ = nullptr);
 	~BufferLowLevelBase();
+
+	void _UploadData(const void* data_, size_t size_);
+	
+	template<typename ItemType_> [[nodiscard]] std::vector<ItemType_> _DownloadData() const;
+
 public:
-	size_t Bytes() const { return _bytes; }
-	BUFFER_BITS Flags() const { return _flags; }
-	operator GLuint() const { return _id; }
+	[[nodiscard]] size_t Bytes() const { return _bytes; }
+	[[nodiscard]] BUFFER_BITS Flags() const { return _flags; }
+	[[nodiscard]] operator GLuint() const { return _id; }
 };
 
-template<typename ...ItemTypes_>
+template<typename ... ItemTypes_>
 class BufferBase : public BufferLowLevelBase
 {
 protected:
-	using Base = BufferLowLevelBase;
-	using Single_Type = EnableIfSingle_Type<ItemTypes_...>;
-	using Tuple_Type = std::tuple<ItemTypes_...>;
-	constexpr size_t _ElemSize = sizeof(Tuple_Type);
+	using Base			= BufferLowLevelBase;
+	static constexpr size_t _NumItemTypes = sizeof...(ItemTypes_);
+	using Tuple_Type	= std::tuple<ItemTypes_...>;
+	using First_Type	= std::conditional_t<_NumItemTypes == 1, std::tuple_element_t<0, Tuple_Type>, void**>;
+	using Pair_Type		= std::conditional_t<_NumItemTypes == 2, std::pair<std::tuple_element_t<0, Tuple_Type>, std::tuple_element_t<_NumItemTypes-1, Tuple_Type>>, void***>;
+	static constexpr size_t	_elemSize		= sizeof(Tuple_Type);
 protected:
-	BufferBase(const BufferLowLevelBase& base_) : Base::Base(base_) {}
-	BufferBase(size_t len_, BUFFER_BITS flags_) : Base::Base(len_* _ElemSize, flags_) { }
-	BufferBase(const std::vector<Single_Type>& vec_,	BUFFER_BITS flags_) : Base::Base(vec_.size() * _ElemSize, flags_, (void*)vec_.data()) {}
-	BufferBase(std::initializer_list<Single_Type> vec_, BUFFER_BITS flags_) : Base::Base(vec_.size() * _ElemSize, flags_, (void*)vec_.begin()) {}
-	BufferBase(const std::vector<Tuple_Type>& vec_,		BUFFER_BITS flags_) : Base::Base(vec_.size() * _ElemSize, flags_, (void*)vec_.data()) {}
-	BufferBase(std::initializer_list<Tuple_Type> vec_,	BUFFER_BITS flags_) : Base::Base(vec_.size() * _ElemSize, flags_, (void*)vec_.begin()) {}
+	BufferBase(const BufferLowLevelBase& base_) : Base::BufferLowLevelBase(base_) {}
+	BufferBase(size_t len_, BUFFER_BITS flags_) : Base::BufferLowLevelBase(len_ * _elemSize, flags_) { }
+	BufferBase(const std::vector	<First_Type>& vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {static_assert(_NumItemTypes==1, "df::detail::BufferBase: Use tuple or pair in Buffer* constructors for compound types.");}
+	BufferBase(const std::vector	<Pair_Type> & vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {static_assert(_NumItemTypes==2, "df::detail::BufferBase: Use tuple in Buffer* constructors for compound types.");}
+	BufferBase(const std::vector	<Tuple_Type>& vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {}
+	BufferBase(std::initializer_list<First_Type>  vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.begin()) {static_assert(_NumItemTypes==1, "df::detail::BufferBase: Use tuple or pair in Buffer* constructors for compound types.");}
+	BufferBase(std::initializer_list<Tuple_Type>  vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.begin()) {}
+
 public:
-	size_t Size() const { return _ElemSize * Bytes(); }
+	[[nodiscard]] size_t Size() const { return _elemSize * Bytes(); }
 };
+
+template <typename ItemType_> std::vector<ItemType_> BufferLowLevelBase::_DownloadData() const
+{
+	ASSERT(this->Flags() && BUFFER_BITS::READ, "df::detail::BufferLowLevelBase: Buffer does not have the read flag set.");
+	const ItemType_* begin = static_cast<const ItemType_*>(glMapNamedBuffer(static_cast<GLuint>(*this), GL_MAP_READ_BIT));
+	ASSERT(begin != nullptr, "df::detail::BufferLowLevelBase: Mapping operation failed.");
+	const std::vector<ItemType_> ret(begin, begin + this->Bytes() / sizeof(ItemType_));
+	glUnmapNamedBuffer(static_cast<GLuint>(*this));
+	return ret;
+}
 
 } //namespace detail
 } //namespace df
