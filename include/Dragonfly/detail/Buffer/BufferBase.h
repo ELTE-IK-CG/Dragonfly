@@ -47,9 +47,13 @@ private:
 	size_t _bytes;
 	BUFFER_BITS _flags;
 protected:
-	BufferLowLevelBase(const BufferLowLevelBase& other_);
-	BufferLowLevelBase(size_t bytes_, BUFFER_BITS flags_, void* data_ = nullptr);
 	~BufferLowLevelBase();
+	BufferLowLevelBase(size_t bytes_, BUFFER_BITS flags_, void* data_ = nullptr);
+	
+	BufferLowLevelBase(const BufferLowLevelBase& other_); // modifies _instances
+	BufferLowLevelBase(BufferLowLevelBase&&other_) noexcept;
+	BufferLowLevelBase operator=(const BufferLowLevelBase& other_) = delete;
+	df::detail::BufferLowLevelBase& operator=(BufferLowLevelBase&& other_) noexcept;
 
 	void _UploadData(const void* data_, size_t size_);
 	
@@ -66,19 +70,19 @@ class BufferBase : public BufferLowLevelBase
 {
 protected:
 	using Base			= BufferLowLevelBase;
-	static constexpr size_t _NumItemTypes = sizeof...(ItemTypes_);
+	static constexpr size_t _NumItemTypes	= sizeof...(ItemTypes_);
 	using Tuple_Type	= std::tuple<ItemTypes_...>;
-	using First_Type	= std::conditional_t<_NumItemTypes == 1, std::tuple_element_t<0, Tuple_Type>, void**>;
+	using Single_Type	= std::conditional_t<_NumItemTypes == 1, std::tuple_element_t<0, Tuple_Type>, void**>;
 	using Pair_Type		= std::conditional_t<_NumItemTypes == 2, std::pair<std::tuple_element_t<0, Tuple_Type>, std::tuple_element_t<_NumItemTypes-1, Tuple_Type>>, void***>;
 	static constexpr size_t	_elemSize		= sizeof(Tuple_Type);
 protected:
-	BufferBase(const BufferLowLevelBase& base_) : Base::BufferLowLevelBase(base_) {}
+	explicit BufferBase(BufferLowLevelBase base_) : Base::BufferLowLevelBase(std::move(base_)) {}
 	BufferBase(size_t len_, BUFFER_BITS flags_) : Base::BufferLowLevelBase(len_ * _elemSize, flags_) { }
-	BufferBase(const std::vector	<First_Type>& vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {static_assert(_NumItemTypes==1, "df::detail::BufferBase: Use tuple or pair in Buffer* constructors for compound types.");}
-	BufferBase(const std::vector	<Pair_Type> & vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {static_assert(_NumItemTypes==2, "df::detail::BufferBase: Use tuple in Buffer* constructors for compound types.");}
-	BufferBase(const std::vector	<Tuple_Type>& vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {}
-	BufferBase(std::initializer_list<First_Type>  vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.begin()) {static_assert(_NumItemTypes==1, "df::detail::BufferBase: Use tuple or pair in Buffer* constructors for compound types.");}
-	BufferBase(std::initializer_list<Tuple_Type>  vec_,	BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.begin()) {}
+	BufferBase(const std::vector	<Single_Type> &vec_, BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {static_assert(_NumItemTypes==1, "df::detail::BufferBase: Use tuple or pair in Buffer* constructors for compound types.");}
+	BufferBase(const std::vector	<Pair_Type>   &vec_, BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {static_assert(_NumItemTypes==2, "df::detail::BufferBase: Use tuple in Buffer* constructors for compound types.");}
+	BufferBase(const std::vector	<Tuple_Type>  &vec_, BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.data()) {}
+	BufferBase(std::initializer_list<Single_Type>  vec_, BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.begin()) {static_assert(_NumItemTypes==1, "df::detail::BufferBase: Use tuple or pair in Buffer* constructors for compound types.");}
+	BufferBase(std::initializer_list<Tuple_Type>   vec_, BUFFER_BITS flags_) : Base::BufferLowLevelBase(vec_.size() * _elemSize, flags_, (void*)vec_.begin()) {} // no Pair_Type to avoid ambiguity
 
 public:
 	[[nodiscard]] size_t Size() const { return _elemSize * Bytes(); }
@@ -87,9 +91,11 @@ public:
 template <typename ItemType_> std::vector<ItemType_> BufferLowLevelBase::_DownloadData() const
 {
 	ASSERT(this->Flags() && BUFFER_BITS::READ, "df::detail::BufferLowLevelBase: Buffer does not have the read flag set.");
-	const ItemType_* begin = static_cast<const ItemType_*>(glMapNamedBuffer(static_cast<GLuint>(*this), GL_MAP_READ_BIT));
+	void* cim = glMapNamedBuffer(static_cast<GLuint>(*this), GL_MAP_READ_BIT);
+	const ItemType_* begin = static_cast<const ItemType_*>(cim);
 	ASSERT(begin != nullptr, "df::detail::BufferLowLevelBase: Mapping operation failed.");
 	const std::vector<ItemType_> ret(begin, begin + this->Bytes() / sizeof(ItemType_));
+	GL_CHECK;
 	glUnmapNamedBuffer(static_cast<GLuint>(*this));
 	return ret;
 }

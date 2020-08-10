@@ -47,8 +47,8 @@ struct TexLevelsAndLayers {
 constexpr TexLevelsAndLayers operator& (TexLevels levels, TexLayers layers) { return { levels, layers }; }
 constexpr TexLevelsAndLayers operator& (TexLayers layers, TexLevels levels) { return { levels, layers }; }
 
-inline constexpr TexLevels::operator TexLevelsAndLayers() { return { *this, {0, All} }; }
-inline constexpr TexLayers::operator TexLevelsAndLayers() { return { {0, All}, *this }; }
+inline constexpr TexLevels::operator TexLevelsAndLayers() { return { *this, TexLayers{0, All} }; }
+inline constexpr TexLayers::operator TexLevelsAndLayers() { return { TexLevels{0, All}, *this }; }
 
 
 class TextureLowLevelBase {

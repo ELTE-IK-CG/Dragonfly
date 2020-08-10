@@ -35,6 +35,18 @@ void df::detail::BufferLowLevelBase::_UploadData(const void* data_, size_t size_
 	glUnmapNamedBuffer(static_cast<GLuint>(*this));
 }
 
+df::detail::BufferLowLevelBase::BufferLowLevelBase(BufferLowLevelBase&& other_) noexcept
+	: _id(std::exchange(other_._id, 0)), _bytes(std::exchange(other_._bytes, 0)), _flags(other_._flags)
+{}
+
+df::detail::BufferLowLevelBase& df::detail::BufferLowLevelBase::operator=(BufferLowLevelBase &&other_) noexcept
+{
+	std::swap(this->_id, _id);
+	std::swap(this->_bytes, other_._bytes);
+	std::swap(this->_flags, other_._flags);
+	return *this;
+}
+
 /*
 df::BufferBase::BufferBase(GLuint bufferId_, size_t bytes_)
 	: _bufferId(bufferId_), _bytes(bytes_)

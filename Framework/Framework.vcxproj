@@ -78,6 +78,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Texture\TextureCube.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\EventHandlerTraits.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\InternalFormats.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\Range.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\UniformTypes.hpp" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Subroutines.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Uniform.h" />

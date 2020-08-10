@@ -10,9 +10,10 @@ struct Range
 {
 	GLuint start, num;
 
-	constexpr Range(GLuint start_ = 0, GLuint num_ = All) : start(start_), num(num_) {}
-	constexpr Range operator>> (GLuint num_) { return Range{ this->start, num_ }; }
+	constexpr explicit Range(GLuint start_ = 0, GLuint num_ = All) : start(start_), num(num_) {}
+	constexpr Range operator>> (GLuint num_) const { return Range{ this->start, num_ }; }
 };
+
 
 namespace detail
 {
