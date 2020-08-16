@@ -8,7 +8,10 @@ void df::LogWindow::Render()
 	ImGui::SetNextWindowSize(ImVec2(600, 520), ImGuiCond_FirstUseEver);
 	if (ImGui::Begin("Log Manager"))
 	{
-		if (ImGui::Button("Clear")) {}
+		if (ImGui::Button("Clear"))
+		{
+			Logger.ClearEntries();
+		}
 		ImGui::SameLine();
 		if (ImGui::Button("Filters"))
 			ImGui::OpenPopup("Filtering");
@@ -30,6 +33,9 @@ void df::LogWindow::Render()
 			ImGui::Checkbox("Fatal", &_level_fatal);
 			ImGui::Checkbox("Notice", &_level_notice);
 
+			ImGui::InputText("Frame Start: ", _frm_start_buf, 16, ImGuiInputTextFlags_CharsDecimal);
+			ImGui::InputText("Frame End: ", _frm_end_buf, 16, ImGuiInputTextFlags_CharsDecimal);
+
 			ImGui::EndPopup();
 		}
 
@@ -42,15 +48,25 @@ void df::LogWindow::Render()
 			const auto start_item = int(scroll_y / line_height);
 			const auto end_item = int((scroll_y + viewport_height) / line_height);
 
-			auto entries = Logger.GetEntries();
+			//auto entries = Logger.GetEntries();
 
-			for (int i = 0; i < entries.size(); i++)
+			int count = 0;
+			int index = 0;
+
+			//std::cout << logManager.GetEntryCount() << std::endl;
+			for (int i = 0; i < logManager->GetEntryCount(); i++)
 			{
-				ImGui::SetCursorPosY(i * line_height);
+				auto entry = logManager->Get(i);
+
+				if (!_canShowSeverity(entry.entry.severity))
+					continue;
+				count++;
+				ImGui::SetCursorPosY(index * line_height);
 				if (i < start_item || i > end_item)
 					continue;
+				index++;
 
-				_renderLogEntry(entries[i]);
+				_renderLogEntry(entry);
 			}
 			ImGui::SetCursorPosY(5 * line_height);
 			ImGui::EndChild();
@@ -60,32 +76,13 @@ void df::LogWindow::Render()
 	}
 }
 
-void df::LogWindow::_renderLogEntry(const detail::Logger::Entry entry_)
+void df::LogWindow::_renderLogEntry(const LogManager::EntryData& entry_data_)
 {
-	ImVec4 color;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::TRACE)
-		color = LOG_COLOR_ERROR;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::DEBUG)
-		color = LOG_COLOR_DEBUG;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::INFO)
-		color = LOG_COLOR_INFO;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::HINT)
-		color = LOG_COLOR_HINT;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::NOTICE)
-		color = LOG_COLOR_NOTICE;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::WARNING)
-		color = LOG_COLOR_WARNING;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::ALARM)
-		color = LOG_COLOR_ALARM;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::ERROR)
-		color = LOG_COLOR_ERROR;
-	if (entry_.severity == detail::Logger::Entry::SEVERITY::FATAL)
-		color = LOG_COLOR_FATAL;
-
-	auto expr_data = entry_.expression.data();
+	const auto color = log_colors[static_cast<uint32_t>(entry_data_.entry.severity)];
+	const auto expr_data = entry_data_.entry.expression.data();
 
 	if (*expr_data != 0)
-		ImGui::TextColored(color, "[%llu] %s: %s", entry_.timestamp, entry_.expression.data(), entry_.message.c_str());
+		ImGui::TextColored(color, "[%llu] (%llu) %s: %s", entry_data_.entry.timestamp, entry_data_.instanceCount, entry_data_.entry.expression.data(), entry_data_.entry.message.c_str());
 	else
-		ImGui::TextColored(color, "[%llu] %s", entry_.timestamp, entry_.message.c_str());
+		ImGui::TextColored(color, "[%llu] (%llu) %s", entry_data_.entry.timestamp, entry_data_.instanceCount, entry_data_.entry.message.c_str());
 }

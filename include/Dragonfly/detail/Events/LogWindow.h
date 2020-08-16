@@ -2,43 +2,76 @@
 
 #include "Logger.h"
 #include "LogManager.h"
+#include <array>
 
+#include "ImGui/imgui.h"
+
+// TODO constexpr array
 #define LOG_COLOR_RGB(r, g, b) ImVec4((r), (g), (b), 1)
-#define LOG_COLOR_TRACE LOG_COLOR_RGB(0.4, 0.4, 0.6)
-#define LOG_COLOR_DEBUG LOG_COLOR_RGB(0.4, 0.4, 0.4)
-#define LOG_COLOR_INFO LOG_COLOR_RGB(1, 1, 1)
-#define LOG_COLOR_HINT LOG_COLOR_RGB(0.6, 1, 0.6)
-#define LOG_COLOR_NOTICE LOG_COLOR_RGB(1, 1, 0.2)
-#define LOG_COLOR_WARNING LOG_COLOR_RGB(1, 0.6, 0.2)
-#define LOG_COLOR_ALARM LOG_COLOR_RGB(1, 0.6, 0.2) // ???
-#define LOG_COLOR_ERROR LOG_COLOR_RGB(1, 0.3, 0.3)
-#define LOG_COLOR_FATAL LOG_COLOR_RGB(1, 0, 0)
 
 namespace df
 {
 	class LogWindow
 	{
 	private:
-		bool _level_trace = false;
-		bool _level_debug = false;
-		bool _level_info = false;
-		bool _level_hint = false;
-		bool _level_notice = false;
+		ImVec4 log_colors[9] = {
+			LOG_COLOR_RGB(0.4, 0.4, 0.6),
+			LOG_COLOR_RGB(0.4, 0.4, 0.4),
+			LOG_COLOR_RGB(1, 1, 1),
+			LOG_COLOR_RGB(0.6, 1, 0.6),
+			LOG_COLOR_RGB(1, 1, 0.2),
+			LOG_COLOR_RGB(1, 0.6, 0.2),
+			LOG_COLOR_RGB(1, 0.6, 0.2),
+			LOG_COLOR_RGB(1, 0.3, 0.3),
+			LOG_COLOR_RGB(1, 0, 0)
+		};
+		
+		bool _level_trace = true;
+		bool _level_debug = true;
+		bool _level_info = true;
+		bool _level_hint = true;
+		bool _level_notice = true;
 
-		bool _level_warning = false;
-		bool _level_alarm = false;
-		bool _level_error = false;
-		bool _level_fatal = false;
+		bool _level_warning = true;
+		bool _level_alarm = true;
+		bool _level_error = true;
+		bool _level_fatal = true;
 
-		// LogManager logManager;
+		char* _frm_start_buf;
+		char* _frm_end_buf;
+
+		LogManager* logManager;
 
 	public:
-		// explicit LogWindow(LogManager& logManager_) : logManager(logManager_) {}
+		LogWindow(LogManager* logManager_) : logManager(logManager_)
+		{
+			_frm_start_buf = new char[64]{ 0 };
+			_frm_end_buf = new char[64]{ 0 };
+		}
+
+		/*LogWindow()
+		{
+			_frm_start_buf = new char[64]{0};
+			_frm_end_buf = new char[64]{0};
+		}*/
 
 		void Render();
 
 	private:
-		void _renderLogEntry(detail::Logger::Entry);
+		void _renderLogEntry(const LogManager::EntryData&);
+
+		bool _canShowSeverity(detail::Logger::Entry::SEVERITY sev) const
+		{
+			return sev == detail::Logger::Entry::SEVERITY::TRACE && _level_trace ||
+				sev == detail::Logger::Entry::SEVERITY::DEBUG && _level_debug ||
+				sev == detail::Logger::Entry::SEVERITY::INFO && _level_info ||
+				sev == detail::Logger::Entry::SEVERITY::HINT && _level_hint ||
+				sev == detail::Logger::Entry::SEVERITY::NOTICE && _level_notice ||
+				sev == detail::Logger::Entry::SEVERITY::WARNING && _level_warning ||
+				sev == detail::Logger::Entry::SEVERITY::ALARM && _level_alarm ||
+				sev == detail::Logger::Entry::SEVERITY::ERROR && _level_error ||
+				sev == detail::Logger::Entry::SEVERITY::FATAL && _level_fatal;
+		}
 	};
 }
 

@@ -14,12 +14,13 @@ void df::LogFilter::SetFrameInterval(const uint64_t from, const uint64_t to)
 
 bool df::LogFilter::AcceptSeverity(detail::Logger::Entry::SEVERITY severity) const
 {
-	return _cond_type == CONDITION_TYPE::EQUALS && severity == _cond_sever ||
+	/*return _cond_type == CONDITION_TYPE::EQUALS && severity == _cond_sever ||
 		_cond_type == CONDITION_TYPE::NEQUALS && severity != _cond_sever ||
 		_cond_type == CONDITION_TYPE::ABOVE && static_cast<uint32_t>(severity) > static_cast<uint32_t>(_cond_sever) ||
 		_cond_type == CONDITION_TYPE::ABOVE_EQ && static_cast<uint32_t>(severity) >= static_cast<uint32_t>(_cond_sever) ||
 		_cond_type == CONDITION_TYPE::BELOW && static_cast<uint32_t>(severity) < static_cast<uint32_t>(_cond_sever) ||
-		_cond_type == CONDITION_TYPE::BELOW_EQ && static_cast<uint32_t>(severity) <= static_cast<uint32_t>(_cond_sever);
+		_cond_type == CONDITION_TYPE::BELOW_EQ && static_cast<uint32_t>(severity) <= static_cast<uint32_t>(_cond_sever);*/
+	return true; // TODO
 }
 
 bool df::LogFilter::AcceptFrameNumber(const uint64_t frame) const
@@ -29,5 +30,5 @@ bool df::LogFilter::AcceptFrameNumber(const uint64_t frame) const
 
 bool df::LogFilter::Accept(const detail::Logger::Entry::SEVERITY severity, const uint64_t frame) const
 {
-	return AcceptSeverity(severity) && AcceptFrameNumber(frame);
+	return AcceptSeverity(severity)/* && AcceptFrameNumber(frame)*/;
 }
