@@ -5,7 +5,7 @@
 
 namespace df
 {
-	class LogFilter
+	class LogFilterOld // TODO Delete
 	{
 	public:
 		enum class CONDITION_TYPE : uint8_t

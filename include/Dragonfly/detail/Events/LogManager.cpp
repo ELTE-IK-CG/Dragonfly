@@ -1,5 +1,5 @@
 #include "LogManager.h"
-
+#include <algorithm>
 
 uint64_t _Combine64bitHashes_3(uint64_t a_, uint64_t b_, uint64_t c_)
 {
@@ -23,22 +23,56 @@ void df::LogManager::HandleLogger(const LogEntry_Vec& vec_, const uint64_t frame
 
 // std::unordered_map<Hash_Type, LogData>			_data;
 // std::vector<std::pair<Hash_Type, std::size_t>>	_filteredAndOrdered;
+//
+
+void df::LogManager::Sort(const LogSortCriteria criteria_)
+{
+	std::sort(_filteredAndOrdered.begin(), _filteredAndOrdered.end(), [this, criteria_](const std::pair<Hash_Type, std::size_t>& a, const std::pair<Hash_Type, std::size_t>& b)-> bool
+		{
+			auto aa = _data.find(a.first);
+			auto bb = _data.find(b.first);
+
+			if (criteria_ == LogSortCriteria::TIMESTAMP)
+				return aa->second.entry.timestamp > bb->second.entry.timestamp;
+
+			if (criteria_ == LogSortCriteria::SEVERITY)
+				return static_cast<uint8_t>(aa->second.entry.severity) > static_cast<uint8_t>(bb->second.entry.severity);
+
+		}
+	);
+}
+
+
+void df::LogManager::Filter(LogFilter& new_filter_)
+{
+	if (new_filter_.IsSubsetOf(_current_filter))
+	{
+		std::remove_if(_filteredAndOrdered.begin(), _filteredAndOrdered.end(), [this, new_filter_](
+			const std::pair<Hash_Type, std::size_t>& e)-> bool
+			{
+				auto ee = _data.find(e.first);
+				return !new_filter_.Accept(ee->second.entry.severity, ee->second.instances[0].frameNumber); // frame number? TODO
+			}
+		);
+		// remove_if::pend, resize needed?
+	}
+	_current_filter = new_filter_;
+}
+
 
 bool df::LogManager::AddLogEvent(detail::Logger::Entry& entry_, const uint64_t frame_num_)
 {
-	if (!filter.Accept(entry_.severity, frame_num_))
+	if (!_current_filter.Accept(entry_.severity, frame_num_))
 		return false;
 
 	const auto hash = HashEntry(entry_);
 	auto it = _data.find(hash);
-	// LogData* logData;
 	if (it == _data.end())
 	{
 		LogData logData(entry_);
 		logData.instances.emplace_back(LogData::Instance(frame_num_, entry_.timestamp));
 		_data.emplace(hash, logData);
 		_filteredAndOrdered.emplace_back(std::pair<Hash_Type, std::size_t>(hash, logData.instances.size() - 1));
-		std::cout << "Added item to _fAO " << GetEntryCount() << std::endl;
 	}
 	else
 		it->second.instances.emplace_back(LogData::Instance(frame_num_, entry_.timestamp));

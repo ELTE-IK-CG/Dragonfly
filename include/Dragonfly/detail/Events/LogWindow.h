@@ -15,15 +15,15 @@ namespace df
 	{
 	private:
 		ImVec4 log_colors[9] = {
-			LOG_COLOR_RGB(0.4, 0.4, 0.6),
-			LOG_COLOR_RGB(0.4, 0.4, 0.4),
-			LOG_COLOR_RGB(1, 1, 1),
-			LOG_COLOR_RGB(0.6, 1, 0.6),
-			LOG_COLOR_RGB(1, 1, 0.2),
-			LOG_COLOR_RGB(1, 0.6, 0.2),
-			LOG_COLOR_RGB(1, 0.6, 0.2),
-			LOG_COLOR_RGB(1, 0.3, 0.3),
-			LOG_COLOR_RGB(1, 0, 0)
+			LOG_COLOR_RGB(0.4, 0.4, 0.6),	// TRACE	
+			LOG_COLOR_RGB(0.4, 0.4, 0.4),	// DEBUG	
+			LOG_COLOR_RGB(1, 1, 1),			// INFO	
+			LOG_COLOR_RGB(0.6, 1, 0.6),		// HINT	
+			LOG_COLOR_RGB(1, 1, 0.2),		// NOTICE	
+			LOG_COLOR_RGB(1, 0.6, 0.2),		// WARNING 
+			LOG_COLOR_RGB(1, 0.6, 0.2),		// ALARM	
+			LOG_COLOR_RGB(1, 0.3, 0.3),		// ERROR	
+			LOG_COLOR_RGB(1, 0, 0)			// FATAL	
 		};
 		
 		bool _level_trace = true;

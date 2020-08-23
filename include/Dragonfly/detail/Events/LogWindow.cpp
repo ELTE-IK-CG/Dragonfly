@@ -82,7 +82,7 @@ void df::LogWindow::_renderLogEntry(const LogManager::EntryData& entry_data_)
 	const auto expr_data = entry_data_.entry.expression.data();
 
 	if (*expr_data != 0)
-		ImGui::TextColored(color, "[%llu] (%llu) %s: %s", entry_data_.entry.timestamp, entry_data_.instanceCount, entry_data_.entry.expression.data(), entry_data_.entry.message.c_str());
+		ImGui::TextColored(color, "[%llu] [%llu] (%llu) %s: %s", entry_data_.entry.timestamp, entry_data_.frameNumber, entry_data_.instanceCount, entry_data_.entry.expression.data(), entry_data_.entry.message.c_str());
 	else
-		ImGui::TextColored(color, "[%llu] (%llu) %s", entry_data_.entry.timestamp, entry_data_.instanceCount, entry_data_.entry.message.c_str());
+		ImGui::TextColored(color, "[%llu] [%llu] (%llu) %s", entry_data_.entry.timestamp, entry_data_.frameNumber, entry_data_.instanceCount, entry_data_.entry.message.c_str());
 }
