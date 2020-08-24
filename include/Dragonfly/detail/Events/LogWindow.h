@@ -25,7 +25,7 @@ namespace df
 			LOG_COLOR_RGB(1, 0.3, 0.3),		// ERROR	
 			LOG_COLOR_RGB(1, 0, 0)			// FATAL	
 		};
-		
+
 		bool _level_trace = true;
 		bool _level_debug = true;
 		bool _level_info = true;
@@ -47,6 +47,7 @@ namespace df
 		{
 			_frm_start_buf = new char[64]{ 0 };
 			_frm_end_buf = new char[64]{ 0 };
+			_updateFilter();
 		}
 
 		/*LogWindow()
@@ -71,6 +72,21 @@ namespace df
 				sev == detail::Logger::Entry::SEVERITY::ALARM && _level_alarm ||
 				sev == detail::Logger::Entry::SEVERITY::ERROR && _level_error ||
 				sev == detail::Logger::Entry::SEVERITY::FATAL && _level_fatal;
+		}
+
+		void _updateFilter()
+		{
+			LogFilter filter;
+			filter.SetSeverity(0, _level_trace);
+			filter.SetSeverity(1, _level_debug);
+			filter.SetSeverity(2, _level_info);
+			filter.SetSeverity(3, _level_hint);
+			filter.SetSeverity(4, _level_notice);
+			filter.SetSeverity(5, _level_warning);
+			filter.SetSeverity(6, _level_alarm);
+			filter.SetSeverity(7, _level_error);
+			filter.SetSeverity(8, _level_fatal);
+			logManager->Filter(filter);
 		}
 	};
 }

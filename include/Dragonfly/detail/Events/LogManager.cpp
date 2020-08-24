@@ -29,15 +29,22 @@ void df::LogManager::Sort(const LogSortCriteria criteria_)
 {
 	std::sort(_filteredAndOrdered.begin(), _filteredAndOrdered.end(), [this, criteria_](const std::pair<Hash_Type, std::size_t>& a, const std::pair<Hash_Type, std::size_t>& b)-> bool
 		{
-			auto aa = _data.find(a.first);
-			auto bb = _data.find(b.first);
+			auto aa = _data.find(a.first)->second;
+			auto bb = _data.find(b.first)->second;
 
 			if (criteria_ == LogSortCriteria::TIMESTAMP)
-				return aa->second.entry.timestamp > bb->second.entry.timestamp;
+				return aa.entry.timestamp < bb.entry.timestamp;
 
 			if (criteria_ == LogSortCriteria::SEVERITY)
-				return static_cast<uint8_t>(aa->second.entry.severity) > static_cast<uint8_t>(bb->second.entry.severity);
+				return static_cast<uint8_t>(aa.entry.severity) < static_cast<uint8_t>(bb.entry.severity);
 
+			const auto frame_a = aa.instances[a.second].frameNumber;
+			const auto frame_b = bb.instances[b.second].frameNumber;
+			if (criteria_ == LogSortCriteria::FRAME_NUMBER)
+				return frame_a < frame_b;
+		
+			if (criteria_ == LogSortCriteria::MESSAGE_STR)
+				return aa.entry.message < bb.entry.message;
 		}
 	);
 }
@@ -47,14 +54,20 @@ void df::LogManager::Filter(LogFilter& new_filter_)
 {
 	if (new_filter_.IsSubsetOf(_current_filter))
 	{
-		std::remove_if(_filteredAndOrdered.begin(), _filteredAndOrdered.end(), [this, new_filter_](
+		const auto last_element = std::remove_if(_filteredAndOrdered.begin(), _filteredAndOrdered.end(), [this, new_filter_](
 			const std::pair<Hash_Type, std::size_t>& e)-> bool
 			{
 				auto ee = _data.find(e.first);
-				return !new_filter_.Accept(ee->second.entry.severity, ee->second.instances[0].frameNumber); // frame number? TODO
+				return !new_filter_.Accept(ee->second.entry.severity, ee->second.instances[e.second].frameNumber);
+				// Accept(ee->second.entry, framenumber) TODO
 			}
 		);
-		// remove_if::pend, resize needed?
+		_filteredAndOrdered.resize(std::distance(_filteredAndOrdered.begin(), last_element));
+	}
+	else
+	{
+		_filteredAndOrdered.clear();
+		// TODO Rebuild _filteredAndOrdered
 	}
 	_current_filter = new_filter_;
 }

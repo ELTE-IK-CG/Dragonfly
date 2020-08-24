@@ -19,22 +19,42 @@ void df::LogWindow::Render()
 
 		if (ImGui::BeginPopup("Filtering"))
 		{
-			ImGui::Checkbox("Trace", &_level_trace);
+			if (ImGui::Checkbox("Trace", &_level_trace))
+				_updateFilter();
 			ImGui::SameLine();
-			ImGui::Checkbox("Warning", &_level_warning);
-			ImGui::Checkbox("Debug", &_level_debug);
+			if (ImGui::Checkbox("Warning", &_level_warning))
+				_updateFilter();
+			if (ImGui::Checkbox("Debug", &_level_debug))
+				_updateFilter();
 			ImGui::SameLine();
-			ImGui::Checkbox("Alarm", &_level_alarm);
-			ImGui::Checkbox("Info ", &_level_info);
+			if (ImGui::Checkbox("Alarm", &_level_alarm))
+				_updateFilter();
+			if (ImGui::Checkbox("Info ", &_level_info))
+				_updateFilter();
 			ImGui::SameLine();
-			ImGui::Checkbox("Error", &_level_error);
-			ImGui::Checkbox("Hint ", &_level_hint);
+			if (ImGui::Checkbox("Error", &_level_error))
+				_updateFilter();
+			if (ImGui::Checkbox("Hint ", &_level_hint))
+				_updateFilter();
 			ImGui::SameLine();
-			ImGui::Checkbox("Fatal", &_level_fatal);
-			ImGui::Checkbox("Notice", &_level_notice);
+			if (ImGui::Checkbox("Fatal", &_level_fatal))
+				_updateFilter();
+			if (ImGui::Checkbox("Notice", &_level_notice))
+				_updateFilter();
+
 
 			ImGui::InputText("Frame Start: ", _frm_start_buf, 16, ImGuiInputTextFlags_CharsDecimal);
 			ImGui::InputText("Frame End: ", _frm_end_buf, 16, ImGuiInputTextFlags_CharsDecimal);
+
+			ImGui::Text("Sort By");
+			if (ImGui::Button("Timestamp"))
+				logManager->Sort(LogManager::LogSortCriteria::TIMESTAMP);
+			ImGui::SameLine();
+			if (ImGui::Button("Frame Number"))
+				logManager->Sort(LogManager::LogSortCriteria::FRAME_NUMBER);
+			ImGui::SameLine();
+			if (ImGui::Button("Severity"))
+				logManager->Sort(LogManager::LogSortCriteria::SEVERITY);
 
 			ImGui::EndPopup();
 		}
@@ -80,6 +100,10 @@ void df::LogWindow::_renderLogEntry(const LogManager::EntryData& entry_data_)
 {
 	const auto color = log_colors[static_cast<uint32_t>(entry_data_.entry.severity)];
 	const auto expr_data = entry_data_.entry.expression.data();
+
+	//ImGui::TextColored(color, "[%llu]"",  entry_data_.entry.timestamp); ImGui::SameLine(50);
+	//ImGui::TextColored(color, "[%llu]"",  entry_data_.frameNumber); ImGui::SameLine(50);
+
 
 	if (*expr_data != 0)
 		ImGui::TextColored(color, "[%llu] [%llu] (%llu) %s: %s", entry_data_.entry.timestamp, entry_data_.frameNumber, entry_data_.instanceCount, entry_data_.entry.expression.data(), entry_data_.entry.message.c_str());

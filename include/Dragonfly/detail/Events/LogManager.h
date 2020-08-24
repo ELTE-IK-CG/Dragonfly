@@ -42,7 +42,8 @@ namespace df {
 		{
 			TIMESTAMP,
 			FRAME_NUMBER,
-			SEVERITY
+			SEVERITY,
+			MESSAGE_STR
 		};
 
 	private:

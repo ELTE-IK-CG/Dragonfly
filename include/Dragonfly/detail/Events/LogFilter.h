@@ -15,6 +15,10 @@ namespace df {
 
 		[[nodiscard]] bool IsSubsetOf(LogFilter& f2);
 		[[nodiscard]] bool Accept(detail::Logger::Entry::SEVERITY, uint64_t) const;
+		void SetSeverity(int s, bool v)
+		{
+			_severity_filters[s] = v;
+		}
 	};
 }
 
