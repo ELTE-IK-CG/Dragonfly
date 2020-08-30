@@ -17,7 +17,7 @@
   <ItemGroup>
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\Events\LogFilterHelper.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogFilter.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Logger.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogWindow.cpp" />
@@ -43,10 +43,10 @@
     <ClCompile Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.cpp" />
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_sdl.cpp" />
-    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui.cpp" />
-    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_demo.cpp" />
-    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui.cpp" />
+    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Dragonfly\config.h" />
@@ -54,7 +54,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilterHelper.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilter.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Logger.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogManager.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogWindow.h" />
@@ -105,12 +105,12 @@
     <ClInclude Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.h" />
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h" />
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_sdl.h" />
-    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imconfig.h" />
-    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imgui.h" />
-    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imgui_internal.h" />
-    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_textedit.h" />
-    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h" />
+    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imconfig.h" />
+    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui.h" />
+    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_internal.h" />
+    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_textedit.h" />
+    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\Dragonfly\detail\Events\Sample.inl" />
@@ -167,15 +167,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)..\include;T:\DragonflyPack\includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
-    <IncludePath>$(ProjectDir)..\include;T:\DragonflyPack\includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)..\include;T:\DragonflyPack\includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -42,6 +42,7 @@ namespace df {
 		{
 			TIMESTAMP,
 			FRAME_NUMBER,
+			COUNT,
 			SEVERITY,
 			MESSAGE_STR
 		};
@@ -52,6 +53,8 @@ namespace df {
 		LogFilter _current_filter;
 		// LogSortCriteria _current_sort_criteria;
 		// hash + index in instances
+		
+		void _addLogInstance(detail::Logger::Entry& entry_, const uint64_t frame_num_);
 
 		static inline uint64_t HashEntry(detail::Logger::Entry&);
 

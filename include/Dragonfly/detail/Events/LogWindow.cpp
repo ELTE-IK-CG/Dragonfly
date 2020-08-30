@@ -43,21 +43,28 @@ void df::LogWindow::Render()
 				_updateFilter();
 
 
-			ImGui::InputText("Frame Start: ", _frm_start_buf, 16, ImGuiInputTextFlags_CharsDecimal);
-			ImGui::InputText("Frame End: ", _frm_end_buf, 16, ImGuiInputTextFlags_CharsDecimal);
-
-			ImGui::Text("Sort By");
-			if (ImGui::Button("Timestamp"))
-				logManager->Sort(LogManager::LogSortCriteria::TIMESTAMP);
-			ImGui::SameLine();
-			if (ImGui::Button("Frame Number"))
-				logManager->Sort(LogManager::LogSortCriteria::FRAME_NUMBER);
-			ImGui::SameLine();
-			if (ImGui::Button("Severity"))
-				logManager->Sort(LogManager::LogSortCriteria::SEVERITY);
+			if (ImGui::InputText("Frame Start ", _frm_start_buf, 16, ImGuiInputTextFlags_CharsDecimal))
+				_updateFrameLimits();
+			if (ImGui::InputText("Frame End ", _frm_end_buf, 16, ImGuiInputTextFlags_CharsDecimal))
+				_updateFrameLimits();
 
 			ImGui::EndPopup();
 		}
+
+		if (ImGui::Button("Timestamp", ImVec2(104, 0)))
+			logManager->Sort(LogManager::LogSortCriteria::TIMESTAMP);
+		ImGui::SameLine();
+		if (ImGui::Button("Frame"))
+			logManager->Sort(LogManager::LogSortCriteria::FRAME_NUMBER);
+		ImGui::SameLine();
+		if (ImGui::Button("Count"))
+			logManager->Sort(LogManager::LogSortCriteria::COUNT);
+		ImGui::SameLine();
+		if (ImGui::Button("Severity"))
+			logManager->Sort(LogManager::LogSortCriteria::SEVERITY);
+		ImGui::SameLine();
+		if (ImGui::Button("Message", ImVec2(ImGui::GetWindowWidth() - ImGui::GetCursorPosX(), 0)))
+			logManager->Sort(LogManager::LogSortCriteria::MESSAGE_STR);
 
 		if (ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_AlwaysVerticalScrollbar))
 		{
@@ -105,8 +112,18 @@ void df::LogWindow::_renderLogEntry(const LogManager::EntryData& entry_data_)
 	//ImGui::TextColored(color, "[%llu]"",  entry_data_.frameNumber); ImGui::SameLine(50);
 
 
-	if (*expr_data != 0)
+	/*if (*expr_data != 0)
 		ImGui::TextColored(color, "[%llu] [%llu] (%llu) %s: %s", entry_data_.entry.timestamp, entry_data_.frameNumber, entry_data_.instanceCount, entry_data_.entry.expression.data(), entry_data_.entry.message.c_str());
 	else
-		ImGui::TextColored(color, "[%llu] [%llu] (%llu) %s", entry_data_.entry.timestamp, entry_data_.frameNumber, entry_data_.instanceCount, entry_data_.entry.message.c_str());
+		ImGui::TextColored(color, "[%llu] [%llu] (%llu) %s", entry_data_.entry.timestamp, entry_data_.frameNumber, entry_data_.instanceCount, entry_data_.entry.message.c_str());*/
+
+	ImGui::TextColored(color, "[%llu]", entry_data_.entry.timestamp);
+	ImGui::SameLine();
+	ImGui::TextColored(color, "[%llu]", entry_data_.frameNumber);
+	ImGui::SameLine(163);
+	ImGui::TextColored(color, "[%llu]", entry_data_.instanceCount);
+	ImGui::SameLine(214);
+	ImGui::TextColored(color, "[%s]", log_names[static_cast<int>(entry_data_.entry.severity)].c_str());
+	ImGui::SameLine(286);
+	ImGui::TextColored(color, "%s", entry_data_.entry.message.c_str());
 }

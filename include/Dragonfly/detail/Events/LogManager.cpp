@@ -45,6 +45,9 @@ void df::LogManager::Sort(const LogSortCriteria criteria_)
 		
 			if (criteria_ == LogSortCriteria::MESSAGE_STR)
 				return aa.entry.message < bb.entry.message;
+		
+			if (criteria_ == LogSortCriteria::COUNT)
+				return aa.instances.size() < bb.instances.size();
 		}
 	);
 }
@@ -58,16 +61,22 @@ void df::LogManager::Filter(LogFilter& new_filter_)
 			const std::pair<Hash_Type, std::size_t>& e)-> bool
 			{
 				auto ee = _data.find(e.first);
-				return !new_filter_.Accept(ee->second.entry.severity, ee->second.instances[e.second].frameNumber);
-				// Accept(ee->second.entry, framenumber) TODO
+				//return !new_filter_.Accept(ee->second.entry.severity, ee->second.instances[e.second].frameNumber);
+				return !new_filter_.Accept(ee->second.entry, ee->second.instances[e.second].frameNumber);
 			}
 		);
 		_filteredAndOrdered.resize(std::distance(_filteredAndOrdered.begin(), last_element));
 	}
 	else
 	{
+		// Rebuild _filteredAndOrdered
+		
 		_filteredAndOrdered.clear();
-		// TODO Rebuild _filteredAndOrdered
+		for (auto& e : _data)
+		{
+			for (auto& i : e.second.instances)
+				_addLogInstance(e.second.entry, i.frameNumber);
+		}
 	}
 	_current_filter = new_filter_;
 }
@@ -75,9 +84,16 @@ void df::LogManager::Filter(LogFilter& new_filter_)
 
 bool df::LogManager::AddLogEvent(detail::Logger::Entry& entry_, const uint64_t frame_num_)
 {
-	if (!_current_filter.Accept(entry_.severity, frame_num_))
+	if (!_current_filter.Accept(entry_, frame_num_))
 		return false;
 
+	_addLogInstance(entry_, frame_num_);
+
+	return true;
+}
+
+void df::LogManager::_addLogInstance(detail::Logger::Entry& entry_, const uint64_t frame_num_)
+{
 	const auto hash = HashEntry(entry_);
 	auto it = _data.find(hash);
 	if (it == _data.end())
@@ -89,6 +105,4 @@ bool df::LogManager::AddLogEvent(detail::Logger::Entry& entry_, const uint64_t f
 	}
 	else
 		it->second.instances.emplace_back(LogData::Instance(frame_num_, entry_.timestamp));
-
-	return true;
 }

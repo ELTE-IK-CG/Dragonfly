@@ -26,6 +26,18 @@ namespace df
 			LOG_COLOR_RGB(1, 0, 0)			// FATAL	
 		};
 
+		std::string log_names[9] = {
+			"TRACE",
+			"DEBUG",
+			"INFO",
+			"HINT",
+			"NOTICE",
+			"WARNING",
+			"ALARM",
+			"ERROR",
+			"FATAL"
+		};
+
 		bool _level_trace = true;
 		bool _level_debug = true;
 		bool _level_info = true;
@@ -39,6 +51,9 @@ namespace df
 
 		char* _frm_start_buf;
 		char* _frm_end_buf;
+
+		int _frm_start = -1;
+		int _frm_end = -1;
 
 		LogManager* logManager;
 
@@ -86,7 +101,18 @@ namespace df
 			filter.SetSeverity(6, _level_alarm);
 			filter.SetSeverity(7, _level_error);
 			filter.SetSeverity(8, _level_fatal);
+			filter.SetFrameLimits(_frm_start, _frm_end);
 			logManager->Filter(filter);
+		}
+
+		void _updateFrameLimits()
+		{
+			if (strlen(_frm_start_buf))
+				_frm_start = atoi(_frm_start_buf);
+			if (strlen(_frm_end_buf))
+				_frm_end = atoi(_frm_end_buf);
+
+			_updateFilter();
 		}
 	};
 }

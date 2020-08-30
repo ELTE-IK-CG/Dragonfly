@@ -14,10 +14,17 @@ namespace df {
 		LogFilter() : _severity_filters{ false } {}
 
 		[[nodiscard]] bool IsSubsetOf(LogFilter& f2);
-		[[nodiscard]] bool Accept(detail::Logger::Entry::SEVERITY, uint64_t) const;
+		[[nodiscard]] bool Accept(const detail::Logger::Entry&, uint64_t) const;
+
 		void SetSeverity(int s, bool v)
 		{
 			_severity_filters[s] = v;
+		}
+
+		void SetFrameLimits(const int from_, const int to_)
+		{
+			_frame_from = from_;
+			_frame_to = to_;
 		}
 	};
 }

@@ -12,9 +12,9 @@ bool df::LogFilter::IsSubsetOf(df::LogFilter& f2)
 	return true;
 }
 
-bool df::LogFilter::Accept(detail::Logger::Entry::SEVERITY sev_, const uint64_t frame_) const
+bool df::LogFilter::Accept(const detail::Logger::Entry& entry_, const uint64_t frame_) const
 {
-	const auto accept_sev = _severity_filters[static_cast<uint8_t>(sev_)];
+	const auto accept_sev = _severity_filters[static_cast<uint8_t>(entry_.severity)];
 	const auto accept_frame = (_frame_from == -1 || frame_ >= _frame_from) && (_frame_to == -1 || frame_ <= _frame_to);
-	return accept_sev /*&& accept_frame*/;
+	return accept_sev && accept_frame;
 }
