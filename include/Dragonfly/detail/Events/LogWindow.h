@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Logger.h"
-#include "LogManager.h"
 #include <array>
+#include <string>
+
 
 #include "ImGui/imgui.h"
+#include "LogView.h"
 
 // TODO constexpr array
 #define LOG_COLOR_RGB(r, g, b) ImVec4((r), (g), (b), 1)
@@ -55,10 +56,12 @@ namespace df
 		int _frm_start = -1;
 		int _frm_end = -1;
 
-		LogManager* logManager;
+		bool _reverse_sort = false;
+		df::LogView* _log_view;
+		df::LogView::LogSortCriteria _sort_criteria;
 
 	public:
-		LogWindow(LogManager* logManager_) : logManager(logManager_)
+		LogWindow(LogView* log_view_) : _log_view(log_view_)
 		{
 			_frm_start_buf = new char[64]{ 0 };
 			_frm_end_buf = new char[64]{ 0 };
@@ -74,19 +77,19 @@ namespace df
 		void Render();
 
 	private:
-		void _renderLogEntry(const LogManager::EntryData&);
+		void _renderLogEntry(const df::LogManager::Instance*);
 
-		bool _canShowSeverity(detail::Logger::Entry::SEVERITY sev) const
+		bool _canShowSeverity(df::LogManager::SEVERITY sev) const
 		{
-			return sev == detail::Logger::Entry::SEVERITY::TRACE && _level_trace ||
-				sev == detail::Logger::Entry::SEVERITY::DEBUG && _level_debug ||
-				sev == detail::Logger::Entry::SEVERITY::INFO && _level_info ||
-				sev == detail::Logger::Entry::SEVERITY::HINT && _level_hint ||
-				sev == detail::Logger::Entry::SEVERITY::NOTICE && _level_notice ||
-				sev == detail::Logger::Entry::SEVERITY::WARNING && _level_warning ||
-				sev == detail::Logger::Entry::SEVERITY::ALARM && _level_alarm ||
-				sev == detail::Logger::Entry::SEVERITY::ERROR && _level_error ||
-				sev == detail::Logger::Entry::SEVERITY::FATAL && _level_fatal;
+			return sev == df::LogManager::SEVERITY::TRACE && _level_trace ||
+				sev == df::LogManager::SEVERITY::DEBUG && _level_debug ||
+				sev == df::LogManager::SEVERITY::INFO && _level_info ||
+				sev == df::LogManager::SEVERITY::HINT && _level_hint ||
+				sev == df::LogManager::SEVERITY::NOTICE && _level_notice ||
+				sev == df::LogManager::SEVERITY::WARNING && _level_warning ||
+				sev == df::LogManager::SEVERITY::ALARM && _level_alarm ||
+				sev == df::LogManager::SEVERITY::ERROR && _level_error ||
+				sev == df::LogManager::SEVERITY::FATAL && _level_fatal;
 		}
 
 		void _updateFilter()
@@ -102,7 +105,7 @@ namespace df
 			filter.SetSeverity(7, _level_error);
 			filter.SetSeverity(8, _level_fatal);
 			filter.SetFrameLimits(_frm_start, _frm_end);
-			logManager->Filter(filter);
+			_log_view->SetFilter(filter);
 		}
 
 		void _updateFrameLimits()
@@ -114,6 +117,16 @@ namespace df
 
 			_updateFilter();
 		}
+
+		void _setSort(df::LogView::LogSortCriteria criteria_)
+		{
+			_sort_criteria = criteria_;
+			_log_view->SetSort(criteria_);
+		}
+
+		void _drawSortButton(df::LogView::LogSortCriteria criteria_, const std::string& text_, bool last_, ImVec2 size_ = ImVec2(0, 0));
+
+		static void _drawArrow(bool up, ImVec2 pos);
 	};
 }
 

@@ -1,6 +1,8 @@
-#pragma once
+#ifndef LOG_TEST_LOGFILTER_H
+#define LOG_TEST_LOGFILTER_H
 
-#include "Logger.h"
+#include <cstdint>
+#include "LogManager.h"
 
 namespace df {
 	class LogFilter
@@ -14,7 +16,7 @@ namespace df {
 		LogFilter() : _severity_filters{ false } {}
 
 		[[nodiscard]] bool IsSubsetOf(LogFilter& f2);
-		[[nodiscard]] bool Accept(const detail::Logger::Entry&, uint64_t) const;
+		[[nodiscard]] bool Accept(const LogManager::Instance&) const;
 
 		void SetSeverity(int s, bool v)
 		{
@@ -29,3 +31,5 @@ namespace df {
 	};
 }
 
+
+#endif //LOG_TEST_LOGFILTER_H

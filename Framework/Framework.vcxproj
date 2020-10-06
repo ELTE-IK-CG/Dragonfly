@@ -18,8 +18,8 @@
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogFilter.cpp" />
-    <ClCompile Include="..\include\Dragonfly\detail\Events\Logger.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogView.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogWindow.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp" />
@@ -43,10 +43,10 @@
     <ClCompile Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.cpp" />
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_sdl.cpp" />
-    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui.cpp" />
-    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_demo.cpp" />
-    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui.cpp" />
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Dragonfly\config.h" />
@@ -55,8 +55,8 @@
     <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilter.h" />
-    <ClInclude Include="..\include\Dragonfly\detail\Events\Logger.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogManager.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogView.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogWindow.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h" />

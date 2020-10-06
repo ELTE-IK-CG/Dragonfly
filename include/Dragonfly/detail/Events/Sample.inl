@@ -117,10 +117,10 @@ inline void df::Sample::_CallResizeHandlers(std::vector<Callback_Resize>& handle
 
 inline void df::Sample::_CallLoggerHandlers(std::vector<Callback_Logger>& handlers_, uint64_t frame_number_)
 {
-	const auto& logs = df::Logger.GetEntries();
+	/*const auto& logs = df::Logger.GetEntries();
 	for (auto& pF : handlers_) {
 		pF(logs, frame_number_);
-	}
+	}*/ // TODO
 }
 
 template<typename F>
@@ -179,9 +179,9 @@ inline void Sample::Run(F&& RenderFunc_)
 			ImGui::RenderPlatformWindowsDefault();
 			SDL_GL_MakeCurrent(_mainWindowPtr, _mainWindowContext);
 		}
-		if (!Logger.GetEntries().empty())
+		/*if (!Logger.GetEntries().empty())
 			_CallLoggerHandlers(_logger, frame_number);
-		Logger.ClearEntries();
+		Logger.ClearEntries();*/ // TODO
 		SDL_GL_SwapWindow(_mainWindowPtr);
 		++frame_number;	//is this the same as renderdoc?
 	}

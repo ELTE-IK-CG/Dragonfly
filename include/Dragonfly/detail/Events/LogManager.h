@@ -1,81 +1,83 @@
-#pragma once
+#ifndef LOG_TEST_LOGMANAGER_H
+#define LOG_TEST_LOGMANAGER_H
 
-#include <unordered_map>
-#include <iostream>
+#include <string>
 #include <utility>
-#include "LogFilterHelper.h"
-#include "LogFilter.h"
-#include "Logger.h"
+#include <vector>
+#include <map>
+#include <unordered_map>
+//#include "LogView.h"
 
 namespace df {
-	class LogManager {
-	public:
-		using Hash_Type = uint64_t; //hash from filePath + line + message
+    class LogView;
 
-		struct LogData {
-			struct Instance {
-				uint64_t frameNumber;
-				uint64_t timestamp;
+    class LogManager {
+    public:
+        enum class SEVERITY : uint32_t {
+            TRACE,
+            DEBUG,
+            INFO,
+            HINT,
+            NOTICE,
+            WARNING,
+            ALARM,
+            ERROR,
+            FATAL
+        };
+        enum class TYPE : uint32_t {
+            CHECK,
+            ASSERT,
+            MESSAGE,
+            USER
+        };
+        struct Location {
+            std::string_view filePath;
+            int line;
+        };
 
-				Instance(const uint64_t frameNumber_, const uint64_t timestamp_)
-				{
-					frameNumber = frameNumber_;
-					timestamp = timestamp_;
-				}
-			};
-			detail::Logger::Entry entry;
-			std::vector<Instance> instances;
+        struct LogEntry;
 
-			explicit LogData(detail::Logger::Entry& entry_) : entry(entry_) {}
-		};
+        struct Instance {
+            LogEntry* entry;
+            uint64_t timestamp;
+            uint64_t frame_number = -1;
+        };
 
-		struct EntryData
-		{
-			detail::Logger::Entry entry;
-			uint64_t frameNumber;
-			uint64_t instanceCount;
+        struct LogEntry {
+            SEVERITY severity;
+            TYPE type;
+            Location location;
+            std::string expression;
+            std::string message;
+            uint64_t hash;
 
-			EntryData(detail::Logger::Entry entry_, const uint64_t frame_, const uint64_t instances_) : entry(std::move(entry_)), frameNumber(frame_), instanceCount(instances_) {}
-		};
+            std::vector<Instance> instances;
 
-		enum class LogSortCriteria
-		{
-			TIMESTAMP,
-			FRAME_NUMBER,
-			COUNT,
-			SEVERITY,
-			MESSAGE_STR
-		};
+            LogEntry(SEVERITY _sev, TYPE _type, Location _loc, std::string _expr, std::string _msg) :
+                severity(_sev), type(_type), location(_loc), expression(std::move(_expr)), message(std::move(_msg)) {
+                hash = getHash(*this);
+            }
+        };
 
-	private:
-		std::unordered_map<Hash_Type, LogData> _data;
-		std::vector<std::pair<Hash_Type, std::size_t>> _filteredAndOrdered;
-		LogFilter _current_filter;
-		// LogSortCriteria _current_sort_criteria;
-		// hash + index in instances
-		
-		void _addLogInstance(detail::Logger::Entry& entry_, const uint64_t frame_num_);
+        typedef void (*SubscriberCallback)(Instance*);
 
-		static inline uint64_t HashEntry(detail::Logger::Entry&);
+        std::unordered_map<uint64_t, LogEntry> entries;
 
-	public:
-		void HandleLogger(const LogEntry_Vec&, uint64_t frame_num_);
-		bool AddLogEvent(detail::Logger::Entry&, uint64_t frame_num_);
+        void AddEntryBatch(std::vector<std::pair<LogManager::LogEntry, uint64_t>>& vec, uint64_t frame_number);
 
-		void Sort(LogSortCriteria criteria_);
-		void Filter(LogFilter& filter_);
+        void AddEntry(LogEntry&& entry, uint64_t timestamp, uint64_t frame_number);
 
-		[[nodiscard]] size_t GetEntryCount() const { return _filteredAndOrdered.size(); }
+        void Subscribe(LogView* view);
 
-		[[nodiscard]] EntryData Get(const size_t index_) const
-		{
-			const auto& ind = _filteredAndOrdered[index_];
-			auto entry_data = _data.at(ind.first);
-			const auto ret = entry_data.entry;
-			const auto frame_number = entry_data.instances[ind.second].frameNumber;
+    private:
+        std::vector<LogView*> logSubscribers;
+        std::vector<LogView*> logSubscribers2;
 
-			return EntryData(ret, frame_number, entry_data.instances.size());
-		}
-	};
+        static uint64_t getHash(LogEntry& entry);
 
-}	//namespace df
+        void notifySubscribers(Instance* instance);
+    };
+}
+
+
+#endif //LOG_TEST_LOGMANAGER_H
