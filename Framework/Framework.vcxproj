@@ -105,12 +105,12 @@
     <ClInclude Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.h" />
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h" />
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_sdl.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imconfig.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_internal.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_textedit.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_truetype.h" />
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imconfig.h" />
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imgui.h" />
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imgui_internal.h" />
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_textedit.h" />
+    <ClInclude Include="T:\DragonflyPack\includes\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\Dragonfly\detail\Events\Sample.inl" />
@@ -167,15 +167,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)..\include;D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;T:\DragonflyPack\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
-    <IncludePath>$(ProjectDir)..\include;D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;T:\DragonflyPack\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)..\include;D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;T:\DragonflyPack\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
