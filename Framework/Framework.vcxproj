@@ -20,11 +20,13 @@
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Sample.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\FileIO\FileIO.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\File\File.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\File\FileEditor.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Program\Program.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Shader\Shader.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderEditor.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderSource.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Texture\Texture.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Traits\InternalFormats.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Traits\UniformTypes.cpp" />
@@ -57,6 +59,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Sample.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\FileIO\FileIO.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\File.h" />
     <ClInclude Include="..\include\Dragonfly\detail\File\FileEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.h" />
@@ -70,6 +73,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Shader\Shader.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderFwd.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderSource.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture1D.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture2D.h" />

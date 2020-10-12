@@ -6,6 +6,44 @@
 #include "../Program/ProgramFwd.h"
 #include "../Shader/Shader.h"
 #include "../Uniform/Subroutines.h"
+#include <filesystem>
+#include <vector>
+#include <variant>
+
+namespace df{
+namespace detail { // Shader source stuff
+
+
+
+struct ShaderSource
+{
+	ShaderSource operator +(ShaderSource&&);
+	ShaderSource operator +(const ShaderSource&);
+private:
+	struct Source {
+		enum class SourceType { PATH, CODE } type;
+		std::string pathOrCode;
+	};
+	std::vector<Source> list;
+};
+
+struct VertexShaderSource : ShaderSource
+{
+	ShaderSource operator +(ShaderSource);
+};
+
+} //detail
+
+detail::ShaderSource Code(std::string);
+
+struct VertexShader {
+};
+	
+	template<typename ... Source_T>
+	auto MakeShader(Source_T ...source_t);
+
+}//df
+
 
 namespace df
 {

@@ -61,6 +61,9 @@
     <Filter Include="Dragonfly\detail\Buffer">
       <UniqueIdentifier>{79cd8f2c-65ae-4cfb-a6cb-ea5737779130}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dragonfly\detail\FileIO">
+      <UniqueIdentifier>{1e534988-fa37-4f1e-8baa-30d3fabec243}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp">
@@ -149,6 +152,12 @@
     </ClCompile>
     <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp">
       <Filter>Dragonfly\detail\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\FileIO\FileIO.cpp">
+      <Filter>Dragonfly\detail\FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderSource.cpp">
+      <Filter>Dragonfly\detail\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +346,12 @@
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Traits\Range.h">
       <Filter>Dragonfly\detail\Traits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\FileIO\FileIO.h">
+      <Filter>Dragonfly\detail\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderSource.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

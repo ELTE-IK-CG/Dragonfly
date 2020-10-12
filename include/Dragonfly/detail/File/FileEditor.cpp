@@ -50,7 +50,7 @@ void FileEditor::Render()
 		editor->Render(winname.c_str(), {0,450}, false);
 		if (editor->IsTextChanged()) {
 			code = editor->GetText();
-			dirty = true;
+			dirty = true; //TODO for new impl: only copy entire shit when editor is deleted or file is saved.
 		}
 	}
 	ImGui::PopID();
