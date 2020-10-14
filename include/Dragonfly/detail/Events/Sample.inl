@@ -1,5 +1,6 @@
 #pragma once
 #include "Sample.h"
+#include "../utility.h"
 #include <chrono>
 #include <algorithm>
 #include <iostream>
@@ -9,9 +10,9 @@
 #include <ImGui-addons/impl/imgui_impl_sdl.h>
 #include <ImGui-addons/impl/imgui_impl_opengl3.h>
 
-namespace df {
+ENUM_CLASS_FLAG_OPERATORS(df::Sample::FLAGS);
 
-ENUM_CLASS_FLAG_OPERATORS(Sample::FLAGS);
+namespace df {
 
 template<typename F_, typename E_>
 inline void Sample::_CallEventHandlers(std::multimap<int, F_>& queue_, E_&& arg_)

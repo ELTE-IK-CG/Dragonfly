@@ -9,75 +9,82 @@
 //#include "LogView.h"
 
 namespace df {
-    class LogView;
+	class LogView;
 
-    class LogManager {
-    public:
-        enum class SEVERITY : uint32_t {
-            TRACE,
-            DEBUG,
-            INFO,
-            HINT,
-            NOTICE,
-            WARNING,
-            ALARM,
-            ERROR,
-            FATAL
-        };
-        enum class TYPE : uint32_t {
-            CHECK,
-            ASSERT,
-            MESSAGE,
-            USER
-        };
-        struct Location {
-            std::string_view filePath;
-            int line;
-        };
+	class LogManager {
+	public:
+		enum class SEVERITY : uint32_t {
+			TRACE,
+			DEBUG,
+			INFO,
+			HINT,
+			NOTICE,
+			WARNING,
+			ALARM,
+			ERROR,
+			FATAL
+		};
+		enum class TYPE : uint32_t {
+			CHECK,
+			ASSERT,
+			MESSAGE,
+			USER
+		};
+		struct Location {
+			std::string_view filePath;
+			int line;
+		};
 
-        struct LogEntry;
+		struct LogEntry;
 
-        struct Instance {
-            LogEntry* entry;
-            uint64_t timestamp;
-            uint64_t frame_number = -1;
-        };
+		struct Instance {
+			LogEntry* entry;
+			uint64_t timestamp;
+			uint64_t frame_number = -1;
+		};
 
-        struct LogEntry {
-            SEVERITY severity;
-            TYPE type;
-            Location location;
-            std::string expression;
-            std::string message;
-            uint64_t hash;
+		struct LogEntry {
+			SEVERITY severity;
+			TYPE type;
+			Location location;
+			std::string expression;
+			std::string message;
+			uint64_t hash;
 
-            std::vector<Instance> instances;
+			std::vector<Instance> instances;
 
-            LogEntry(SEVERITY _sev, TYPE _type, Location _loc, std::string _expr, std::string _msg) :
-                severity(_sev), type(_type), location(_loc), expression(std::move(_expr)), message(std::move(_msg)) {
-                hash = getHash(*this);
-            }
-        };
+			LogEntry(SEVERITY _sev, TYPE _type, Location _loc, std::string _expr, std::string _msg) :
+				severity(_sev), type(_type), location(_loc), expression(std::move(_expr)), message(std::move(_msg)) {
+				hash = getHash(*this);
+			}
+		};
 
-        typedef void (*SubscriberCallback)(Instance*);
+		typedef void (*SubscriberCallback)(Instance*);
 
-        std::unordered_map<uint64_t, LogEntry> entries;
+		std::unordered_map<uint64_t, LogEntry> entries;
 
-        void AddEntryBatch(std::vector<std::pair<LogManager::LogEntry, uint64_t>>& vec, uint64_t frame_number);
+		void AddEntryBatch(std::vector<std::pair<LogManager::LogEntry, uint64_t>>& vec, uint64_t frame_number);
 
-        void AddEntry(LogEntry&& entry, uint64_t timestamp, uint64_t frame_number);
+		void AddEntry(LogEntry&& entry, uint64_t timestamp, uint64_t frame_number);
 
-        void Subscribe(LogView* view);
+		void Subscribe(LogView* view);
 
-    private:
-        std::vector<LogView*> logSubscribers;
-        std::vector<LogView*> logSubscribers2;
+		static LogManager& GetSingleton()
+		{
+			static LogManager log;
+			return log;
+		}
 
-        static uint64_t getHash(LogEntry& entry);
+	private:
+		std::vector<LogView*> logSubscribers;
+		std::vector<LogView*> logSubscribers2;
 
-        void notifySubscribers(Instance* instance);
-    };
+		static uint64_t getHash(LogEntry& entry);
+
+		void notifySubscribers(Instance* instance);
+	};
+
+	inline LogManager& Logger = LogManager::GetSingleton(); // Global singleton
 }
-
 
 #endif //LOG_TEST_LOGMANAGER_H

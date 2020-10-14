@@ -28,25 +28,38 @@ namespace eltecg {
 //TODO REMOVE:
 #ifdef _DEBUG
 namespace df { constexpr bool IS_THIS_DEBUG = true; }
-#define WARNING(expr, msg) if((expr) && ++eltecg::detail::warn_count <= eltecg::detail::max_warn_count) \
-		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::WARNING ,__FILE__, __LINE__, (msg), #expr )
-#define ASSERT(expr, msg) if(!(expr)) \
-		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::ASSERT ,__FILE__, __LINE__, (msg), #expr )
+//#define WARNING(expr, msg) if((expr) && ++eltecg::detail::warn_count <= eltecg::detail::max_warn_count) \
+//		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::WARNING ,__FILE__, __LINE__, (msg), #expr )
+//#define ASSERT(expr, msg) if(!(expr)) \
+//		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::ASSERT ,__FILE__, __LINE__, (msg), #expr )
+#define WARNING(expr, msg) if(expr) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
+	df::LogManager::TYPE::MESSAGE, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0);
+#define ASSERT(expr, msg) if(expr) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
+	df::LogManager::TYPE::ASSERT, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0);
 #else //_RELEASE
 namespace df { constexpr bool IS_THIS_DEBUG = false; }
 #define WARNING(expr, msg)
 #define ASSERT(expr, msg)
 #endif
 
+
 // GPU_DEBUG mode provides additional checks to be done all the time.
 // For example, framebuffer completeness. Usually involves calling additional OpenGL functions
 #ifdef GPU_DEBUG
-#define GPU_WARNING(expr, msg) if((expr) && ++eltecg::detail::warn_count <= eltecg::detail::max_warn_count) \
+/*#define GPU_WARNING(expr, msg) if((expr) && ++eltecg::detail::warn_count <= eltecg::detail::max_warn_count) \
 		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::GPU_WARNING ,__FILE__, __LINE__, (msg), #expr )
 #define GPU_ASSERT(expr, msg) if(!(expr)) \
 		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::GPU_ASSERT ,__FILE__, __LINE__, (msg), #expr )
 #define GL_CHECK if( eltecg::detail::warn_count <= eltecg::detail::max_warn_count && \
-		!eltecg::detail::gpu_check(__FILE__,__LINE__))	++eltecg::detail::warn_count
+		!eltecg::detail::gpu_check(__FILE__,__LINE__))	++eltecg::detail::warn_count*/
+
+#define GPU_WARNING(expr, msg) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
+	df::LogManager::TYPE::MESSAGE, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0);
+#define GPU_ASSERT(expr, msg) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
+	df::LogManager::TYPE::ASSERT, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0);
+#define GL_CHECK(expr, msg) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
+	df::LogManager::TYPE::CHECK, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0); // TODO why are there no parameters on CHECK? What is the purpose of CHECK?
+
 #else
 #define GPU_WARNING(expr, msg)
 #define GPU_ASSERT(expr, msg)
