@@ -74,7 +74,6 @@ CompiledShaderBase::Error CompiledShaderBase::Error::Parse(const std::string &li
 		}
 		return ret;
 	};
-	// TODO check regex
 	// TODO info/message level?
 	static const auto matcher_intel = [](const std::string& line) ->Error {
 		static std::regex r = std::regex(R"((ERROR|WARNING):\s*(\d+):(\d+):\s*(.*?)\s*)", std::regex::flag_type::optimize);

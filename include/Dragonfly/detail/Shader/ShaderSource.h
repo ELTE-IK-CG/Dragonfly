@@ -19,7 +19,7 @@ enum class SHADER_TYPE
 	TESS_CTRL	= 1<<2,
 	TESS_EVAL	= 1<<3,
 	FRAGMENT	= 1<<4,
-	COMPUTE		= 1<<5, //or this could be zero instead
+	COMPUTE		= 1<<5,
 }; // might be useful to have them as flags later
 
 class ShaderSource;

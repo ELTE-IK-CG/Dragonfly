@@ -25,7 +25,7 @@ public:
 			size_t id;
 			std::string path;
 		};
-		int line = 0, col = 0;
+		int line = 0; // in the concatenated string
 		std::string content;
 		static Error Parse(const std::string &line);
 	};
