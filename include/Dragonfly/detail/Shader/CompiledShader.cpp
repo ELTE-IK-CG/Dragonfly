@@ -1,5 +1,4 @@
 #include "CompiledShader.h"
-
 #include <regex>
 #include <string_view>
 #include <sstream>
@@ -23,7 +22,7 @@ CompiledShaderBase::VENDOR CompiledShaderBase::GetVendor()
 		auto str = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
 		bool nvidia = std::string_view(str, 6) == "NVIDIA";
 		bool amd = std::string_view(str, 3) == "ATI" || std::string_view(str, 3) == "AMD"; 
-		bool intel = std::string_view(str, 6) == "Intel";
+		bool intel = std::string_view(str, 5) == "Intel";
 		WARNING(int(nvidia) + int(amd) + int(intel) != 1, "Faild to recognise vendor.");
 		return	nvidia ? VENDOR::NVIDIA : amd ? VENDOR::AMD : intel ? VENDOR::INTEL : VENDOR::UNKNOWN;
 	}();
@@ -85,8 +84,8 @@ CompiledShaderBase::Error CompiledShaderBase::Error::Parse(const std::string &li
 				m[1] == "ERROR" ? Error::TYPE::ERROR :
 				m[1] == "WARNING" ? Error::TYPE::WARNING :
 				Error::TYPE::UNKNOWN;
-			ret.col = std::stoi(m[2]);
-			ret.line = std::stoi(m[3]);
+			ret.sourceLoc.index = std::stoi(m[2]);
+			ret.sourceLoc.line = std::stoi(m[3]);
 			ret.content = m[4];
 		} else {
 			ret.content = line;
@@ -108,13 +107,14 @@ void CompiledShaderBase::_ErrorHandling(const GeneratedCode &code_)
 	std::istringstream ss(_messages);
 	std::string line;
 	while (std::getline(ss, line)) {
+		if (line.empty()) continue;
 		auto err = Error::Parse(line);
 		if (err.type != Error::TYPE::UNKNOWN) {
-			if (GetVendor() == VENDOR::AMD) {
-				err.line = gen.lineNumbers[err.sourceLoc.index] + err.sourceLoc.line;
+			if (GetVendor() == VENDOR::NVIDIA) {
+				err.sourceLoc = gen.LocateLine(err.line);
 			}
 			else {
-				err.sourceLoc = gen.LocateLine(err.line);
+				err.line = gen.lineNumbers[err.sourceLoc.index] + err.sourceLoc.line;
 			}
 		}
 		_errors.emplace_back(err);

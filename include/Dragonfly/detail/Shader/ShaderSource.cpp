@@ -32,12 +32,12 @@ inline void GeneratedCode::PushBack(std::string_view str)
 {
 	int ver = 0;
 	//todo glsl correct version recognition
-	if (str.substr(0, 9) == "#version "){
-		ver = std::atoi(str.substr(9,12).data());
+	if (str.substr(0, 9) == "#version ") {
+		ver = std::atoi(str.substr(9, 12).data());
 		str = str.substr(12);
 	}
-	else if (str.substr(0, 12) == "//?#version "){
-		ver = std::atoi(str.substr(12,15).data());
+	else if (str.substr(0, 12) == "//?#version ") {
+		ver = std::atoi(str.substr(12, 15).data());
 		str = str.substr(15);
 	}
 
@@ -68,10 +68,10 @@ GeneratedCode::ConcatenatedCode::SourceLocation GeneratedCode::ConcatenatedCode:
 		ret.line = lineNumbers.back() - lineNumbers[lineNumbers.size() - 2];
 	}
 	else {
-		auto it = std::upper_bound(lineNumbers.cbegin(), lineNumbers.cend(), line_) - 1;
+		auto it = std::upper_bound(lineNumbers.cbegin(), lineNumbers.cend(), line_ - 1) - 1;
 		ASSERT(it + 1 == lineNumbers.cend() || line_ <= *(it + 1), "Error finding exact line of the shader error message in file.");
 		ASSERT(0 <= *it && *it <= line_, "Error finding exact line of the shader error message in file.");
-		ret.line = line_ - *it + 1; // todo check
+		ret.line = line_ - *it;
 		ret.index = std::distance(lineNumbers.cbegin(), it);
 		ASSERT(0 <= ret.index && ret.index < lineNumbers.size() - 1, "Error finding exact line of the shader error message in file.");
 	}
@@ -86,10 +86,9 @@ GeneratedCode::ConcatenatedCode GeneratedCode::Concatenate() const {
 	ret.lineNumbers[0] = lineCount;
 	for (size_t i = 0; i < GetCount(); ++i)
 	{
-		lineCount += 1 + std::count(_strings[i], _strings[i] + _lengths[i], '\n');
+		lineCount += std::count(_strings[i], _strings[i] + _lengths[i], '\n');
 		ret.lineNumbers[i + 1] = lineCount;
 		ret.code.append(_strings[i], _lengths[i]);
-		ret.code += '\n';
 	}
 	return ret;
 }

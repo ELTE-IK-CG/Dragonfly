@@ -9,9 +9,8 @@ bool detail::FileIO::Load()
 {
 	std::ifstream file(_path);
 	_content.clear();
-	if (!file.is_open())
-	{
-		WARNING(true, ("Could not open file " + _path.string() + "for reading").c_str());
+	if (!file.is_open()) {
+		WARNING(true, ("Could not open file " + _path.string() + " for reading").c_str());
 		return false;
 	}
 	for (std::string line; std::getline(file, line);)
@@ -25,7 +24,7 @@ bool detail::FileIO::Save()
 {
 	std::ofstream out(_path, std::ofstream::binary || std::ofstream::trunc);
 	if (!out.is_open()) {
-		WARNING(true, ("Could not open file " + _path.string() + "for writing").c_str());
+		WARNING(true, ("Could not open file " + _path.string() + " for writing").c_str());
 		return false;
 	}
 	out.write(_content.c_str(), _content.length());
