@@ -55,9 +55,10 @@ size_t detail::FileCache::AddFile(const Path_Type &path_)
 	//return it->second;
 	return id;
 }
-detail::FileIO& detail::FileCache::GetFile(size_t hash_)	
+
+detail::FileCache::FileIO_cptr  detail::FileCache::GetFile(size_t hash_)	
 {
-		auto it = _cache.find(hash_);
-		ASSERT(it != _cache.end(), "Invalid hash value");
-		return it->second;
+	auto it = _cache.find(hash_);
+	if(it == _cache.end()) return nullptr;
+	return &it->second;
 }

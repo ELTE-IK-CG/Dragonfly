@@ -159,6 +159,9 @@
     <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderSource.cpp">
       <Filter>Dragonfly\detail\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Shader\CompiledShader.cpp">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -351,6 +354,9 @@
       <Filter>Dragonfly\detail\FileIO</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderSource.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\CompiledShader.h">
       <Filter>Dragonfly\detail\Shader</Filter>
     </ClInclude>
   </ItemGroup>

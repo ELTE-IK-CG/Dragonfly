@@ -1,10 +1,10 @@
 #pragma once
 #include "../../config.h"
 #include <unordered_map>
+#include <filesystem>
+#include <optional>
 
-
-namespace df {
-namespace detail {
+namespace df::detail {
 
 class FileIO {
 	using Path_Type = std::filesystem::path;
@@ -31,6 +31,7 @@ class FileCache
 {
 public:
 	using Path_Type = std::filesystem::path;
+	using FileIO_cptr = FileIO* const;
 private:
 	FileCache(const FileCache&) = delete;
 	FileCache operator=(const FileCache&) = delete;
@@ -44,11 +45,10 @@ public:
 	size_t AddFile(const Path_Type &path_);
 
 	// Get file from cache. Use GetHashValue to compute hash_.
-	FileIO& GetFile(size_t hash_);
+	FileIO_cptr GetFile(size_t hash_);
 
 private:
 	std::unordered_map<size_t, FileIO> _cache;
 };
 
-}//detail
-}//df
+}//df::detail
