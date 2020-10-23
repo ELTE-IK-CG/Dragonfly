@@ -135,10 +135,6 @@
     <ClCompile Include="..\include\Dragonfly\detail\Events\Logger.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>
-    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui.cpp" />
-    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_demo.cpp" />
-    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>
@@ -147,6 +143,18 @@
     </ClCompile>
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogFilter.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui_demo.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui_draw.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui_widgets.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -237,9 +245,6 @@
     <ClInclude Include="..\include\Dragonfly\core.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\editor.h">
-      <Filter>Dragonfly</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture1D.h">
       <Filter>Dragonfly\detail\Texture</Filter>
     </ClInclude>
@@ -309,12 +314,6 @@
     <ClInclude Include="..\include\Dragonfly\detail\utility.h">
       <Filter>Dragonfly\detail</Filter>
     </ClInclude>
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imconfig.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imgui_internal.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_textedit.h" />
-    <ClInclude Include="D:\BullshitVideos\svn\efop\EFOP_363_Bp_Autonom\munka\Modellek\HaromDimErz\LazarZsolt\M3\DragonflyPack\includes\ImGui\imstb_truetype.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogManager.h">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClInclude>
@@ -323,6 +322,30 @@
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilter.h">
       <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Shader\CompiledShader.h">
+      <Filter>Dragonfly\detail\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(DragonflyPackPath)\includes\ImGui\imstb_truetype.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="$(DragonflyPackPath)\includes\ImGui\imgui.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="$(DragonflyPackPath)\includes\ImGui\imgui_internal.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="$(DragonflyPackPath)\includes\ImGui\imstb_rectpack.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="$(DragonflyPackPath)\includes\ImGui\imstb_textedit.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="$(DragonflyPackPath)\includes\ImGui\imconfig.h">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\editor.h">
+      <Filter>Dragonfly</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
