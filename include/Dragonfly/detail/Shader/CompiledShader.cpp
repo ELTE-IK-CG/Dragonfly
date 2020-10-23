@@ -44,7 +44,7 @@ CompiledShaderBase::Error CompiledShaderBase::Error::Parse(const std::string &li
 		std::smatch m; Error ret;
 		if (std::regex_match(line, m, r)) {
 			/*ret.path = m[1];*/
-			ret.line = std::stoi(m[2]);
+			ret.absPosition = std::stoi(m[2]);
 			ret.type =
 				m[3] == "error" ?	Error::TYPE::ERROR :
 				m[3] == "warning" ?	Error::TYPE::WARNING : 
@@ -84,7 +84,7 @@ CompiledShaderBase::Error CompiledShaderBase::Error::Parse(const std::string &li
 				m[1] == "WARNING" ? Error::TYPE::WARNING :
 				Error::TYPE::UNKNOWN;
 			ret.sourceLoc.index = std::stoi(m[2]);
-			ret.sourceLoc.line = std::stoi(m[3]);
+			ret.sourceLoc.line = std::stoi(m[3]) - 1; //todo check on another intel if this is the case
 			ret.content = m[4];
 		} else {
 			ret.content = line;
@@ -110,13 +110,23 @@ void CompiledShaderBase::_ErrorHandling(const GeneratedCode &code_)
 		auto err = Error::Parse(line);
 		if (err.type != Error::TYPE::UNKNOWN) {
 			if (GetVendor() == VENDOR::NVIDIA) {
-				err.sourceLoc = gen.LocateLine(err.line);
+				err.sourceLoc = gen.LocateLine(err.absPosition);
 			}
 			else {
-				err.line = gen.lineNumbers[err.sourceLoc.index] + err.sourceLoc.line;
+				err.absPosition = gen.lineNumbers[err.sourceLoc.index] + err.sourceLoc.line;
 			}
 		}
-		_errors.emplace_back(err);
+		const auto& src = _source.GetList()[err.sourceLoc.index-1];
+		if (std::holds_alternative<ShaderSource::FileSource>(src))
+		{
+			auto absPath = ShaderFileCache.GetPath(std::get< ShaderSource::FileSource>(src).hash);
+			auto absPathS = absPath.string();
+			auto relPathS = absPath.lexically_proximate(FileCache::GetAbsolutePath(".")).string();
+			err.path = std::move(absPathS.length() < relPathS.length() ? absPathS : relPathS);
+		}
+		else
+			err.path = "[generated code]";
+		_errors.emplace_back(std::move(err));
 	}
 	if(_flags && COMPILED_SHADER_FLAGS::SAVE_GENERATED_CODE)
 		_generatedCode = std::move(gen);
@@ -147,4 +157,15 @@ bool CompiledShaderBase::_Compile()
 	}
 	_isCompiled = result == GL_TRUE;
 	return _isCompiled;
+}
+
+std::ostream& df::detail::operator<<(std::ostream& s, const CompiledShaderBase::Error& err)
+{
+	using E = CompiledShaderBase::Error::TYPE;
+	s << (err.type == E::ERROR ? "[ ERROR ]" : err.type == E::WARNING ? "[WARNING]" : "[MESSAGE]");
+	if (err.type == E::UNKNOWN)
+		s << " \"" << err.content << '\"';
+	else
+		s << ' ' << err.content << "  at line " << err.sourceLoc.line << " in \"" << err.path << "\" (" << err.absPosition << ')';
+	return s;
 }

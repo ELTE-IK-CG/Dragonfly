@@ -1,6 +1,7 @@
 #pragma once
 #include "ShaderSource.h"
 #include <GL/glew.h>
+#include <ostream>
 
 namespace df{
 	enum class COMPILED_SHADER_FLAGS
@@ -19,14 +20,9 @@ public:
 	struct Error {
 		enum class TYPE {UNKNOWN, ERROR, WARNING, MESSAGE } type = TYPE::UNKNOWN;
 		GeneratedCode::ConcatenatedCode::SourceLocation sourceLoc;
-		struct SourceData
-		{
-			enum class TYPE{FILE, CODE} type;
-			size_t id;
-			std::string path;
-		};
-		int line = 0; // in the concatenated string
-		std::string content;
+		int absPosition = 0;	// in the concatenated string
+		std::string path;		// or [generated] if not a file
+		std::string content;	// message content
 		static Error Parse(const std::string &line);
 	};
 
@@ -74,6 +70,7 @@ inline GLenum ConvertToGLenum(SHADER_TYPE type_) {
 	}
 }
 
+std::ostream& operator <<(std::ostream& s, const CompiledShaderBase::Error& err);
 } //namespace df::detail
 
 

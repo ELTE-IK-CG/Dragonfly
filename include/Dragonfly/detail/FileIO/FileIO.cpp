@@ -45,13 +45,11 @@ size_t detail::FileCache::GetHashValue(const Path_Type &path_) {
 
 size_t detail::FileCache::AddFile(const Path_Type &path_)
 {
-	size_t id = GetHashValue(path_);
+	auto abs_path = GetAbsolutePath(path_);
+	size_t id = std::filesystem::hash_value(abs_path);
 	auto it = _cache.find(id);
-	if (it == _cache.end()) {
-		it = _cache.emplace(id, path_).first;
-		//emplace().second guaranteed to be true since it == cache.end()
-	}
-	//return it->second;
+	if (it == _cache.end())
+		it = _cache.emplace(id, abs_path).first;
 	return id;
 }
 
@@ -60,4 +58,11 @@ detail::FileCache::FileIO_cptr  detail::FileCache::GetFile(size_t hash_)
 	auto it = _cache.find(hash_);
 	if(it == _cache.end()) return nullptr;
 	return &it->second;
+}
+
+detail::FileCache::Path_Type detail::FileCache::GetPath(size_t hash_)
+{
+	auto it = _cache.find(hash_);
+	if(it == _cache.end()) return Path_Type();
+	return it->second.GetPath();
 }

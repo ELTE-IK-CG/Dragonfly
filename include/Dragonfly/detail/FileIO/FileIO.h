@@ -7,6 +7,7 @@
 namespace df::detail {
 
 class FileIO {
+public:
 	using Path_Type = std::filesystem::path;
 private:
 	FileIO(const FileIO&) = delete;
@@ -20,6 +21,8 @@ public:
 		
 	bool Load();
 	bool Save();
+
+	Path_Type GetPath() const { return _path; }
 
 private:
 	const Path_Type _path;
@@ -46,6 +49,9 @@ public:
 
 	// Get file from cache. Use GetHashValue to compute hash_.
 	FileIO_cptr GetFile(size_t hash_);
+
+	// Get the path from a known hash value
+	Path_Type GetPath(size_t hash_);
 
 private:
 	std::unordered_map<size_t, FileIO> _cache;
