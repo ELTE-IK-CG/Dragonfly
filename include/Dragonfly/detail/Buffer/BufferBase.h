@@ -17,6 +17,7 @@ enum class BUFFER_BITS : GLenum
 	COHERENT	= GL_MAP_COHERENT_BIT,			// Only if persistent
 	CLIENT		= GL_CLIENT_STORAGE_BIT,		// Suggest storage in CPU RAM
 	DYNAMIC		= GL_DYNAMIC_STORAGE_BIT,		// Please do not use
+	ALL = NONE | READ | WRITE | PERSISTENT | COHERENT | CLIENT | DYNAMIC,
 };  ENUM_CLASS_FLAG_OPERATORS(BUFFER_BITS)
 
 
@@ -38,6 +39,8 @@ inline bool checkBufferFlag(BUFFER_BITS flags_) {
 
 //template<typename ...Types_>
 //using EnableIfSingle_Type = typename EnableIfSingle<Types_...>::Type;
+
+class MappedBufferBase;
 
 class BufferLowLevelBase
 {
@@ -62,7 +65,9 @@ protected:
 public:
 	[[nodiscard]] size_t Bytes() const { return _bytes; }
 	[[nodiscard]] BUFFER_BITS Flags() const { return _flags; }
+	[[nodiscard]] int GetID() const { return _id; }
 	[[nodiscard]] operator GLuint() const { return _id; }
+	friend class MappedBufferBase;
 };
 
 template<typename ... ItemTypes_>
@@ -108,8 +113,6 @@ template <typename ItemType_> std::vector<ItemType_> BufferLowLevelBase::_Downlo
 
 namespace df
 {
-	static std::map<GLuint, int> bufferInstances;
-
 	namespace detail {
 		template<typename NewType>
 		struct ConvertVecStore {

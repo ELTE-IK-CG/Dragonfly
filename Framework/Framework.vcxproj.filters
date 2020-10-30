@@ -150,6 +150,9 @@
     <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp">
       <Filter>Dragonfly\detail\Buffer</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.cpp">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -373,9 +376,6 @@
     </None>
     <None Include="..\include\Dragonfly\detail\Vao\NewVao.inl">
       <Filter>Dragonfly\detail\Vao</Filter>
-    </None>
-    <None Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.inl">
-      <Filter>Dragonfly\detail\Buffer</Filter>
     </None>
   </ItemGroup>
 </Project>
