@@ -46,8 +46,8 @@
 # define __IMGUI_EX_CANVAS_H__
 # pragma once
 
-# include <imgui/imgui.h>
-# include <imgui/imgui_internal.h> // ImRect, ImFloor
+# include <Imgui/imgui.h>
+# include <Imgui/imgui_internal.h> // ImRect, ImFloor
 
 namespace ImGuiEx {
 
@@ -210,6 +210,9 @@ private:
     void SaveInputState();
     void RestoreInputState();
 
+    void SaveViewportState();
+    void RestoreViewportState();
+
     void EnterLocalSpace();
     void LeaveLocalSpace();
 
@@ -243,6 +246,11 @@ private:
     ImVec2 m_MousePosPrevBackup;
     ImVec2 m_MouseClickedPosBackup[IM_ARRAYSIZE(ImGuiIO::MouseClickedPos)];
     ImVec2 m_WindowCursorMaxBackup;
+
+# if defined(IMGUI_HAS_VIEWPORT)
+    ImVec2 m_ViewportPosBackup;
+    ImVec2 m_ViewportSizeBackup;
+# endif
 };
 
 } // namespace ImGuiEx

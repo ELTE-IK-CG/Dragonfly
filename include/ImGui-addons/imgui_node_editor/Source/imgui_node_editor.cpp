@@ -123,7 +123,7 @@ static void LogV(const char* fmt, va_list args)
     const int buffer_size = 1024;
     static char buffer[1024];
 
-    int w = vsnprintf(buffer, buffer_size - 1, fmt, args);
+    vsnprintf(buffer, buffer_size - 1, fmt, args);
     buffer[buffer_size - 1] = 0;
 
     ImGui::LogText("\nNode Editor: %s", buffer);
@@ -224,6 +224,15 @@ static void ImDrawListSplitter_SwapChannels(ImDrawListSplitter* splitter, int le
 static void ImDrawList_SwapChannels(ImDrawList* drawList, int left, int right)
 {
 	ImDrawListSplitter_SwapChannels(&drawList->_Splitter, left, right);
+}
+
+static void ImDrawList_SwapSplitter(ImDrawList* drawList, ImDrawListSplitter& splitter)
+{
+    auto& currentSplitter = drawList->_Splitter;
+
+    std::swap(currentSplitter._Current, splitter._Current);
+    std::swap(currentSplitter._Count, splitter._Count);
+    currentSplitter._Channels.swap(splitter._Channels);
 }
 
 //static void ImDrawList_TransformChannel_Inner(ImVector<ImDrawVert>& vtxBuffer, const ImVector<ImDrawIdx>& idxBuffer, const ImVector<ImDrawCmd>& cmdBuffer, const ImVec2& preOffset, const ImVec2& scale, const ImVec2& postOffset)
@@ -1031,6 +1040,7 @@ ed::EditorContext::EditorContext(const ax::NodeEditor::Config* config)
     , m_IsInitialized(false)
     , m_Settings()
     , m_Config(config)
+    , m_ExternalChannel(0)
 {
 }
 
@@ -1042,6 +1052,8 @@ ed::EditorContext::~EditorContext()
     for (auto link  : m_Links)  delete link.m_Object;
     for (auto pin   : m_Pins)   delete pin.m_Object;
     for (auto node  : m_Nodes)  delete node.m_Object;
+
+    m_Splitter.ClearFreeMemory();
 }
 
 void ed::EditorContext::Begin(const char* id, const ImVec2& size)
@@ -1058,6 +1070,11 @@ void ed::EditorContext::Begin(const char* id, const ImVec2& size)
     for (auto node  : m_Nodes)   node->Reset();
     for (auto pin   : m_Pins)     pin->Reset();
     for (auto link  : m_Links)   link->Reset();
+
+    auto drawList = ImGui::GetWindowDrawList();
+
+    ImDrawList_SwapSplitter(drawList, m_Splitter);
+    m_ExternalChannel = drawList->_Splitter._Current;
 
     ImGui::PushID(id);
 
@@ -1094,8 +1111,6 @@ void ed::EditorContext::Begin(const char* id, const ImVec2& size)
         m_NavigateAction.StopMoveOverEdge();
 
     m_Canvas.SetView(m_NavigateAction.GetView());
-
-    auto drawList = ImGui::GetWindowDrawList();
 
     // #debug #clip
     //ImGui::Text("CLIP = { x=%g y=%g w=%g h=%g r=%g b=%g }",
@@ -1408,6 +1423,8 @@ void ed::EditorContext::End()
     if (m_IsCanvasVisible)
         m_Canvas.End();
 
+    ImDrawList_SwapSplitter(drawList, m_Splitter);
+
     // Draw border
     {
         auto& style = ImGui::GetStyle();
@@ -1650,20 +1667,26 @@ void ed::EditorContext::NotifyLinkDeleted(Link* link)
         m_LastActiveLink = nullptr;
 }
 
-void ed::EditorContext::Suspend()
+void ed::EditorContext::Suspend(SuspendFlags flags)
 {
-    auto lastChannel = ImGui::GetWindowDrawList()->_Splitter._Current;
-    ImGui::GetWindowDrawList()->ChannelsSetCurrent(0);
+    auto drawList = ImGui::GetWindowDrawList();
+    auto lastChannel = drawList->_Splitter._Current;
+    drawList->ChannelsSetCurrent(m_ExternalChannel);
     m_Canvas.Suspend();
-    ImGui::GetWindowDrawList()->ChannelsSetCurrent(lastChannel);
+    drawList->ChannelsSetCurrent(lastChannel);
+    if ((flags & SuspendFlags::KeepSplitter) != SuspendFlags::KeepSplitter)
+        ImDrawList_SwapSplitter(drawList, m_Splitter);
 }
 
-void ed::EditorContext::Resume()
+void ed::EditorContext::Resume(SuspendFlags flags)
 {
-    auto lastChannel = ImGui::GetWindowDrawList()->_Splitter._Current;
-    ImGui::GetWindowDrawList()->ChannelsSetCurrent(0);
+    auto drawList = ImGui::GetWindowDrawList();
+    if ((flags & SuspendFlags::KeepSplitter) != SuspendFlags::KeepSplitter)
+        ImDrawList_SwapSplitter(drawList, m_Splitter);
+    auto lastChannel = drawList->_Splitter._Current;
+    drawList->ChannelsSetCurrent(m_ExternalChannel);
     m_Canvas.Resume();
-    ImGui::GetWindowDrawList()->ChannelsSetCurrent(lastChannel);
+    drawList->ChannelsSetCurrent(lastChannel);
 }
 
 bool ed::EditorContext::IsSuspended()
@@ -1938,8 +1961,11 @@ void ed::EditorContext::SetUserContext(bool globalSpace)
         //ImGui::SetCursorScreenPos(ImFloor(mousePos));
         //ImGui::SetCursorScreenPos(ImVec2(floorf(mousePos.x), floorf(mousePos.y)));
 
-    auto drawList = ImGui::GetWindowDrawList();
-    drawList->ChannelsSetCurrent(c_UserChannel_Content);
+    if (!IsSuspended())
+    {
+        auto drawList = ImGui::GetWindowDrawList();
+        drawList->ChannelsSetCurrent(c_UserChannel_Content);
+    }
 
     // #debug
     // drawList->AddCircleFilled(ImGui::GetMousePos(), 4, IM_COL32(0, 255, 0, 255));
@@ -2307,8 +2333,8 @@ void ed::Settings::ClearDirty(Node* node)
         m_IsDirty     = false;
         m_DirtyReason = SaveReasonFlags::None;
 
-        for (auto& node : m_Nodes)
-            node.ClearDirty();
+        for (auto& knownNode : m_Nodes)
+            knownNode.ClearDirty();
     }
 }
 
@@ -2396,7 +2422,7 @@ bool ed::Settings::Parse(const std::string& string, Settings& settings)
     {
         auto separator = str.find_first_of(':');
         auto idStart   = str.c_str() + ((separator != std::string::npos) ? separator + 1 : 0);
-        auto id        = reinterpret_cast<void*>(strtoull(idStart, nullptr, 16));
+        auto id        = reinterpret_cast<void*>(strtoull(idStart, nullptr, 10));
         if (str.compare(0, separator, "node") == 0)
             return ObjectId(NodeId(id));
         else if (str.compare(0, separator, "link") == 0)
@@ -2417,11 +2443,11 @@ bool ed::Settings::Parse(const std::string& string, Settings& settings)
         {
             auto id = deserializeObjectId(node.first.c_str()).AsNodeId();
 
-            auto settings = result.FindNode(id);
-            if (!settings)
-                settings = result.AddNode(id);
+            auto nodeSettings = result.FindNode(id);
+            if (!nodeSettings)
+                nodeSettings = result.AddNode(id);
 
-            NodeSettings::Parse(node.second, *settings);
+            NodeSettings::Parse(node.second, *nodeSettings);
         }
     }
 
@@ -2718,6 +2744,8 @@ ImVec2 ed::FlowAnimation::SamplePath(float distance)
 
 void ed::FlowAnimation::OnUpdate(float progress)
 {
+    IM_UNUSED(progress);
+
     m_Offset += m_Speed * ImGui::GetIO().DeltaTime;
 }
 
@@ -2794,6 +2822,7 @@ ed::FlowAnimation* ed::FlowAnimationController::GetOrCreate(Link* link)
 
 void ed::FlowAnimationController::Release(FlowAnimation* animation)
 {
+    IM_UNUSED(animation);
 }
 
 
@@ -2910,6 +2939,8 @@ ed::EditorAction::AcceptResult ed::NavigateAction::Accept(const Control& control
 
 bool ed::NavigateAction::Process(const Control& control)
 {
+    IM_UNUSED(control);
+
     if (!m_IsActive)
         return false;
 
@@ -2937,6 +2968,8 @@ bool ed::NavigateAction::Process(const Control& control)
 
 bool ed::NavigateAction::HandleZoom(const Control& control)
 {
+    IM_UNUSED(control);
+
     const auto currentAction  = Editor->GetCurrentAction();
     const auto allowOffscreen = currentAction && currentAction->IsDragging();
 
@@ -2994,6 +3027,9 @@ void ed::NavigateAction::NavigateTo(const ImRect& bounds, bool zoomIn, float dur
     if (ImRect_IsEmpty(bounds))
         return;
 
+    if (duration < 0.0f)
+        duration = GetStyle().ScrollDuration;
+
     if (!zoomIn)
     {
         auto viewRect       = m_Canvas.ViewRect();
@@ -3002,7 +3038,7 @@ void ed::NavigateAction::NavigateTo(const ImRect& bounds, bool zoomIn, float dur
 
         viewRect.Translate(targetCenter - viewRectCenter);
 
-        NavigateTo(viewRect, GetStyle().ScrollDuration, reason);
+        NavigateTo(viewRect, duration, reason);
     }
     else
     {
@@ -3012,7 +3048,7 @@ void ed::NavigateAction::NavigateTo(const ImRect& bounds, bool zoomIn, float dur
         auto extend = ImMax(rect.GetWidth(), rect.GetHeight());
         rect.Expand(extend * c_NavigationZoomMargin * 0.5f);
 
-        NavigateTo(rect, GetStyle().ScrollDuration, reason);
+        NavigateTo(rect, duration, reason);
     }
 }
 
@@ -3576,6 +3612,8 @@ ed::EditorAction::AcceptResult ed::SelectAction::Accept(const Control& control)
 
 bool ed::SelectAction::Process(const Control& control)
 {
+    IM_UNUSED(control);
+
     if (m_CommitSelection)
     {
         Editor->ClearSelection();
@@ -3741,6 +3779,8 @@ ed::EditorAction::AcceptResult ed::ContextMenuAction::Accept(const Control& cont
 
 bool ed::ContextMenuAction::Process(const Control& control)
 {
+    IM_UNUSED(control);
+
     m_CandidateMenu = None;
     m_CurrentMenu   = None;
     m_ContextId     = ObjectId();
@@ -3943,6 +3983,8 @@ ed::EditorAction::AcceptResult ed::ShortcutAction::Accept(const Control& control
 
 bool ed::ShortcutAction::Process(const Control& control)
 {
+    IM_UNUSED(control);
+
     m_IsActive        = false;
     m_CurrentAction   = None;
     m_Context.resize(0);
@@ -4204,7 +4246,7 @@ void ed::CreateItemAction::End()
     if (m_IsInGlobalSpace)
     {
         ImGui::PopClipRect();
-        Editor->Resume();
+        Editor->Resume(SuspendFlags::KeepSplitter);
 
         auto currentChannel = ImGui::GetWindowDrawList()->_Splitter._Current;
         if (currentChannel != m_LastChannel)
@@ -4316,7 +4358,7 @@ ed::CreateItemAction::Result ed::CreateItemAction::QueryLink(PinId* startId, Pin
 
     if (!m_IsInGlobalSpace)
     {
-        Editor->Suspend();
+        Editor->Suspend(SuspendFlags::KeepSplitter);
 
         auto rect = Editor->GetRect();
         ImGui::PushClipRect(rect.Min + ImVec2(1, 1), rect.Max - ImVec2(1, 1), false);
@@ -4339,7 +4381,7 @@ ed::CreateItemAction::Result ed::CreateItemAction::QueryNode(PinId* pinId)
 
     if (!m_IsInGlobalSpace)
     {
-        Editor->Suspend();
+        Editor->Suspend(SuspendFlags::KeepSplitter);
 
         auto rect = Editor->GetRect();
         ImGui::PushClipRect(rect.Min + ImVec2(1, 1), rect.Max - ImVec2(1, 1), false);
@@ -4426,16 +4468,13 @@ ed::EditorAction::AcceptResult ed::DeleteItemsAction::Accept(const Control& cont
 
 bool ed::DeleteItemsAction::Process(const Control& control)
 {
+    IM_UNUSED(control);
+
     if (!m_IsActive)
         return false;
 
-    if (m_CandidateObjects.empty())
-    {
-        m_IsActive = false;
-        return true;
-    }
-
-    return m_IsActive;
+    m_IsActive = false;
+    return true;
 }
 
 void ed::DeleteItemsAction::ShowMetrics()
@@ -4621,6 +4660,12 @@ ed::NodeBuilder::NodeBuilder(EditorContext* editor):
 {
 }
 
+ed::NodeBuilder::~NodeBuilder()
+{
+    m_Splitter.ClearFreeMemory();
+    m_PinSplitter.ClearFreeMemory();
+}
+
 void ed::NodeBuilder::Begin(NodeId nodeId)
 {
     IM_ASSERT(nullptr == m_CurrentNode);
@@ -4690,6 +4735,9 @@ void ed::NodeBuilder::Begin(NodeId nodeId)
         m_CurrentNode->m_Channel = drawList->_Splitter._Count;
         ImDrawList_ChannelsGrow(drawList, drawList->_Splitter._Count + c_ChannelsPerNode);
         drawList->ChannelsSetCurrent(m_CurrentNode->m_Channel + c_NodeContentChannel);
+
+        m_Splitter.Clear();
+        ImDrawList_SwapSplitter(drawList, m_Splitter);
     }
 
     // Begin outer group
@@ -4706,6 +4754,12 @@ void ed::NodeBuilder::Begin(NodeId nodeId)
 void ed::NodeBuilder::End()
 {
     IM_ASSERT(nullptr != m_CurrentNode);
+
+    if (auto drawList = ImGui::GetWindowDrawList())
+    {
+        IM_ASSERT(drawList->_Splitter._Count == 1); // Did you forgot to call drawList->ChannelsMerge()?
+        ImDrawList_SwapSplitter(drawList, m_Splitter);
+    }
 
     // Apply frame padding. This must be done in this convoluted way if outer group
     // size must contain inner group padding.
@@ -4778,12 +4832,24 @@ void ed::NodeBuilder::BeginPin(PinId pinId, PinKind kind)
     m_ResolvePinRect          = true;
     m_ResolvePivot            = true;
 
+    if (auto drawList = ImGui::GetWindowDrawList())
+    {
+        m_PinSplitter.Clear();
+        ImDrawList_SwapSplitter(drawList, m_PinSplitter);
+    }
+
     ImGui::BeginGroup();
 }
 
 void ed::NodeBuilder::EndPin()
 {
     IM_ASSERT(nullptr != m_CurrentPin);
+
+    if (auto drawList = ImGui::GetWindowDrawList())
+    {
+        IM_ASSERT(drawList->_Splitter._Count == 1); // Did you forgot to call drawList->ChannelsMerge()?
+        ImDrawList_SwapSplitter(drawList, m_PinSplitter);
+    }
 
     ImGui::EndGroup();
 
@@ -4802,6 +4868,12 @@ void ed::NodeBuilder::EndPin()
         m_CurrentPin->m_Pivot.Min = pinRect.Min + ImMul(pinRect.GetSize(), m_PivotAlignment);
         m_CurrentPin->m_Pivot.Max = m_CurrentPin->m_Pivot.Min + ImMul(m_PivotSize, m_PivotScale);
     }
+
+    // #debug: Draw pin bounds
+    //ImGui::GetWindowDrawList()->AddRect(m_CurrentPin->m_Bounds.Min, m_CurrentPin->m_Bounds.Max, IM_COL32(255, 255, 0, 255));
+
+    // #debug: Draw pin pivot rectangle
+    //ImGui::GetWindowDrawList()->AddRect(m_CurrentPin->m_Pivot.Min, m_CurrentPin->m_Pivot.Max, IM_COL32(255, 0, 255, 255));
 
     m_CurrentPin = nullptr;
 }
@@ -4917,7 +4989,7 @@ bool ed::HintBuilder::Begin(NodeId nodeId)
 
     m_LastChannel = ImGui::GetWindowDrawList()->_Splitter._Current;
 
-    Editor->Suspend();
+    Editor->Suspend(SuspendFlags::KeepSplitter);
 
     const auto alpha = ImMax(0.0f, std::min(1.0f, (view.Scale - c_min_zoom) / (c_max_zoom - c_min_zoom)));
 
@@ -4949,7 +5021,7 @@ void ed::HintBuilder::End()
 
     ImGui::GetWindowDrawList()->ChannelsSetCurrent(m_LastChannel);
 
-    Editor->Resume();
+    Editor->Resume(SuspendFlags::KeepSplitter);
 
     m_IsActive    = false;
     m_CurrentNode = nullptr;
@@ -5057,12 +5129,12 @@ void ed::Style::PopVar(int count)
     while (count > 0)
     {
         auto& modifier = m_VarStack.back();
-        if (auto v = GetVarFloatAddr(modifier.Index))
-            *v = modifier.Value.x;
-        else if (auto v = GetVarVec2Addr(modifier.Index))
-            *v = ImVec2(modifier.Value.x, modifier.Value.y);
-        else if (auto v = GetVarVec4Addr(modifier.Index))
-            *v = modifier.Value;
+        if (auto floatValue = GetVarFloatAddr(modifier.Index))
+            *floatValue = modifier.Value.x;
+        else if (auto vec2Value = GetVarVec2Addr(modifier.Index))
+            *vec2Value = ImVec2(modifier.Value.x, modifier.Value.y);
+        else if (auto vec4Value = GetVarVec4Addr(modifier.Index))
+            *vec4Value = modifier.Value;
         m_VarStack.pop_back();
         --count;
     }
