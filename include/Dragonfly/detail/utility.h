@@ -36,9 +36,16 @@
 
 #define DF_DETAIL_LOCATION df::detail::Logger::Entry::Location{ __FILE__, __LINE__ }
 
-#define DF_DETAIL_CHECK_IMPL(sev, exp, msg) CheckImpl(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, (#exp), (msg), _TYPE_::USER), exp)
-#define DF_DETAIL_ASSERT_IMPL(sev, exp, msg) if(!(exp)) df::Logger.AddEntry(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, (#exp), (msg), _TYPE_::USER));
-#define DF_DETAIL_MESSAGE_IMPL(sev, msg) df::Logger.AddEntry(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, "", (msg), _TYPE_::USER));	
+//#define DF_DETAIL_CHECK_IMPL(sev, exp, msg) CheckImpl(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, (#exp), (msg), _TYPE_::USER), exp)
+//#define DF_DETAIL_ASSERT_IMPL(sev, exp, msg) if(!(exp)) df::Logger.AddEntry(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, (#exp), (msg), _TYPE_::USER));
+//#define DF_DETAIL_MESSAGE_IMPL(sev, msg) df::Logger.AddEntry(df::detail::Logger::Entry(sev, DF_DETAIL_LOCATION, "", (msg), _TYPE_::USER));	
+
+#define DF_DETAIL_CHECK_IMPL(sev, exp, msg) if(!(exp)) df::Logger.AddEntry(df::LogManager::LogEntry(sev, \
+	df::LogManager::TYPE::CHECK, { __FILE__, __LINE__ }, (#exp), (msg)), 0, 0);
+#define DF_DETAIL_ASSERT_IMPL(sev, exp, msg) if(!(exp)) df::Logger.AddEntry(df::LogManager::LogEntry(sev, \
+	df::LogManager::TYPE::ASSERT, { __FILE__, __LINE__ }, (#exp), (msg)), 0, 0);
+#define DF_DETAIL_MESSAGE_IMPL(sev, msg) df::Logger.AddEntry(df::LogManager::LogEntry(sev, \
+	df::LogManager::TYPE::MESSAGE, { __FILE__, __LINE__ }, (""), (msg)), 0, 0);
 
 #if DF_LOG_SEVERITY >= DF_DETAIL_LOGGER_ENTRY_SEVERITY_TRACE		// =	_SEV_::TRACE
 #define DF_TRACE_CHECK	(expr, msg)		DF_DETAIL_CHECK_IMPL	(expr, msg, _SEV_::TRACE)
@@ -130,5 +137,7 @@
 #define DF_FATAL_MESSAGE	(msg)
 #endif
 
+
+
 #undef _SEV_
-// #undef _TYPE_
+// #undef _TYPE_;

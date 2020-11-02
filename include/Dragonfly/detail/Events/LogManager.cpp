@@ -33,11 +33,11 @@ uint64_t df::LogManager::getHash(LogManager::LogEntry& entry) {
 	return h1 ^ (h2 ^ (h3 + 0x9e3779b1) + 0x9e3779b1);
 }
 
-void df::LogManager::Subscribe(LogView* view) {
+void df::LogManager::Subscribe(LogHandlerBase* view) {
 	logSubscribers.push_back(view);
 }
 
 void df::LogManager::notifySubscribers(Instance* instance) {
-	for (df::LogView* p : logSubscribers)
+	for (df::LogHandlerBase* p : logSubscribers)
 		p->LogArrived(instance);
 }

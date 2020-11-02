@@ -32,7 +32,7 @@ const char* message_typenames[] = {"WARNING", "ASSERTION FAILED", "GPU WARNING",
 const char* file_pos_format = "%s at %s:%i:\n";
 const char* message_format = "\t%s\n\t%s\n";
 
-void eltecg::detail::print_msg(eltecg::detail::MESSAGE_TYPE type, const char* file, int line, const char* msg, const char* expr)
+/*void eltecg::detail::print_msg(eltecg::detail::MESSAGE_TYPE type, const char* file, int line, const char* msg, const char* expr)
 {
 #ifdef USE_COLOR_CODES
 	HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -48,15 +48,15 @@ void eltecg::detail::print_msg(eltecg::detail::MESSAGE_TYPE type, const char* fi
 #ifdef USE_COLOR_CODES
 	SetConsoleTextAttribute(hstdout, csbi.wAttributes);
 #endif // USE_COLOR_CODES
-}
+}*/
 
-bool eltecg::detail::gpu_check(const char * file, int line)
+void eltecg::detail::gpu_check(const char * file, int line)
 {
 	GLenum err = glGetError();
 	const char* msg; const char* expl;
 	switch (err)
 	{
-	case GL_NO_ERROR: return true; break;	//returns true if ok!
+	case GL_NO_ERROR: return; break;	//returns true if ok!
 	case GL_INVALID_ENUM:					msg = "Invalid enum";
 		expl = "An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.";
 		break;
@@ -82,7 +82,7 @@ bool eltecg::detail::gpu_check(const char * file, int line)
 		expl = "glGetError() returned an unknown value. Weird.";
 		break;
 	}
-#ifdef USE_COLOR_CODES
+/*#ifdef USE_COLOR_CODES
 	HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	GetConsoleScreenBufferInfo(hstdout, &csbi);
@@ -95,8 +95,9 @@ bool eltecg::detail::gpu_check(const char * file, int line)
 	printf(message_format, msg, expl);
 #ifdef USE_COLOR_CODES
 	SetConsoleTextAttribute(hstdout, csbi.wAttributes);
-#endif // USE_COLOR_CODES
-	return false;
+#endif // USE_COLOR_CODES*/
+
+	WARNING(msg, expl);
 }
 
 #endif

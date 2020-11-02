@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include "Dragonfly/detail/Events/LogManager.h"
 
 using namespace df;
 

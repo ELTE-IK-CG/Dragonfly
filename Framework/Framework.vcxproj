@@ -17,7 +17,9 @@
   <ItemGroup>
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\ConsoleLogView.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogFilter.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogHandlerBase.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogView.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogWindow.cpp" />
@@ -53,8 +55,10 @@
     <ClInclude Include="..\include\Dragonfly\core.h" />
     <ClInclude Include="..\include\Dragonfly\detail\buffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\ConsoleLogView.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilter.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogHandlerBase.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogManager.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogView.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogWindow.h" />

@@ -132,9 +132,6 @@
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\Dragonfly\detail\Events\Logger.cpp">
-      <Filter>Dragonfly\detail\Events</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\Dragonfly\detail\Events\LogManager.cpp">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>
@@ -155,6 +152,13 @@
     </ClCompile>
     <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui_widgets.cpp">
       <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogView.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Events\LogHandlerBase.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Events\ConsoleLogView.cpp">
+      <Filter>Dragonfly\detail\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,9 +312,6 @@
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.h">
       <Filter>Dragonfly\detail\Events</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\Events\Logger.h">
-      <Filter>Dragonfly\detail\Events</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\utility.h">
       <Filter>Dragonfly\detail</Filter>
     </ClInclude>
@@ -322,9 +323,6 @@
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\detail\Events\LogFilter.h">
       <Filter>Dragonfly\detail\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Dragonfly\detail\Shader\CompiledShader.h">
-      <Filter>Dragonfly\detail\Shader</Filter>
     </ClInclude>
     <ClInclude Include="$(DragonflyPackPath)\includes\ImGui\imstb_truetype.h">
       <Filter>ImGui %28in pack%29</Filter>
@@ -346,6 +344,13 @@
     </ClInclude>
     <ClInclude Include="..\include\Dragonfly\editor.h">
       <Filter>Dragonfly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogView.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Events\LogHandlerBase.h">
+      <Filter>Dragonfly\detail\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Events\ConsoleLogView.h">
+      <Filter>Dragonfly\detail\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

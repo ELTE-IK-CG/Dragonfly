@@ -7,7 +7,9 @@ df::LogManager::Instance * df::LogView::GetEntryAt(int index) {
     return nullptr;
 }
 
-void df::LogView::LogArrived(df::LogManager::Instance *instance) { // TODO remove redundancy
+void df::LogView::LogArrived(df::LogManager::Instance *instance) {
+    if (instance == nullptr || instance->entry == nullptr)
+        return;
     if (!_currentFilter->Accept(*instance)) ;//return;
 
     if (singleInstance) {
@@ -18,7 +20,7 @@ void df::LogView::LogArrived(df::LogManager::Instance *instance) { // TODO remov
             return;
     }
     _filteredAndOrdered.push_back(instance);
-    printf(">> %s\n", instance->entry->message.c_str());
+    // printf(">> %s\n", instance->entry->message.c_str());
 }
 
 void df::LogView::SetFilter(LogFilter &filter) {

@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include "Shader.inl"
 #include "../File/File.h"
+#include "Dragonfly/detail/Events/LogManager.h"
 
 using namespace df;
 

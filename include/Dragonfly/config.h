@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Dragonfly/detail/Events/LogManager.h"
+
 #define OPENGL_VERSION 45
 
 //Todo: .exe shipped with framework that is run on (re)build and determines the version
@@ -18,8 +20,8 @@ namespace eltecg {
 		constexpr unsigned int max_warn_count = 64;
 		static unsigned int warn_count = 0;
 		enum class MESSAGE_TYPE { WARNING = 0, ASSERT = 1, GPU_WARNING = 2, GPU_ASSERT = 3, NUM_MESSAGE_TYPES };
-		void print_msg(MESSAGE_TYPE type, const char* file, int line, const char* msg, const char* expr);
-		bool gpu_check(const char* file, int line);
+		//void print_msg(MESSAGE_TYPE type, const char* file, int line, const char* msg, const char* expr);
+		void gpu_check(const char* file, int line);
 	}
 }
 #endif
@@ -32,6 +34,8 @@ namespace df { constexpr bool IS_THIS_DEBUG = true; }
 //		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::WARNING ,__FILE__, __LINE__, (msg), #expr )
 //#define ASSERT(expr, msg) if(!(expr)) \
 //		eltecg::detail::print_msg( eltecg::detail::MESSAGE_TYPE::ASSERT ,__FILE__, __LINE__, (msg), #expr )
+#define INFO(expr, msg) if(expr) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::INFO, \
+	df::LogManager::TYPE::MESSAGE, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0);
 #define WARNING(expr, msg) if(expr) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
 	df::LogManager::TYPE::MESSAGE, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0);
 #define ASSERT(expr, msg) if(expr) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
@@ -57,8 +61,9 @@ namespace df { constexpr bool IS_THIS_DEBUG = false; }
 	df::LogManager::TYPE::MESSAGE, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0);
 #define GPU_ASSERT(expr, msg) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
 	df::LogManager::TYPE::ASSERT, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0);
-#define GL_CHECK(expr, msg) df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
-	df::LogManager::TYPE::CHECK, { __FILE__, __LINE__ }, (#expr), (msg)), 0, 0); // TODO why are there no parameters on CHECK? What is the purpose of CHECK?
+#define GL_CHECK eltecg::detail::gpu_check(__FILE__, __LINE__);
+//#define GL_CHECK df::Logger.AddEntry(df::LogManager::LogEntry(df::LogManager::SEVERITY::WARNING, \
+//	df::LogManager::TYPE::CHECK, { __FILE__, __LINE__ }, ("GL_CHECK"), ("???")), 0, 0);
 
 #else
 #define GPU_WARNING(expr, msg)

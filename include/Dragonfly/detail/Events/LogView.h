@@ -3,9 +3,10 @@
 
 #include "LogManager.h"
 #include "LogFilter.h"
+#include "LogHandlerBase.h"
 
 namespace df {
-	class LogView {
+	class LogView : public LogHandlerBase {
 	public:
 		enum class LogSortCriteria
 		{
@@ -32,7 +33,7 @@ namespace df {
 		}
 
 		LogManager::Instance* GetEntryAt(int index);
-		void LogArrived(LogManager::Instance* instance);
+		void LogArrived(LogManager::Instance* instance) override;
 		void SetFilter(LogFilter& filter);
 		void SetSort(LogSortCriteria criteria);
 		void SetSingleInstance(bool singleInstance_);

@@ -161,7 +161,8 @@ inline bool	Program<S, U, R>::Link()
 	}
 	GL_CHECK;
 #ifdef _DEBUG
-	std::cout << "Program compilation was succesful.\n";
+	// std::cout << "Program compilation was succesful.\n";
+	INFO("", "Program compilation was succesful.")
 #endif // _DEBUG
 	return true;
 }

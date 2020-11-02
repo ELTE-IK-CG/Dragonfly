@@ -9,7 +9,8 @@
 //#include "LogView.h"
 
 namespace df {
-	class LogView;
+class LogHandlerBase;
+class LogView;
 
 	class LogManager {
 	public:
@@ -59,7 +60,7 @@ namespace df {
 			}
 		};
 
-		typedef void (*SubscriberCallback)(Instance*);
+		// typedef void (*SubscriberCallback)(Instance*);
 
 		std::unordered_map<uint64_t, LogEntry> entries;
 
@@ -67,7 +68,7 @@ namespace df {
 
 		void AddEntry(LogEntry&& entry, uint64_t timestamp, uint64_t frame_number);
 
-		void Subscribe(LogView* view);
+		void Subscribe(LogHandlerBase* view);
 
 		static LogManager& GetSingleton()
 		{
@@ -76,8 +77,8 @@ namespace df {
 		}
 
 	private:
-		std::vector<LogView*> logSubscribers;
-		std::vector<LogView*> logSubscribers2;
+		std::vector<LogHandlerBase*> logSubscribers;
+		// std::vector<LogView*> logSubscribers2;
 
 		static uint64_t getHash(LogEntry& entry);
 
