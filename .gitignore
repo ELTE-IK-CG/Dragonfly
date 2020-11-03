@@ -1,6 +1,7 @@
 # GL Framework Gitignore
 
 *imgui.ini
+Framework/Dragonfly.props
 
 
 # Prerequisites
