@@ -3,34 +3,38 @@
 #include <cstddef>
 #include <type_traits>
 
+namespace df {
+
 template <class... Ts>
 #pragma pack()
-struct SLTuple;
+struct Tuple;
 
 template <class T, class... Ts>
 #pragma pack()
-struct SLTuple<T, Ts...>
+struct Tuple<T, Ts...>
 {
 	T first;
-	SLTuple<Ts...> rest;
+	Tuple<Ts...> rest;
 };
 
 template <class T>
 #pragma pack()
-struct SLTuple<T>
+struct Tuple<T>
 {
 	T first;
 };
 
-namespace detail {
+} // namespace df
+
+namespace df::detail {
 	template < size_t i, class T>
 	struct SLTupleElement;
 
 	template < size_t i, class T, class... Ts>
-	struct SLTupleElement<i, SLTuple<T, Ts...> > : SLTupleElement<i - 1, SLTuple<Ts...> > {};
+	struct SLTupleElement<i, Tuple<T, Ts...> > : SLTupleElement<i - 1, Tuple<Ts...> > {};
 
 	template <class T, class... Ts>
-	struct SLTupleElement<0, SLTuple<T, Ts...> >
+	struct SLTupleElement<0, Tuple<T, Ts...> >
 	{
 		using type = T;
 	};
@@ -39,13 +43,13 @@ namespace detail {
 	struct SLTupleAccessor
 	{
 		template <class... Ts>
-		static inline typename SLTupleElement<i, SLTuple<Ts...> >::type& get(SLTuple<Ts...>& t)
+		static inline typename SLTupleElement<i, Tuple<Ts...> >::type& get(Tuple<Ts...>& t)
 		{
 			return SLTupleAccessor<i - 1>::get(t.rest);
 		}
 
 		template <class... Ts>
-		static inline const typename SLTupleElement<i, SLTuple<Ts...> >::type& get(const SLTuple<Ts...>& t)
+		static inline const typename SLTupleElement<i, Tuple<Ts...> >::type& get(const Tuple<Ts...>& t)
 		{
 			return SLTupleAccessor<i - 1>::get(t.rest);
 		}
@@ -55,13 +59,13 @@ namespace detail {
 	struct SLTupleAccessor<0>
 	{
 		template <class... Ts>
-		static inline typename SLTupleElement<0, SLTuple<Ts...> >::type& get(SLTuple<Ts...>& t)
+		static inline typename SLTupleElement<0, Tuple<Ts...> >::type& get(Tuple<Ts...>& t)
 		{
 			return t.first;
 		}
 
 		template <class... Ts>
-		static inline const typename SLTupleElement<0, SLTuple<Ts...> >::type& get(const SLTuple<Ts...>& t)
+		static inline const typename SLTupleElement<0, Tuple<Ts...> >::type& get(const Tuple<Ts...>& t)
 		{
 			return t.first;
 		}
@@ -70,7 +74,7 @@ namespace detail {
 	template <class T, class... Ts>
 	struct SLTupleBuilder
 	{
-		static inline void make(SLTuple<typename std::decay<T>::type, typename ::std::decay<Ts>::type...>& t, T&& x, Ts&&... xs)
+		static inline void make(Tuple<typename std::decay<T>::type, typename ::std::decay<Ts>::type...>& t, T&& x, Ts&&... xs)
 		{
 			t.first = x;
 			SLTupleBuilder<Ts...>::make(t.rest, std::forward<Ts>(xs)...);
@@ -80,30 +84,30 @@ namespace detail {
 	template <class T>
 	struct SLTupleBuilder<T>
 	{
-		static inline void make(SLTuple<typename ::std::decay<T>::type>& t, T&& x)
+		static inline void make(Tuple<typename ::std::decay<T>::type>& t, T&& x)
 		{
 			t.first = x;
 		}
 	};
 
 	template <class... Ts>
-	inline SLTuple<typename ::std::decay<Ts>::type...> make_tuple(Ts&&... x)
+	inline Tuple<typename ::std::decay<Ts>::type...> make_tuple(Ts&&... x)
 	{
-		SLTuple<typename ::std::decay<Ts>::type...> t;
+		Tuple<typename ::std::decay<Ts>::type...> t;
 		SLTupleBuilder<Ts...>::make(t, ::std::forward<Ts>(x)...);
 		return t;
 	}
 
 	template <size_t i, class... Ts>
-	inline typename SLTupleElement<i, SLTuple<Ts...> >::type& get(SLTuple<Ts...>& t)
+	inline typename SLTupleElement<i, Tuple<Ts...> >::type& get(Tuple<Ts...>& t)
 	{
 		return SLTupleAccessor<i>::get(t);
 	}
 
 	template <size_t i, class... Ts>
-	inline const typename SLTupleElement<i, SLTuple<Ts...> >::type& get(const SLTuple<Ts...>& t)
+	inline const typename SLTupleElement<i, Tuple<Ts...> >::type& get(const Tuple<Ts...>& t)
 	{
 		return SLTupleAccessor<i>::get(t);
 	}
 
-}
+} //namespace df::detail

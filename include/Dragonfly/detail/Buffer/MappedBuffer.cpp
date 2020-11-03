@@ -7,7 +7,7 @@ void MappedBufferBase::_Map(GLintptr offset_, GLsizeiptr length_, df::MAP_BITS f
 	ASSERT(checkMapFlag(flags_), "Invalid mapping flags when using this buffer");
 	ASSERT(checkValidBufferMapBit(flags_,_view.Flags()), "Inconsitent mapping flags with buffer object");
 	ASSERT(offset_ + length_ <= _view.Bytes(), "Cannot map more then the buffer size.");
-	ASSERT(is_mapped, "Buffer is already mapped.");
+	ASSERT(!is_mapped, "Buffer is already mapped.");
 	if (is_mapped) _Unmap();
 	_begin = static_cast<char*>(glMapNamedBufferRange(_view.GetID(), offset_, length_, static_cast<GLbitfield>(flags_)));
 	_end = _begin + length_;

@@ -1,5 +1,6 @@
 #pragma once
 #include "BufferBase.h"
+#include "../Traits/Range.h"
 
 namespace df{
 
@@ -15,8 +16,9 @@ enum class MAP_BITS : GLenum
 	DONT_SYNC	= GL_MAP_UNSYNCHRONIZED_BIT,	// Does not sync when mapping
 };  ENUM_CLASS_FLAG_OPERATORS(MAP_BITS)
 
+} //namespace df
 
-namespace detail {
+namespace df::detail{
 
 template<MAP_BITS flags_> constexpr bool checkMapFlag() {
 	return  checkBufferFlag<static_cast<BUFFER_BITS>(flags_)>()
@@ -42,23 +44,22 @@ class MappedBufferBase
 {
 public:
 	~MappedBufferBase() { if (is_mapped) _Unmap(); }
-
 	size_t Bytes() const { return is_mapped ? _end - _begin : 0; }
-
 	void* Data() const { return is_mapped ? _begin : nullptr; }
 
 protected:
 	//todo move or copy view_? 
-	MappedBufferBase(const BufferLowLevelBase& view_) : _view(view_), _flags(MAP_BITS::NONE), is_mapped(false) {}
+	MappedBufferBase(BufferLowLevelBase&& view_) : _begin(nullptr), _end(nullptr), _view(std::move(view_)), _flags(MAP_BITS::NONE), is_mapped(false) {}
 	MappedBufferBase(const MappedBufferBase&) = delete;
 
 	void _Map(GLintptr offset_, GLsizeiptr length_, MAP_BITS flags_);
 	void _Flush(GLintptr offset_, GLsizeiptr length_);
 	void _Unmap();
 
-private:
-	BufferLowLevelBase _view;
+protected:
 	char *_begin, *_end;
+	BufferLowLevelBase _view;
+private:
 	MAP_BITS _flags;
 	bool is_mapped;
 };
@@ -67,29 +68,29 @@ private:
 template<typename ValueType_>
 class MappedBuffer : public MappedBufferBase
 {
-	constexpr size_t valueSize = sizeof(ValueType_);
+	static constexpr size_t valueSize = sizeof(ValueType_);
 	using Base = MappedBufferBase;
 	using iterator = df::detail::ContiguousIterator<ValueType_>;
 	using const_iterator = df::detail::ContiguousConstIterator<ValueType_>;
 	//using reverse_iterator = todo
 	//using const_reverse_iterator = todo
 public:
-	MappedBuffer(const BufferLowLevelBase& view_, Range range_, MAP_BITS flags_) : Base(view_){ Map(range_, flags_); }
+	MappedBuffer(BufferLowLevelBase view_, Range range_, MAP_BITS flags_) : Base(std::move(view_)){ Map(range_, flags_); }
 	~MappedBuffer() {}
 	MappedBuffer(const MappedBuffer&) = delete;
 
-	void Map(Range range_, MAP_BITS flags_) { _Map(range_.start * valueSize, range_.num == ALL ? _view.Bytes() - range_.start* valueSize : range_.num * valueSize, flags_); }
-	void Unmap(){ _UnMap();}
-	void Flush(Range range_ = Range()) { _Flush(range_.start * valueSize, range_.num == ALL ? _view.Bytes() - range_.start * valueSize : range_.num * valueSize);}
+	void Map(Range range_, MAP_BITS flags_) { _Map(range_.start * valueSize, range_.num == df::All ? _view.Bytes() - range_.start* valueSize : range_.num * valueSize, flags_); }
+	void Unmap(){ _Unmap();}
+	void Flush(Range range_ = Range()) { _Flush(range_.start * valueSize, range_.num == df::All ? _view.Bytes() - range_.start * valueSize : range_.num * valueSize);}
 
-	iterator		begin()			{ return iterator(_begin, _begin, _end); }
-	const_iterator	begin()  const	{ return const_iterator(_begin, _begin, _end); }
-	iterator		end()			{ return iterator(_end, _begin, _end); }
-	const_iterator	end()	 const	{ return const_iterator(_end, _begin, _end); }
+	iterator		begin()			{ return iterator(		reinterpret_cast<ValueType_*>(_begin),reinterpret_cast<ValueType_*>(_begin), reinterpret_cast<ValueType_*>(_end)); }
+	const_iterator	begin()  const	{ return const_iterator(reinterpret_cast<ValueType_*>(_begin),reinterpret_cast<ValueType_*>(_begin), reinterpret_cast<ValueType_*>(_end)); }
+	iterator		end()			{ return iterator(		reinterpret_cast<ValueType_*>(_end),  reinterpret_cast<ValueType_*>(_begin), reinterpret_cast<ValueType_*>(_end)); }
+	const_iterator	end()	 const	{ return const_iterator(reinterpret_cast<ValueType_*>(_end),  reinterpret_cast<ValueType_*>(_begin), reinterpret_cast<ValueType_*>(_end)); }
 	const_iterator	cbegin() const	{ return begin(); }
 	const_iterator	cend()	 const	{ return end(); }
 
-	iterator::pointer		data()		 { return _begin; }
-	const_iterator::pointer data() const { return _begin; }
 	size_t size() const { return Bytes() * valueSize; }
 };
+
+} //namespace df::detail
