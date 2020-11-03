@@ -33,11 +33,11 @@ inline bool checkMapFlag(MAP_BITS flags_) {
 template<MAP_BITS mapflags_, BUFFER_BITS bufflags_>
 constexpr bool checkValidBufferMapBit() {
 	constexpr BUFFER_BITS mapflags = static_cast<BUFFER_BITS>(mapflags_);
-	return (bufflags_ & ~(BUFFER_BITS::ALL & mapflags)) == BUFFER_BITS::NONE;
+	return (~bufflags_ & BUFFER_BITS::ALL & mapflags) == BUFFER_BITS::NONE;
 }
 inline bool checkValidBufferMapBit(MAP_BITS mapflags_, BUFFER_BITS bufflags_) {
 	BUFFER_BITS mapflags = static_cast<BUFFER_BITS>(mapflags_);
-	return (bufflags_ & ~(BUFFER_BITS::ALL & mapflags)) == BUFFER_BITS::NONE;
+	return (~bufflags_ & BUFFER_BITS::ALL & mapflags) == BUFFER_BITS::NONE;
 }
 
 class MappedBufferBase

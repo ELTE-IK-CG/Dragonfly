@@ -56,7 +56,6 @@ public:
 	[[nodiscard]] operator std::vector<Tuple_Type>() const { return this->template _DownloadData<Tuple_Type>(); }
 
 	const detail::MappedBuffer<Tuple_Type> Map(Range range_ = Range(), MAP_BITS flags_ = _defaultMapFlags) const {return detail::MappedBuffer<Tuple_Type>(*this, range_, flags_);}
-	const detail::MappedBuffer<Tuple_Type> operator[](Range range_) const{ return Map(range_); }
 };
 
 template<typename ...ItemTypes_>
@@ -82,8 +81,8 @@ public:
 	[[nodiscard]] Buffer<NewItemTypes_...> MakeView() const { return Buffer<NewItemTypes_...>(static_cast<detail::BufferLowLevelBase&>(*this)); }
 	[[nodiscard]] Buffer MakeView() const { return Buffer(static_cast<detail::BufferLowLevelBase&>(*this)); } //Does it work???
 
+	using Base::Map; // const version
 	detail::MappedBuffer<Tuple_Type> Map(Range range_ = Range(), MAP_BITS flags_ = _defaultMapFlags) { return detail::MappedBuffer<Tuple_Type>(*this, range_, flags_); }
-	detail::MappedBuffer<Tuple_Type> operator[](Range range_) { return Map(range_); }
 
 	Buffer& operator=(const std::vector<Single_Type>& vec) { this->_UploadData(static_cast<const void*>(vec.data()), sizeof(Single_Type) * vec.size()); return *this; }
 	Buffer& operator=(const std::vector<Pair_Type>& vec) { this->_UploadData(static_cast<const void*>(vec.data()), sizeof(Pair_Type) * vec.size()); return *this; }
