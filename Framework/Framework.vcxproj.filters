@@ -168,6 +168,9 @@
     <ClCompile Include="..\include\Dragonfly\detail\Spirver\Spirver.cpp">
       <Filter>Dragonfly\detail\Spirver</Filter>
     </ClCompile>
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_tables.cpp">
+      <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">

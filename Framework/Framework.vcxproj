@@ -48,6 +48,7 @@
     <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui_demo.cpp" />
     <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui_draw.cpp" />
     <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_tables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Dragonfly\config.h" />
