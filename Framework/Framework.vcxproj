@@ -28,6 +28,7 @@
     <ClCompile Include="..\include\Dragonfly\detail\Shader\Shader.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderEditor.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Shader\ShaderSource.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Spirver\Spirver.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Texture\Texture.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Traits\InternalFormats.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Traits\UniformTypes.cpp" />
@@ -76,6 +77,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderEditor.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderFwd.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Shader\ShaderSource.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Spirver\Spirver.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture1D.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Texture\Texture2D.h" />
@@ -122,6 +124,7 @@
     <None Include="..\include\Dragonfly\detail\Program\Program.inl" />
     <None Include="..\include\Dragonfly\detail\Program\ProgramCompile.inl" />
     <None Include="..\include\Dragonfly\detail\Shader\Shader.inl" />
+    <None Include="..\include\Dragonfly\detail\Spirver\Spirver.inl" />
     <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl" />
     <None Include="..\include\Dragonfly\detail\Uniform\Uniform.inl" />
     <None Include="..\include\Dragonfly\detail\Vao\NewVao.inl" />
@@ -177,6 +180,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir)..\include;$(DragonflyPackPath)\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+    <LibraryPath>$(DragonflyPackPath)\LibBin\SpirverDebug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
     <IncludePath>$(ProjectDir)..\include;$(DragonflyPackPath)\includes;$(IncludePath)</IncludePath>
@@ -185,6 +189,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir)..\include;$(DragonflyPackPath)\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+    <LibraryPath>$(DragonflyPackPath)\LibBin\Spirver;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -200,6 +205,9 @@
     </Link>
     <Lib />
     <Lib />
+    <Lib>
+      <AdditionalDependencies>GenericCodeGen.lib;glslang.lib;MachineIndependent.lib;OGLCompiler.lib;OSDependent.lib;SPIRV.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
     <ClCompile>
@@ -233,6 +241,9 @@
     </Link>
     <Lib />
     <Lib />
+    <Lib>
+      <AdditionalDependencies>GenericCodeGen.lib;glslang.lib;MachineIndependent.lib;OGLCompiler.lib;OSDependent.lib;SPIRV.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

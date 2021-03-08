@@ -2,6 +2,7 @@
 #include <regex>
 #include <string_view>
 #include <sstream>
+#include "../Spirver/Spirver.h"
 
 using namespace df::detail;
 
@@ -141,8 +142,20 @@ bool CompiledShaderBase::_Compile()
 
 	auto code = GeneratedCode(_source);
 
-	glShaderSource(_id, code.GetCount(), code.GetStrings(), code.GetLengths());
-	glCompileShader(_id);
+	if (_flags && COMPILED_SHADER_FLAGS::SPIRV || _flags && COMPILED_SHADER_FLAGS::SPIRV_OPT)
+	{
+		std::vector<GLuint> spirv;
+		Spirver::glslToSpirv(code, spirv, Spirver::StageToSpirver(_type), 0); // TODO: dont ignore return value
+		if (_flags && COMPILED_SHADER_FLAGS::SPIRV_OPT)
+			Spirver::optimizeSpirv(spirv);	
+		glShaderBinary(1, &_id, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(GLuint));
+		glSpecializeShader(_id, "main", 0, nullptr, nullptr);
+	}
+	else
+	{
+		glShaderSource(_id, code.GetCount(), code.GetStrings(), code.GetLengths());
+		glCompileShader(_id);
+	}
 
 	GLint result = 0, loglen = 0, errlen = 0;
 	glGetShaderiv(_id, GL_COMPILE_STATUS, &result);

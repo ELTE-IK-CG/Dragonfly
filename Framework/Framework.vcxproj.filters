@@ -64,6 +64,9 @@
     <Filter Include="Dragonfly\detail\FileIO">
       <UniqueIdentifier>{1e534988-fa37-4f1e-8baa-30d3fabec243}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dragonfly\detail\Spirver">
+      <UniqueIdentifier>{fa00ced0-ea30-4f49-8fba-dcd8dee665f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp">
@@ -161,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="$(DragonflyPackPath)\includes\ImGui\imgui_widgets.cpp">
       <Filter>ImGui %28in pack%29</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Spirver\Spirver.cpp">
+      <Filter>Dragonfly\detail\Spirver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -359,6 +365,9 @@
     <ClInclude Include="..\include\Dragonfly\editor.h">
       <Filter>Dragonfly</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Spirver\Spirver.h">
+      <Filter>Dragonfly\detail\Spirver</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl">
@@ -397,6 +406,9 @@
     </None>
     <None Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.inl">
       <Filter>Dragonfly\detail\Buffer</Filter>
+    </None>
+    <None Include="..\include\Dragonfly\detail\Spirver\Spirver.inl">
+      <Filter>Dragonfly\detail\Spirver</Filter>
     </None>
   </ItemGroup>
 </Project>
