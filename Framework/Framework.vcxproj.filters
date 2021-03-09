@@ -78,18 +78,6 @@
     <ClCompile Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.cpp">
       <Filter>ImGui-Addons\Text Editor</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.cpp">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_canvas.cpp">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor.cpp">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_api.cpp">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\ImGui-addons\auto\auto.cpp">
       <Filter>ImGui-Addons\Auto</Filter>
     </ClCompile>
@@ -171,6 +159,18 @@
     <ClCompile Include="T:\DragonflyPack\includes\ImGui\imgui_tables.cpp">
       <Filter>ImGui %28in pack%29</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\crude_json.cpp">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\imgui_canvas.cpp">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor.cpp">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor_api.cpp">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -182,22 +182,7 @@
     <ClInclude Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.h">
       <Filter>ImGui-Addons\Text Editor</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.h">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.h">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_canvas.h">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.h">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor.h">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.h">
       <Filter>ImGui-Addons\Node Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\include\ImGui-addons\auto\auto.h">
@@ -371,17 +356,23 @@
     <ClInclude Include="..\include\Dragonfly\detail\Spirver\Spirver.h">
       <Filter>Dragonfly\detail\Spirver</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\crude_json.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_bezier_math.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_canvas.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_extra_math.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor_internal.h">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </None>
-    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.inl">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </None>
-    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl">
-      <Filter>ImGui-Addons\Node Editor</Filter>
-    </None>
     <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl">
       <Filter>Dragonfly\detail\Uniform</Filter>
     </None>
@@ -412,6 +403,15 @@
     </None>
     <None Include="..\include\Dragonfly\detail\Spirver\Spirver.inl">
       <Filter>Dragonfly\detail\Spirver</Filter>
+    </None>
+    <None Include="..\include\ImGui-addons\imgui_node_editor\imgui_bezier_math.inl">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </None>
+    <None Include="..\include\ImGui-addons\imgui_node_editor\imgui_extra_math.inl">
+      <Filter>ImGui-Addons\Node Editor</Filter>
+    </None>
+    <None Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor_internal.inl">
+      <Filter>ImGui-Addons\Node Editor</Filter>
     </None>
   </ItemGroup>
 </Project>

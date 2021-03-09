@@ -13,7 +13,7 @@
 
 
 //------------------------------------------------------------------------------
-# include "../imgui_node_editor.h"
+# include "imgui_node_editor.h"
 
 
 //------------------------------------------------------------------------------
@@ -239,7 +239,7 @@ struct Object
     virtual void Draw(ImDrawList* drawList, DrawFlags flags = None) = 0;
 
     virtual bool AcceptDrag() { return false; }
-    virtual void UpdateDrag(const ImVec2& offset) { }
+    virtual void UpdateDrag(const ImVec2& offset) { IM_UNUSED(offset); }
     virtual bool EndDrag() { return false; }
     virtual ImVec2 DragStartLocation() { return GetBounds().Min; }
 
@@ -656,7 +656,7 @@ protected:
     virtual void OnFinish() {}
     virtual void OnStop() {}
 
-    virtual void OnUpdate(float progress) {}
+    virtual void OnUpdate(float progress) { IM_UNUSED(progress); }
 };
 
 struct NavigateAnimation final: Animation
@@ -727,6 +727,7 @@ struct AnimationController
 
     virtual void Draw(ImDrawList* drawList)
     {
+        IM_UNUSED(drawList);
     }
 };
 
@@ -1143,7 +1144,11 @@ struct NodeBuilder
     ImRect m_GroupBounds;
     bool   m_IsGroup;
 
+    ImDrawListSplitter m_Splitter;
+    ImDrawListSplitter m_PinSplitter;
+
     NodeBuilder(EditorContext* editor);
+    ~NodeBuilder();
 
     void Begin(NodeId nodeId);
     void End();
@@ -1229,6 +1234,16 @@ struct Config: ax::NodeEditor::Config
     void EndSave();
 };
 
+enum class SuspendFlags : uint8_t
+{
+    None = 0,
+    KeepSplitter = 1
+};
+
+inline SuspendFlags operator |(SuspendFlags lhs, SuspendFlags rhs) { return static_cast<SuspendFlags>(static_cast<uint8_t>(lhs) | static_cast<uint8_t>(rhs)); }
+inline SuspendFlags operator &(SuspendFlags lhs, SuspendFlags rhs) { return static_cast<SuspendFlags>(static_cast<uint8_t>(lhs) & static_cast<uint8_t>(rhs)); }
+
+
 struct EditorContext
 {
     EditorContext(const ax::NodeEditor::Config* config = nullptr);
@@ -1288,8 +1303,8 @@ struct EditorContext
 
     void NotifyLinkDeleted(Link* link);
 
-    void Suspend();
-    void Resume();
+    void Suspend(SuspendFlags flags = SuspendFlags::None);
+    void Resume(SuspendFlags flags = SuspendFlags::None);
     bool IsSuspended();
 
     bool IsActive();
@@ -1315,11 +1330,14 @@ struct EditorContext
     template <typename T>
     ImRect GetBounds(const std::vector<T*>& objects)
     {
-        ImRect bounds;
+        ImRect bounds(FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX);
 
         for (auto object : objects)
             if (object->m_IsLive)
                 bounds.Add(object->GetBounds());
+
+        if (ImRect_IsEmpty(bounds))
+            bounds = ImRect();
 
         return bounds;
     }
@@ -1327,11 +1345,14 @@ struct EditorContext
     template <typename T>
     ImRect GetBounds(const std::vector<ObjectWrapper<T>>& objects)
     {
-        ImRect bounds;
+        ImRect bounds(FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX);
 
         for (auto object : objects)
             if (object.m_Object->m_IsLive)
                 bounds.Add(object.m_Object->GetBounds());
+
+        if (ImRect_IsEmpty(bounds))
+            bounds = ImRect();
 
         return bounds;
     }
@@ -1433,6 +1454,9 @@ private:
     Settings            m_Settings;
 
     Config              m_Config;
+
+    int                 m_ExternalChannel;
+    ImDrawListSplitter  m_Splitter;
 };
 
 

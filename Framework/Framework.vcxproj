@@ -37,10 +37,10 @@
     <ClCompile Include="..\include\Dragonfly\detail\Uniform\UniformEditor.cpp" />
     <ClCompile Include="..\include\ImGui-addons\auto\auto.cpp" />
     <ClCompile Include="..\include\ImGui-addons\cpp\imgui_stdlib.cpp" />
-    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.cpp" />
-    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_canvas.cpp" />
-    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor.cpp" />
-    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_api.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\crude_json.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\imgui_canvas.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor.cpp" />
+    <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor_api.cpp" />
     <ClCompile Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.cpp" />
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\include\ImGui-addons\impl\imgui_impl_sdl.cpp" />
@@ -102,12 +102,12 @@
     <ClInclude Include="..\include\ImGui-addons\auto\impl_base.h" />
     <ClInclude Include="..\include\ImGui-addons\auto\impl_glm.h" />
     <ClInclude Include="..\include\ImGui-addons\cpp\imgui_stdlib.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\crude_json.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_bezier_math.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_canvas.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_extra_math.h" />
     <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor.h" />
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\crude_json.h" />
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.h" />
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_canvas.h" />
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.h" />
-    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.h" />
+    <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor_internal.h" />
     <ClInclude Include="..\include\ImGui-addons\imgui_text_editor\TextEditor.h" />
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h" />
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_sdl.h" />
@@ -129,9 +129,9 @@
     <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl" />
     <None Include="..\include\Dragonfly\detail\Uniform\Uniform.inl" />
     <None Include="..\include\Dragonfly\detail\Vao\NewVao.inl" />
-    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_bezier_math.inl" />
-    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_extra_math.inl" />
-    <None Include="..\include\ImGui-addons\imgui_node_editor\Source\imgui_node_editor_internal.inl" />
+    <None Include="..\include\ImGui-addons\imgui_node_editor\imgui_bezier_math.inl" />
+    <None Include="..\include\ImGui-addons\imgui_node_editor\imgui_extra_math.inl" />
+    <None Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor_internal.inl" />
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

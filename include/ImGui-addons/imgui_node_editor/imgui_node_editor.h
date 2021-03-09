@@ -134,6 +134,8 @@ enum StyleVar
     StyleVar_PinArrowWidth,
     StyleVar_GroupRounding,
     StyleVar_GroupBorderWidth,
+
+    StyleVar_Count
 };
 
 struct Style
@@ -180,7 +182,7 @@ struct Style
         FlowSpeed               = 150.0f;
         FlowDuration            = 2.0f;
         PivotAlignment          = ImVec2(0.5f, 0.5f);
-        PivotSize               = ImVec2(-1, -1);
+        PivotSize               = ImVec2(0.0f, 0.0f);
         PivotScale              = ImVec2(1, 1);
         PinCorners              = ImDrawCornerFlags_All;
         PinRadius               = 0.0f;
