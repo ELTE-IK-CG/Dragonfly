@@ -556,7 +556,7 @@ private:
         if ((c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
         {
             advance();
-            result.push_back(c);
+            result.push_back(static_cast<char>(c));
             return true;
         }
 
@@ -575,7 +575,7 @@ private:
             if (end != n.c_str() + n.size())
                 return false;
 
-            if (!std::isnormal(v))
+            if (v != 0 && !std::isnormal(v))
                 return false;
 
             result = v;
