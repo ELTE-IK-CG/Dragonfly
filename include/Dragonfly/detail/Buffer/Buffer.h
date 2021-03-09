@@ -70,7 +70,7 @@ protected:
 protected:
 	explicit Buffer(const detail::BufferLowLevelBase& base_) : Base::ReadBuffer(base_) {}
 public:
-	explicit Buffer(size_t len_,					BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(len_, flags_ | _requiredFlag) {}
+	explicit Buffer(size_t len_,					BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(len_, flags_ | _requiredFlag){}
 	Buffer(const std::vector	<Single_Type>&vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}
 	Buffer(const std::vector	<Pair_Type>  &vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}
 	Buffer(const std::vector	<Tuple_Type> &vec_,	BUFFER_BITS flags_ = _requiredFlag) : Base::ReadBuffer(vec_, flags_ | _requiredFlag){}

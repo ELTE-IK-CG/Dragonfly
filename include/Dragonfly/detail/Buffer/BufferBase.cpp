@@ -14,8 +14,13 @@ df::detail::BufferLowLevelBase::BufferLowLevelBase(size_t bytes_, BUFFER_BITS fl
 	ASSERT(checkBufferFlag(flags_), "df::detail::BufferLowLevelBase: Invalid Flag setup.");
 	glGenBuffers(1, &_id);
 	ASSERT(_id != 0 && (_instances.count(_id) == 0 || _instances[_id] == 0), "df::detail::BufferLowLevelBase: Should not have an instance already with this id.");
-	glNamedBufferStorage(_id, _bytes, data_, static_cast<GLenum>(flags_));
+	GLint old_bound_buf = 0;
+	glGetIntegerv(GL_SHADER_STORAGE_BUFFER_BINDING, &old_bound_buf);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, _id);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, _bytes, data_, static_cast<GLenum>(flags_));
 	_instances[_id] = 1;
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, old_bound_buf);
+	GL_CHECK;
 }
 
 df::detail::BufferLowLevelBase::~BufferLowLevelBase()
