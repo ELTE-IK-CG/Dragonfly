@@ -58,6 +58,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Buffer\Buffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Buffer\BufferBase.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Buffer\UniformBuffer.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\Camera.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\ImGuiHandler.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Events\renderdoc_app.h" />

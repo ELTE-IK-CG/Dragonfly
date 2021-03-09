@@ -377,6 +377,9 @@
     <ClInclude Include="..\include\Dragonfly\detail\Traits\Tuple.h">
       <Filter>Dragonfly\detail\Traits</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Buffer\UniformBuffer.h">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl">
