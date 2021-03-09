@@ -145,11 +145,15 @@ bool CompiledShaderBase::_Compile()
 	if (_flags && COMPILED_SHADER_FLAGS::SPIRV || _flags && COMPILED_SHADER_FLAGS::SPIRV_OPT)
 	{
 		std::vector<GLuint> spirv;
-		Spirver::glslToSpirv(code, spirv, Spirver::StageToSpirver(_type), 0); // TODO: dont ignore return value
-		if (_flags && COMPILED_SHADER_FLAGS::SPIRV_OPT)
-			Spirver::optimizeSpirv(spirv);	
-		glShaderBinary(1, &_id, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(GLuint));
-		glSpecializeShader(_id, "main", 0, nullptr, nullptr);
+		bool success = Spirver::glslToSpirv(code, spirv, Spirver::StageToSpirver(_type), 0);
+		if (success)
+		{
+			if (_flags && COMPILED_SHADER_FLAGS::SPIRV_OPT)
+				Spirver::optimizeSpirv(spirv);
+
+			glShaderBinary(1, &_id, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(GLuint));
+			glSpecializeShader(_id, "main", 0, nullptr, nullptr);
+		}
 	}
 	else
 	{

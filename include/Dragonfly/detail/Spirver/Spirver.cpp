@@ -167,7 +167,7 @@ bool Spirver::printLog(GLuint object, LogType logType)
 			fullMessage << logTypeStr[(int)logType] << " error:" << std::endl << strInfoLog;
 
 			errors << fullMessage.str() << std::endl;
-			ASSERT(true, fullMessage.str().c_str());
+			ASSERT(false, fullMessage.str().c_str());
 
 			delete[] strInfoLog;
 		}
@@ -177,7 +177,7 @@ bool Spirver::printLog(GLuint object, LogType logType)
 			fullMessage << logTypeStr[(int)logType] << " error!";
 
 			errors << fullMessage.str() << std::endl;
-			ASSERT(true, fullMessage.str().c_str());
+			ASSERT(false, fullMessage.str().c_str());
 		}
 
 		return false;
@@ -194,7 +194,7 @@ bool Spirver::printLog(glslang::TShader* object)
 		fullMessage << "AST shader error: " << std::endl << log;
 
 		errors << fullMessage.str() << std::endl;
-		ASSERT(true, fullMessage.str().c_str());
+		ASSERT(false, fullMessage.str().c_str());
 
 		return false;
 	}
@@ -210,7 +210,7 @@ bool Spirver::printLog(glslang::TProgram* object)
 		fullMessage << "AST program error: " << std::endl << log;
 
 		errors << fullMessage.str() << std::endl;
-		ASSERT(true, fullMessage.str().c_str());
+		ASSERT(false, fullMessage.str().c_str());
 
 		return false;
 	}
@@ -226,7 +226,7 @@ bool Spirver::printLog(spv::SpvBuildLogger& object)
 		fullMessage << "SPIR-V compile error: " << std::endl << log;
 
 		errors << fullMessage.str() << std::endl;
-		ASSERT(true, fullMessage.str().c_str());
+		ASSERT(false, fullMessage.str().c_str());
 
 		return false;
 	}
@@ -244,7 +244,7 @@ void Spirver::printSpirvOptLog(spv_message_level_t level, const char* source,
 		fullMessage << "Spir-V optimizer error at line " << position.index << ": " << msg;
 
 		errors << fullMessage.str() << std::endl;
-		ASSERT(true, fullMessage.str().c_str());
+		ASSERT(false, fullMessage.str().c_str());
 		break;
 	case SPV_MSG_WARNING:
 		fullMessage << "Spir-V optimizer warning at line " << position.index << ": " << msg;

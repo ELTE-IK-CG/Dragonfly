@@ -6,7 +6,11 @@ bool Spirver::optimizeSpirv(std::vector<T>& spirv)
 {
 	auto print_msg_to_stderr = [](spv_message_level_t, const char*,
 		const spv_position_t&, const char* m) {
-			std::cerr << "error: " << m << std::endl;
+            std::stringstream fullMessage;
+            fullMessage << "error: " << m;
+            
+            errors << fullMessage.str() << std::endl;
+            ASSERT(false, fullMessage.str().c_str());
 	};
 
 	spvtools::Optimizer opt(SPV_ENV_OPENGL_4_5);
