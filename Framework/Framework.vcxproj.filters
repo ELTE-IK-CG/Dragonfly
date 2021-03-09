@@ -171,6 +171,9 @@
     <ClCompile Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor_api.cpp">
       <Filter>ImGui-Addons\Node Editor</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.cpp">
+      <Filter>Dragonfly\detail\Buffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ImGui-addons\impl\imgui_impl_opengl3.h">
@@ -371,6 +374,9 @@
     <ClInclude Include="..\include\ImGui-addons\imgui_node_editor\imgui_node_editor_internal.h">
       <Filter>ImGui-Addons\Node Editor</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\Tuple.h">
+      <Filter>Dragonfly\detail\Traits</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\Dragonfly\detail\Uniform\Subroutines.inl">
@@ -397,9 +403,6 @@
     </None>
     <None Include="..\include\Dragonfly\detail\Vao\NewVao.inl">
       <Filter>Dragonfly\detail\Vao</Filter>
-    </None>
-    <None Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.inl">
-      <Filter>Dragonfly\detail\Buffer</Filter>
     </None>
     <None Include="..\include\Dragonfly\detail\Spirver\Spirver.inl">
       <Filter>Dragonfly\detail\Spirver</Filter>

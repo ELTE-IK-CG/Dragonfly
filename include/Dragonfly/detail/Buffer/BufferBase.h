@@ -5,6 +5,7 @@
 #include <vector>
 #include <tuple>
 #include "../../config.h"
+#include "../Traits/Tuple.h"
 
 namespace df{
 
@@ -17,10 +18,12 @@ enum class BUFFER_BITS : GLenum
 	COHERENT	= GL_MAP_COHERENT_BIT,			// Only if persistent
 	CLIENT		= GL_CLIENT_STORAGE_BIT,		// Suggest storage in CPU RAM
 	DYNAMIC		= GL_DYNAMIC_STORAGE_BIT,		// Please do not use
+	ALL = NONE | READ | WRITE | PERSISTENT | COHERENT | CLIENT | DYNAMIC,
 };  ENUM_CLASS_FLAG_OPERATORS(BUFFER_BITS)
 
+} // namespace df;
 
-namespace detail{
+namespace df::detail{
 
 template<BUFFER_BITS flags_> constexpr bool checkBufferFlag() {
 	return  ((flags_ && (BUFFER_BITS::READ | BUFFER_BITS::WRITE)) || !(flags_ && BUFFER_BITS::PERSISTENT))
@@ -32,12 +35,7 @@ inline bool checkBufferFlag(BUFFER_BITS flags_) {
 		&&  ((flags_ && BUFFER_BITS::PERSISTENT)				  || !(flags_ && BUFFER_BITS::COHERENT));
 }
 
-
-//template<typename ...Types_>  struct EnableIfSingle{};
-//template<typename SingleType> struct EnableIfSingle<SingleType>{ using Type = SingleType;};
-
-//template<typename ...Types_>
-//using EnableIfSingle_Type = typename EnableIfSingle<Types_...>::Type;
+class MappedBufferBase;
 
 class BufferLowLevelBase
 {
@@ -46,11 +44,11 @@ private:
 	GLuint _id;
 	size_t _bytes;
 	BUFFER_BITS _flags;
-protected:
-	~BufferLowLevelBase();
-	BufferLowLevelBase(size_t bytes_, BUFFER_BITS flags_, void* data_ = nullptr);
-	
+public:
 	BufferLowLevelBase(const BufferLowLevelBase& other_); // modifies _instances
+	~BufferLowLevelBase();
+protected:
+	BufferLowLevelBase(size_t bytes_, BUFFER_BITS flags_, void* data_ = nullptr);
 	BufferLowLevelBase(BufferLowLevelBase&&other_) noexcept;
 	BufferLowLevelBase operator=(const BufferLowLevelBase& other_) = delete;
 	df::detail::BufferLowLevelBase& operator=(BufferLowLevelBase&& other_) noexcept;
@@ -62,7 +60,9 @@ protected:
 public:
 	[[nodiscard]] size_t Bytes() const { return _bytes; }
 	[[nodiscard]] BUFFER_BITS Flags() const { return _flags; }
+	[[nodiscard]] int GetID() const { return _id; }
 	[[nodiscard]] operator GLuint() const { return _id; }
+	friend class MappedBufferBase;
 };
 
 template<typename ... ItemTypes_>
@@ -100,16 +100,13 @@ template <typename ItemType_> std::vector<ItemType_> BufferLowLevelBase::_Downlo
 	return ret;
 }
 
-} //namespace detail
-} //namespace df
+} //namespace df::detail
 
 
 /*
 
 namespace df
 {
-	static std::map<GLuint, int> bufferInstances;
-
 	namespace detail {
 		template<typename NewType>
 		struct ConvertVecStore {

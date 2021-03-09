@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
@@ -88,6 +89,7 @@
     <ClInclude Include="..\include\Dragonfly\detail\Traits\EventHandlerTraits.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\InternalFormats.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\Range.h" />
+    <ClInclude Include="..\include\Dragonfly\detail\Traits\Tuple.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Traits\UniformTypes.hpp" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Subroutines.h" />
     <ClInclude Include="..\include\Dragonfly\detail\Uniform\Uniform.h" />
@@ -120,7 +122,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\include\Dragonfly\detail\Events\Sample.inl" />
-    <None Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Program\Program.inl" />
     <None Include="..\include\Dragonfly\detail\Program\ProgramCompile.inl" />
@@ -186,6 +187,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
     <IncludePath>$(ProjectDir)..\include;$(DragonflyPackPath)\includes;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+    <LibraryPath>$(DragonflyPackPath)\LibBin\SpirverDebug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir)..\include;$(DragonflyPackPath)\includes;$(IncludePath)</IncludePath>
@@ -224,6 +226,9 @@
     </Link>
     <Lib />
     <Lib />
+    <Lib>
+      <AdditionalDependencies>GenericCodeGen.lib;glslang.lib;MachineIndependent.lib;OGLCompiler.lib;OSDependent.lib;SPIRV.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
