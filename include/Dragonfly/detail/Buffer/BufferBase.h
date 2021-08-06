@@ -61,7 +61,7 @@ public:
 	[[nodiscard]] size_t Bytes() const { return _bytes; }
 	[[nodiscard]] BUFFER_BITS Flags() const { return _flags; }
 	[[nodiscard]] int GetID() const { return _id; }
-	[[nodiscard]] operator GLuint() const { return _id; }
+	[[nodiscard]] explicit operator GLuint() const { return _id; }
 	friend class MappedBufferBase;
 };
 
