@@ -5,7 +5,6 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <memory>
 
 namespace df
 {
@@ -19,6 +18,7 @@ struct UniformBlockLayout
 		GLuint offset; //location if not backed by a (uniform) buffer block
 		GLenum type;
 		GLint array_size;
+		GLuint byte_size; // only filled if buffer backed
 	};
 	std::map<std::string, ValueData> uniforms;
 	
@@ -28,7 +28,7 @@ struct UniformBlockLayout
 	bool operator== (const UniformBlockLayout &other_) const
 	{
 		if (other_.size != size || other_.uniforms.size() != uniforms.size()) return false;
-		//TODODO
+		//TODO DO
 		return true;
 	}
 };
@@ -37,68 +37,75 @@ struct UniformBlockLayout
 class UniformBuffer : public detail::BufferLowLevelBase
 {
 private:
-	using Binary_Data = std::vector<unsigned char>;
+	using Byte_Type = unsigned char;
+	using Binary_Data = std::vector<Byte_Type>;
 public:
 	class MemoryAdapter
 	{
 	private:
-		std::weak_ptr<std::vector<unsigned char>> data_ptr; // weak ptr
-		UniformBlockLayout::ValueData vardata;
-		friend UniformBuffer;
-		int offset = 0;
+		Byte_Type* data_ptr = nullptr;
+		GLenum type = 0;
+		GLint array_size = 0;
+		GLuint byte_size = 0;
 	private:
-		explicit MemoryAdapter(){}
-		explicit MemoryAdapter(std::weak_ptr<Binary_Data> data_ptr_, UniformBlockLayout::ValueData vardata_, int offset_ = 0) :
-			data_ptr(data_ptr_), vardata(std::move(vardata_)), offset(offset_)
+		friend UniformBuffer;
+		explicit MemoryAdapter() = default;
+		explicit MemoryAdapter(Binary_Data &data_, const UniformBlockLayout::ValueData &vardata_)
+			: data_ptr(data_.data() + vardata_.offset), type(vardata_.type), array_size(vardata_.array_size), byte_size(vardata_.byte_size)
 		{}
 	public:
 		template<typename T_>
-		void operator=(T_&& val_)
+		void operator=(T_&& val_) &&
 		{
 			using NakedValType = std::remove_reference_t<std::remove_cv_t<T_>>;
-			auto sp = data_ptr.lock();
-			if(!sp) return; //invalid uniform buffer cpu data
-			if(sizeof(NakedValType) + vardata.offset >= sp->size()) return; // too large value
-			// TODO Type warning check -- think...
-			// TODO test arrays
-			*reinterpret_cast<NakedValType*>(sp->data() + vardata.offset) = val_;
-		}
-
-		/*template<typename T_>
-		T_& get()
-		{
-			//todo maybe?
+			if(!data_ptr) return; // non existent uniform
+			// TODO type check
+			// TODO size check
+			// TODO implement array, init list, and vector assignement
+			*reinterpret_cast<NakedValType*>(data_ptr) = val_;
 		}
 		
-		MemoryAdapter& operator[](int indx_) &&
+		// Intended use: ubo["myvar"] = myval;
+		template<typename T_> void operator=(T_&& val_) const & = delete;
+
+		template<typename T_>
+		T_* Get() &&
 		{
-			offset = 4*indx_; //todo type size
-			return *this;
-		}*/
+			// TODO type check
+			return reinterpret_cast<T_*>(data_ptr);
+		}
+		// Intended use: ubo["myfloatvar"].Get<float>()
+		template<typename T_> T_* Get() const& = delete;
+		
 	};
 private:
 	UniformBlockLayout layout;
-	std::shared_ptr<std::vector<unsigned char>> data; // CPU copy of the buffer
+	Binary_Data data; // CPU copy of the buffer
 public:
 	explicit UniformBuffer(UniformBlockLayout layout_) :
 		BufferLowLevelBase(layout_.size, BUFFER_BITS::WRITE),
 		layout(std::move(layout_)),
-		data(std::make_shared<std::vector<unsigned char>>(layout.size))
+		data(layout.size)
 	{}
-
+	
+	//MemoryAdapter must be temporary!
 	MemoryAdapter operator[](const std::string& key_)
 	{
 		if(const auto it = layout.uniforms.find(key_); it != layout.uniforms.end())
 		{
 			return MemoryAdapter(data, it->second);
 		}
-		else return MemoryAdapter();
+		else
+		{
+			WARNING(true, ("Uniform '" + key_ + "' does not exist").c_str());
+			return MemoryAdapter();
+		}
 	}
 	// TODO upload automatically (when?)
 	void UploadBuffer()
 	{
-		if(data->size() > 0)
-			_UploadData(data->data(), data->size());
+		if(!data.empty())
+			_UploadData(data.data(), data.size());
 	}
 	void Bind(const GLuint index_)
 	{
@@ -154,7 +161,9 @@ inline std::pair<std::map<std::string, df::UniformBlockLayout>,df::UniformBlockL
 	
 	GLint num_uniforms = 0;
 	glGetProgramInterfaceiv(prog, GL_UNIFORM, GL_ACTIVE_RESOURCES, &num_uniforms);
-		
+
+	std::vector<std::vector<std::pair<GLuint, std::string>>> buffer_offsets(num_blocks);
+	
 	for (int unif = 0; unif < num_uniforms; ++unif)
 	{
 		struct Values
@@ -173,29 +182,50 @@ inline std::pair<std::map<std::string, df::UniformBlockLayout>,df::UniformBlockL
 		const GLenum properties[] = {GL_NAME_LENGTH, GL_TYPE, GL_ARRAY_SIZE, GL_OFFSET,GL_BLOCK_INDEX, GL_ARRAY_STRIDE, GL_MATRIX_STRIDE, GL_IS_ROW_MAJOR, GL_ATOMIC_COUNTER_BUFFER_INDEX, GL_LOCATION};
 
 		glGetProgramResourceiv(prog, GL_UNIFORM, unif, 10, properties, 10, nullptr, &values.name_length);
-		std::string name(values.name_length - 1,'\0');
-		glGetProgramResourceName(prog, GL_UNIFORM, unif, values.name_length, nullptr, &name[0]);
+		std::string uniform_name(values.name_length - 1,'\0');
+		glGetProgramResourceName(prog, GL_UNIFORM, unif, values.name_length, nullptr, &uniform_name[0]);
 		// remove "[0]" from array names
-		if(name[name.size() - 1] == ']')
+		if(uniform_name.back() == ']')
 		{
-			name.resize(name.size() - 3);
+			uniform_name.resize(uniform_name.size() - 3);
 		}
 		df::UniformBlockLayout::ValueData dat;
-		dat.name		= name;
+		dat.name		= uniform_name;
 		dat.type		= values.type;
 		dat.array_size	= values.array_size;
 		
 		if(values.block_index == -1) // not in uniform buffer block
 		{
 			dat.offset	= values.location;
-			non_buffer_backed.uniforms.emplace(name, dat);
+			non_buffer_backed.uniforms.emplace(uniform_name, dat);
 		}
 		else	// in uniform buffer block
 		{
 			dat.offset	= values.offset;
-			ubo_layouts[blocks[values.block_index].name].uniforms.emplace(name,dat);
+			buffer_offsets[values.block_index].emplace_back(values.offset, uniform_name);
+			ubo_layouts[blocks[values.block_index].name].uniforms.emplace(uniform_name, dat);
 		}
 	}
+	
 	// TODO uniform block arrays are not filled (only arr[0])
+
+	
+	// calc (max) size of each buffered uniform
+	for(size_t j = 0; j < buffer_offsets.size(); ++j)
+	{
+		auto& offsets = buffer_offsets[j];
+		if(offsets.empty()) continue;		
+		auto &buff = ubo_layouts[blocks[j].name];
+		
+		std::sort(offsets.begin(), offsets.end(),[](auto a_, auto b_){return a_.first < b_.first;});
+		
+		offsets.emplace_back(buff.size, "");
+		for(size_t i = 0; i < offsets.size() - 1; ++i)
+		{
+			std::string name = offsets[i].second;
+			buff.uniforms[name].byte_size = offsets[i+1].first - offsets[i].first;
+		}
+	}
+	
 	return {ubo_layouts, non_buffer_backed};
 }
