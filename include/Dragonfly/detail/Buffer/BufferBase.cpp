@@ -25,8 +25,10 @@ df::detail::BufferLowLevelBase::BufferLowLevelBase(size_t bytes_, BUFFER_BITS fl
 
 df::detail::BufferLowLevelBase::~BufferLowLevelBase()
 {
-	if (_id != 0 && --_instances[_id] == 0)
+	if (_id != 0 && --_instances[_id] == 0) {
 		glDeleteBuffers(1, &_id);
+		_instances.erase(_id);
+	}
 }
 
 void df::detail::BufferLowLevelBase::_UploadData(const void* data_, size_t size_)
