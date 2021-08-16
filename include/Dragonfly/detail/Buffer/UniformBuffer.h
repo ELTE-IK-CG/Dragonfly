@@ -161,8 +161,6 @@ inline std::pair<std::map<std::string, df::UniformBlockLayout>,df::UniformBlockL
 	
 	GLint num_uniforms = 0;
 	glGetProgramInterfaceiv(prog, GL_UNIFORM, GL_ACTIVE_RESOURCES, &num_uniforms);
-
-	std::vector<std::vector<std::pair<GLuint, std::string>>> buffer_offsets(num_blocks);
 	
 	for (int unif = 0; unif < num_uniforms; ++unif)
 	{
@@ -202,7 +200,6 @@ inline std::pair<std::map<std::string, df::UniformBlockLayout>,df::UniformBlockL
 		else	// in uniform buffer block
 		{
 			dat.offset	= values.offset;
-			buffer_offsets[values.block_index].emplace_back(values.offset, uniform_name);
 			ubo_layouts[blocks[values.block_index].name].uniforms.emplace(uniform_name, dat);
 		}
 	}
@@ -211,19 +208,24 @@ inline std::pair<std::map<std::string, df::UniformBlockLayout>,df::UniformBlockL
 
 	
 	// calc (max) size of each buffered uniform
-	for(size_t j = 0; j < buffer_offsets.size(); ++j)
+	for(auto& b : blocks)
 	{
-		auto& offsets = buffer_offsets[j];
-		if(offsets.empty()) continue;		
-		auto &buff = ubo_layouts[blocks[j].name];
+		auto& buff = ubo_layouts[b.name];
+		auto& unis = buff.uniforms;
+		if(unis.empty()) continue;	
+		std::vector<std::pair<GLuint, GLuint*>> offsets;
+		offsets.reserve(unis.size() + 1);
+		for(auto& [k, v] : unis)
+		{
+			offsets.emplace_back(v.offset, &v.byte_size);
+		}	
 		
 		std::sort(offsets.begin(), offsets.end(),[](auto a_, auto b_){return a_.first < b_.first;});
 		
-		offsets.emplace_back(buff.size, "");
+		offsets.emplace_back(buff.size, nullptr);
 		for(size_t i = 0; i < offsets.size() - 1; ++i)
 		{
-			std::string name = offsets[i].second;
-			buff.uniforms[name].byte_size = offsets[i+1].first - offsets[i].first;
+			*offsets[i].second = offsets[i+1].first - offsets[i].first;
 		}
 	}
 	
