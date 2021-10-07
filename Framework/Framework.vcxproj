@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClCompile Include="..\include\Dragonfly\detail\Buffer\BufferBase.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Buffer\MappedBuffer.cpp" />
+    <ClCompile Include="..\include\Dragonfly\detail\Buffer\UniformBuffer.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\config.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\Camera.cpp" />
     <ClCompile Include="..\include\Dragonfly\detail\Events\renderdoc_load_api.cpp" />
@@ -122,6 +123,7 @@
     <ClInclude Include="$(DragonflyPackPath)\includes\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\include\Dragonfly\detail\Buffer\UniformBuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Events\Sample.inl" />
     <None Include="..\include\Dragonfly\detail\Framebuffer\Framebuffer.inl" />
     <None Include="..\include\Dragonfly\detail\Program\Program.inl" />

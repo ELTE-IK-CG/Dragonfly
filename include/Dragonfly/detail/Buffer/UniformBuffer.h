@@ -4,11 +4,40 @@
 #include <Dragonfly/detail/Buffer/Buffer.h>
 #include <map>
 #include <vector>
+#include <array>
 #include <string>
+#include "../Traits/UniformTypes.hpp"
 
 namespace df
 {
-	
+	namespace detail {
+		template<typename T_> struct UniformType {
+			constexpr GLenum GetType() { return df::detail::getOpenGLType<T_>(); }
+			constexpr std::size_t  GetSize(T_ && _v) { return sizeof(_v); }
+			static void* GetPtr(T_ & _v) { return &_v; }
+		};
+		template<typename E_> struct UniformType<std::vector<E_>> {
+			using T = std::vector<E_>;
+			constexpr GLenum GetType() { return df::detail::getOpenGLType<E_>(); }
+			static std::size_t  GetSize(T&& _v) { return v.size(); }
+			static void* GetPtr(T& _v) { return &_v[0]; }
+		};
+		template<typename E_, size_t N> struct UniformType<std::array<E_, N>> {
+			using T = std::array<E_, N>;
+			constexpr GLenum GetType() { return df::detail::getOpenGLType<E_>(); }
+			constexpr std::size_t  GetSize(T&& _v) { return v.size(); }
+			static void* GetPtr(T& _v) { return &_v[0]; }
+		};
+		template<typename E_, size_t N> struct UniformType<E_[N]> {
+			using T = E_[N];
+			constexpr GLenum GetType() { return df::detail::getOpenGLType<E_>(); }
+			constexpr std::size_t  GetSize(T&& _v) { return sizeof(T); }
+			static void* GetPtr(T& _v) { return &_v[0]; }
+		};
+		template<typename T_> constexpr GLenum getUniformTypeOpenGL() { return UniformType<T_>::GetType(); }
+		template<typename T_> constexpr GLenum getUnifromTypeSize(T_ && _v) { return UniformType<T_>::GetSize(_v); }
+		template<typename T_> constexpr GLenum getUniformTypePtr(T_ & _v) { return UniformType<T_>::GetPtr(_v); }
+	} // detail
 
 struct UniformBlockLayout
 {
@@ -22,15 +51,10 @@ struct UniformBlockLayout
 	};
 	std::map<std::string, ValueData> uniforms;
 	
-	int size;
+	int byte_size;
 	int active_variables;
 
-	bool operator== (const UniformBlockLayout &other_) const
-	{
-		if (other_.size != size || other_.uniforms.size() != uniforms.size()) return false;
-		//TODO DO
-		return true;
-	}
+	bool operator== (const UniformBlockLayout& other_) const;
 };
 
 
@@ -55,37 +79,24 @@ public:
 		{}
 	public:
 		template<typename T_>
-		void operator=(T_&& val_) &&
-		{
-			using NakedValType = std::remove_reference_t<std::remove_cv_t<T_>>;
-			if(!data_ptr) return; // non existent uniform
-			// TODO type check
-			// TODO size check
-			// TODO implement array, init list, and vector assignement
-			*reinterpret_cast<NakedValType*>(data_ptr) = val_;
-		}
+		void operator=(T_&& val_)&&;
 		
 		// Intended use: ubo["myvar"] = myval;
 		template<typename T_> void operator=(T_&& val_) const & = delete;
 
-		template<typename T_>
-		T_* Get() &&
-		{
-			// TODO type check
-			return reinterpret_cast<T_*>(data_ptr);
-		}
+		template<typename T_> T_* Get()&&;
+
 		// Intended use: ubo["myfloatvar"].Get<float>()
 		template<typename T_> T_* Get() const& = delete;
-		
 	};
 private:
 	UniformBlockLayout layout;
 	Binary_Data data; // CPU copy of the buffer
 public:
 	explicit UniformBuffer(UniformBlockLayout layout_) :
-		BufferLowLevelBase(layout_.size, BUFFER_BITS::WRITE),
+		BufferLowLevelBase(layout_.byte_size, BUFFER_BITS::WRITE),
 		layout(std::move(layout_)),
-		data(layout.size)
+		data(layout.byte_size)
 	{}
 	
 	//MemoryAdapter must be temporary!
@@ -153,7 +164,7 @@ inline std::pair<std::map<std::string, df::UniformBlockLayout>,df::UniformBlockL
 		b.data_size			= values.data_size;
 		b.active_variables	= values.active_variables;
 		auto& lay = ubo_layouts[b.name];
-		lay.size = b.data_size;
+		lay.byte_size = b.data_size;
 		lay.active_variables = b.active_variables;
 	}
 
@@ -222,7 +233,7 @@ inline std::pair<std::map<std::string, df::UniformBlockLayout>,df::UniformBlockL
 		
 		std::sort(offsets.begin(), offsets.end(),[](auto a_, auto b_){return a_.first < b_.first;});
 		
-		offsets.emplace_back(buff.size, nullptr);
+		offsets.emplace_back(buff.byte_size, nullptr);
 		for(size_t i = 0; i < offsets.size() - 1; ++i)
 		{
 			*offsets[i].second = offsets[i+1].first - offsets[i].first;
@@ -231,3 +242,5 @@ inline std::pair<std::map<std::string, df::UniformBlockLayout>,df::UniformBlockL
 	
 	return {ubo_layouts, non_buffer_backed};
 }
+
+#include "UniformBuffer.inl"
